@@ -4,9 +4,12 @@ services:
   # ROS Melodic
   rosbot:
     build:
-      context: ../../../  
+      context: ../../ 
       dockerfile: ./Dockerfile
     tty: true        # docker run -t
+    restart: unless-stopped
+    environment:
+      - "ROS_MASTER_URI=http://my-ros-master:11311"
     privileged: true
     command: 
       - bash
@@ -17,8 +20,9 @@ services:
 
   astra:
     image: husarion/astra:latest
+    restart: unless-stopped
     environment:
-        - "ROS_MASTER_URI=http://bridge:11311"
+        - "ROS_MASTER_URI=http://my-ros-master:11311"
     devices:
       - /dev/ttyUSB0
     tty: true        # docker run -t
@@ -26,18 +30,27 @@ services:
 
   rplidar:
     image: husarion/rplidar:latest
+    restart: unless-stopped
     environment:
-        - "ROS_MASTER_URI=http://bridge:11311"
+        - "ROS_MASTER_URI=http://my-ros-master:11311"
     devices:
       - /dev/ttyUSB1
     tty: true        # docker run -t
     command: roslaunch rplidar_ros rplidar.launch
 
+  # ROS Noetic
+  my-ros-master:
+    image: ros:noetic-ros-core
+    restart: unless-stopped
+    tty: true        # docker run -t
+    command: stdbuf -o L roscore
+
   # ROS Noetic + ROS 2 Foxy
   bridge:
     image: ros:foxy-ros1-bridge
+    restart: unless-stopped
     environment:
-      - "ROS_MASTER_URI=http://localhost:11311"
+      - "ROS_MASTER_URI=http://my-ros-master:11311"
     command: 
       - bash
       - -c
@@ -46,13 +59,11 @@ services:
         ros2 run ros1_bridge dynamic_bridge
 
   # ROS 2 Foxy
-  rviz-nvidia:
+  rviz2:
     image: husarion/rviz2-rosbot:latest
-    runtime: nvidia    
+    restart: unless-stopped
     environment: 
       - DISPLAY
-      - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ./config.rviz:/root/.rviz2/default.rviz
     command: ros2 run rviz2 rviz2

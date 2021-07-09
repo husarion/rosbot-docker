@@ -1,8 +1,6 @@
 # rosbot-docker
 Docker Image for ROS Melodic Node providing interface for STM32 firmware over ROS-serial.
 
-
-
 ## Building a Docker image
 
 ```bash
@@ -29,12 +27,12 @@ xhost local:root
 docker-compose up --build
 ```
 
-> Note that in the above `docker-compose.yml` every `up` command we reflash the image for STM32:
+> **Note 1:** that in the above `docker-compose.yml` every `up` command we reflash the image for STM32:
 > 
 > ```yml
 >   rosbot:
 >     build:
->       context: ../../../  
+>       context: ../../ 
 >       dockerfile: ./Dockerfile
 >     tty: true        # docker run -t
 >     privileged: true
