@@ -7,3 +7,9 @@ This image should also flash the appriopriate version of [ROSbot 2.0 STM32 firmw
 - **Harder One** - add another ROS service to `rosbot-stm32-firmware`, like `get-version` and the firmware will being reflashed only if the firmware version is wrong or after timeout.
 
 To not overcomplicate the problem, **Easier One** option is fine.
+
+## Building a Docker image
+
+```bash
+sudo docker build -t rosbot .
+```
