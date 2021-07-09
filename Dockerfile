@@ -1,11 +1,11 @@
+# Building firmware.bin ... 
+
 FROM ubuntu:20.04 as stm32_fw
 
 RUN apt update && apt install -y \
     python3 \
     python3-pip \
     git
-
-RUN python3 -m pip install --upgrade pyserial
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 RUN pip install -U platformio
@@ -19,6 +19,7 @@ RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=mai
     git submodule update --init --recursive && \
     pio run
 
+# Creating the ROS 2 image ...
 
 FROM ros:melodic
 
