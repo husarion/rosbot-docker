@@ -1,15 +1,49 @@
 # rosbot-docker
 Docker Image for ROS Melodic Node providing interface for STM32 firmware over ROS-serial.
 
-This image should also flash the appriopriate version of [ROSbot 2.0 STM32 firmware](https://github.com/husarion/rosbot-stm32-firmware) - to do not reflash the STM32 already flashed with the proper version of the firmware, the solutions mentioned below are fine:
 
-- **Easier One** - define `ENV AUTO_STM32_FLASH=1` environmental variable in DockerHub. Then to disable auto-firmware upgrade all you need to do is run the container the following way: `docker run .... --env AUTO_STM32_FLASH=0 ... rosbot-docker`
-- **Harder One** - add another ROS service to `rosbot-stm32-firmware`, like `get-version` and the firmware will being reflashed only if the firmware version is wrong or after timeout.
-
-To not overcomplicate the problem, **Easier One** option is fine.
 
 ## Building a Docker image
 
 ```bash
 sudo docker build -t rosbot .
 ```
+
+## Running a Docker container
+
+```bash
+sudo docker run --rm -it \
+rosbot 
+```
+
+## Examples (using Docker Compose)
+
+### RPLIDAR + Astra + ROSbot containers and Rviz container
+
+Login to ROSbot's desktop (remote desktop/VNC or just HDMI screen + mouse + keyboard). Clone this repository and:
+
+```bash
+cd rosbot-docker/examples/rosbot_rplidar_astra_rviz
+
+xhost local:root
+docker-compose up --build
+```
+
+> Note that in the above `docker-compose.yml` every `up` command we reflash the image for STM32:
+> 
+> ```yml
+>   rosbot:
+>     build:
+>       context: ../../../  
+>       dockerfile: ./Dockerfile
+>     tty: true        # docker run -t
+>     privileged: true
+>     command: 
+>       - bash
+>       - -c
+>       - |
+>         ./flash_firmware.sh
+>         roslaunch rosbot_description serialbridge_only.launch
+> ```
+>
+> To do not reflash it every re-run, just remove the line `./flash_firmware.sh`

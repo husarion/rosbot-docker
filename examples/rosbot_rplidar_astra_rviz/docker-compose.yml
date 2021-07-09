@@ -1,0 +1,58 @@
+version: "2.3"
+
+services:
+  # ROS Melodic
+  rosbot:
+    build:
+      context: ../../../  
+      dockerfile: ./Dockerfile
+    tty: true        # docker run -t
+    privileged: true
+    command: 
+      - bash
+      - -c
+      - |
+        ./flash_firmware.sh
+        roslaunch rosbot_description serialbridge_only.launch
+
+  astra:
+    image: husarion/astra:latest
+    environment:
+        - "ROS_MASTER_URI=http://bridge:11311"
+    devices:
+      - /dev/ttyUSB0
+    tty: true        # docker run -t
+    command: roslaunch ros_astra_camera astra.launch
+
+  rplidar:
+    image: husarion/rplidar:latest
+    environment:
+        - "ROS_MASTER_URI=http://bridge:11311"
+    devices:
+      - /dev/ttyUSB1
+    tty: true        # docker run -t
+    command: roslaunch rplidar_ros rplidar.launch
+
+  # ROS Noetic + ROS 2 Foxy
+  bridge:
+    image: ros:foxy-ros1-bridge
+    environment:
+      - "ROS_MASTER_URI=http://localhost:11311"
+    command: 
+      - bash
+      - -c
+      - |
+        stdbuf -o L roscore &
+        ros2 run ros1_bridge dynamic_bridge
+
+  # ROS 2 Foxy
+  rviz-nvidia:
+    image: husarion/rviz2-rosbot:latest
+    runtime: nvidia    
+    environment: 
+      - DISPLAY
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./config.rviz:/root/.rviz2/default.rviz
+    command: ros2 run rviz2 rviz2
