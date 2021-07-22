@@ -1,25 +1,4 @@
-# Building firmware.bin ... 
-
-FROM ubuntu:20.04 as stm32_fw
-
-RUN apt update && apt install -y \
-    python3 \
-    python3-pip \
-    git
-
-# https://docs.platformio.org/en/latest/core/installation.html#system-requirements
-RUN pip install -U platformio
-
-COPY .mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
-
-WORKDIR /app
-
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=main && \
-    cd rosbot-stm32-firmware && \
-    git submodule update --init --recursive && \
-    pio run
-
-# Creating the ROS 2 image ...
+# Creating the ROS image ...
 
 FROM ros:melodic
 
@@ -30,13 +9,22 @@ RUN apt update && apt install -y \
 
 RUN python3 -m pip install --upgrade pyserial
 
+RUN apt install -y ros-melodic-xacro ros-melodic-rosserial-python
+
+RUN cd ~/ && git clone https://github.com/vsergeev/python-periphery.git && \
+    cd ~/python-periphery && git checkout v1.1.2 &&\
+    python3 setup.py install --record files.txt
+
+RUN cd ~/ && git clone https://github.com/TinkerBoard/gpio_lib_python.git &&\
+    cd ~/gpio_lib_python && python3 setup.py install --record files.txt
+
 RUN git clone https://github.com/husarion/stm32loader.git && \
     cd stm32loader && \
     python3 setup.py install
 
 WORKDIR /app
 
-COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2/firmware.bin .
+COPY --from=husarion/rosbot-firmware /app/.pio/build/core2/firmware.bin .
 
 RUN mkdir -p ros_ws/src && \
     git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description
@@ -50,4 +38,3 @@ COPY ./ros_entrypoint.sh /
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
-    

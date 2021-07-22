@@ -11,32 +11,15 @@ services:
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
     privileged: true
+    env_file: ../.env.rosbot
+    devices:
+      - "/dev/ttyS1:/dev/ttyCORE2"    
     command: 
       - bash
       - -c
       - |
-        ./flash_firmware.sh
+        ./flash_firmware.sh $${FLASH_FIRMWARE}
         roslaunch rosbot_description serialbridge_only.launch
-
-  astra:
-    image: husarion/astra:latest
-    restart: unless-stopped
-    environment:
-        - "ROS_MASTER_URI=http://my-ros-master:11311"
-    devices:
-      - /dev/ttyUSB0
-    tty: true        # docker run -t
-    command: roslaunch ros_astra_camera astra.launch
-
-  rplidar:
-    image: husarion/rplidar:latest
-    restart: unless-stopped
-    environment:
-        - "ROS_MASTER_URI=http://my-ros-master:11311"
-    devices:
-      - /dev/ttyUSB1
-    tty: true        # docker run -t
-    command: roslaunch rplidar_ros rplidar.launch
 
   # ROS Noetic
   my-ros-master:
@@ -58,7 +41,7 @@ services:
         stdbuf -o L roscore &
         ros2 run ros1_bridge dynamic_bridge
 
-  # ROS 2
+  # ROS 2 
   rviz2:
     image: husarion/rviz2-rosbot:latest
     restart: unless-stopped
