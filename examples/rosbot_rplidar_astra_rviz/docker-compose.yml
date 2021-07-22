@@ -11,12 +11,7 @@ services:
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
     privileged: true
-    command: 
-      - bash
-      - -c
-      - |
-        ./flash_firmware.sh
-        roslaunch rosbot_description serialbridge_only.launch
+    command: roslaunch rosbot_description serialbridge_only.launch
 
   astra:
     image: husarion/astra:latest

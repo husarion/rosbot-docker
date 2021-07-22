@@ -14,12 +14,7 @@ services:
     env_file: ../.env.rosbot
     devices:
       - "/dev/ttyS1:/dev/ttyCORE2"    
-    command: 
-      - bash
-      - -c
-      - |
-        ./flash_firmware.sh $${FLASH_FIRMWARE} wait
-        roslaunch rosbot_description serialbridge_only.launch
+    command: roslaunch rosbot_description serialbridge_only.launch
 
   rplidar:
     image: husarion/rplidar:latest

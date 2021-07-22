@@ -24,7 +24,7 @@ RUN git clone https://github.com/husarion/stm32loader.git && \
 
 WORKDIR /app
 
-COPY --from=husarion/rosbot-firmware /app/.pio/build/core2/firmware.bin .
+COPY --from=husarion/rosbot-firmware /app/.pio/build/core2/firmware.bin /root
 
 RUN mkdir -p ros_ws/src && \
     git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description

@@ -2,6 +2,7 @@ version: "2.3"
 
 services:
   # ROS Melodic
+
   rosbot:
     build:
       context: ../../ 
@@ -11,15 +12,10 @@ services:
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
     privileged: true
-    env_file: ../.env.rosbot
     devices:
-      - "/dev/ttyS1:/dev/ttyCORE2"    
-    command: 
-      - bash
-      - -c
-      - |
-        ./flash_firmware.sh $${FLASH_FIRMWARE}
-        roslaunch rosbot_description serialbridge_only.launch
+      - "/dev/ttyS1:/dev/ttyCORE2"   
+    command: roslaunch rosbot_description serialbridge_only.launch
+        
 
   # ROS Noetic
   my-ros-master:
@@ -34,6 +30,10 @@ services:
     restart: unless-stopped
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
+    depends_on:
+        - "core2-flash"
+    links:
+        - "core2-flash:core2-flash" 
     command: 
       - bash
       - -c
@@ -41,12 +41,12 @@ services:
         stdbuf -o L roscore &
         ros2 run ros1_bridge dynamic_bridge
 
-  # ROS 2 
-  rviz2:
-    image: husarion/rviz2-rosbot:latest
-    restart: unless-stopped
-    environment: 
-      - DISPLAY
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    command: ros2 run rviz2 rviz2
+  # # ROS 2 
+  # rviz2:
+  #   image: husarion/rviz2-rosbot:latest
+  #   restart: unless-stopped
+  #   environment: 
+  #     - DISPLAY
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  #   command: ros2 run rviz2 rviz2
