@@ -45,3 +45,11 @@ docker-compose up --build
 > ```
 >
 > To do not reflash it every re-run, just remove the line `./flash_firmware.sh`
+
+### Known errors
+
+In case of errors while flashing or reading data from CORE2 check following
+
+1. `docker container ls` - list all running containers look for running containers
+2. when names of containers are linked to `rosbotflashfirmware` or `rosbotserial` kill them before flashing/reading
+3. to kill all containers use `docker kill $(docker ps -q)`

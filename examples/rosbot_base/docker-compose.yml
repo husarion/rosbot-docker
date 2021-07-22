@@ -7,33 +7,30 @@ services:
     build:
       context: ../../ 
       dockerfile: ./Dockerfile
-    tty: true        # docker run -t
-    restart: unless-stopped
+    tty: true        
+    restart: on-failure
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
-    privileged: true
+      - "SERIAL_PORT=/dev/ttyS1"
+    privileged: false
     devices:
-      - "/dev/ttyS1:/dev/ttyCORE2"   
+      - "/dev/ttyS1"   # must match environment SERIAL_PORT 
     command: roslaunch rosbot_description serialbridge_only.launch
         
 
   # ROS Noetic
   my-ros-master:
     image: ros:noetic-ros-core
-    restart: unless-stopped
-    tty: true        # docker run -t
+    restart: on-failure
+    tty: true        
     command: stdbuf -o L roscore
 
   # ROS Noetic + ROS 2 eloquent
   bridge:
     image: ros:eloquent-ros1-bridge
-    restart: unless-stopped
+    restart: on-failure
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
-    depends_on:
-        - "core2-flash"
-    links:
-        - "core2-flash:core2-flash" 
     command: 
       - bash
       - -c
@@ -41,12 +38,12 @@ services:
         stdbuf -o L roscore &
         ros2 run ros1_bridge dynamic_bridge
 
-  # # ROS 2 
-  # rviz2:
-  #   image: husarion/rviz2-rosbot:latest
-  #   restart: unless-stopped
-  #   environment: 
-  #     - DISPLAY
-  #   volumes:
-  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
-  #   command: ros2 run rviz2 rviz2
+  # ROS 2 
+  rviz2:
+    image: husarion/rviz2-rosbot:latest
+    restart: on-failure
+    environment: 
+      - DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    command: ros2 run rviz2 rviz2

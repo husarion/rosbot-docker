@@ -9,7 +9,12 @@ RUN apt update && apt install -y \
 
 RUN python3 -m pip install --upgrade pyserial
 
-RUN apt install -y ros-melodic-xacro ros-melodic-rosserial-python
+RUN apt install -y ros-melodic-xacro \ 
+    ros-melodic-rosserial-python \ 
+    ros-melodic-rosserial-server \
+    ros-melodic-rosserial-client \
+    ros-melodic-rosserial-msgs \
+    ros-melodic-robot-localization
 
 RUN cd ~/ && git clone https://github.com/vsergeev/python-periphery.git && \
     cd ~/python-periphery && git checkout v1.1.2 &&\
@@ -27,7 +32,8 @@ WORKDIR /app
 COPY --from=husarion/rosbot-firmware /app/.pio/build/core2/firmware.bin /root
 
 RUN mkdir -p ros_ws/src && \
-    git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description
+    git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description && \
+    git clone https://github.com/husarion/rosbot_ekf.git --branch=master ros_ws/src/rosbot_ekf
 
 RUN cd ros_ws/ && \
     source /opt/ros/melodic/setup.bash && \
