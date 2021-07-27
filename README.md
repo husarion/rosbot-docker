@@ -46,6 +46,33 @@ docker-compose up --build
 >
 > To do not reflash it every re-run, just remove the line `./flash_firmware.sh`
 
+## Running examples
+
+To run any of examples please go to `/examples` + one of subfolder, then type `docker-compose up` to start container. 
+
+When running without screen you can comment (using "`#`") rviz2 service from `docker-compose.yml`
+
+Short description:
+
+1. `rosbot_base` --> launches rosbot, rviz2, core2 communication - you can drive with teleop-keyboard and other basic functionalities. 
+2. `rosbot_rplidar` --> it's rosbot_base + rplidar node
+3. `rosbot_rplidar_astra_rviz` --> it's rosbot_rplidar + astra camera node
+4. `rosbot_rplidar_astra_rviz_host_network` --> it's rosbot_rplidar_astra_rviz but in different network configuration to use correctly change HOST_IP to your device IP address. Apply this change in .env file located inside `examples/rosbot_rplidar_astra_rviz_host_network/.env`
+5. `rosbot_flash_firmware` --> image for flashing the newest firmware (advise - run it from time to time to get fresh firmware) (unchangable works for Rosbot 2.0 and Rosbot 2.0 PRO)
+
+### ROSBOT_PRO
+
+To run this on Rosbot2.0 PRO you have to change `SERIAL_PORT` value and `devices` in desired `docker-compose.yml`
+
+```bash
+environment:
+- "ROS_MASTER_URI=http://my-ros-master:11311"
+- "SERIAL_PORT=/dev/ttyS4" # (change for Rosbot 2.0 PRO) default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
+devices:
+- "/dev/ttyS4"   # (change for Rosbot 2.0 PRO) must match environment SERIAL_PORT default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
+```
+
+To see example go to `examples/rosbot_pro_base/docker-compose.yml` .
 ### Known errors
 
 In case of errors while flashing or reading data from CORE2 check following

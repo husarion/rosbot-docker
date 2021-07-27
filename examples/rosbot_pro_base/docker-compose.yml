@@ -9,12 +9,12 @@ services:
       dockerfile: ./Dockerfile
     tty: true        
     restart: on-failure
+    privileged: false
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
-      - "SERIAL_PORT=/dev/ttyS1" # default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
-    privileged: false
+      - "SERIAL_PORT=/dev/ttyS4" # default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
     devices:
-      - "/dev/ttyS1"   # must match environment SERIAL_PORT 
+      - "/dev/ttyS4"   # must match environment SERIAL_PORT 
     command: roslaunch rosbot_description serialbridge_only.launch
         
   my-ros-master:
