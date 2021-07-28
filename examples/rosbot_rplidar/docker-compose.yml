@@ -11,7 +11,7 @@ services:
     restart: on-failure
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
-      - "SERIAL_PORT=/dev/ttyS4" # default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
+      - "SERIAL_PORT=/dev/ttyS1" # default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
     privileged: false
     devices:
       - "/dev/ttyS4"   # must match environment SERIAL_PORT 
@@ -58,4 +58,4 @@ services:
     devices:
       - /dev/ttyUSB0
     tty: true        # docker run -t
-    command: roslaunch rplidar_ros rplidar_a3.launch
+    command: roslaunch rplidar_ros rplidar.launch # For Rosbot 2.0 PRO use roslaunch rplidar_ros rplidar_a3.launch

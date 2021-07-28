@@ -72,6 +72,22 @@ devices:
 - "/dev/ttyS4"   # (change for Rosbot 2.0 PRO) must match environment SERIAL_PORT default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 pro
 ```
 
+Also remember to change to appropiriate rplidar model matching your rosbot [list-of-launches](https://github.com/Slamtec/rplidar_ros/tree/master/launch) in rplidar service
+
+```bash
+rplidar:
+    image: husarion/rplidar:latest
+    restart: unless-stopped
+    environment:
+
+        - "ROS_MASTER_URI=http://my-ros-master:11311"
+    devices:
+      - /dev/ttyUSB0
+    tty: true 
+    network_mode: host       
+    command: roslaunch rplidar_ros rplidar_a3.launch # For Rosbot 2.0 PRO use roslaunch rplidar_ros rplidar_a3.launch
+```
+
 To see example go to `examples/rosbot_pro_base/docker-compose.yml` .
 ### Known errors
 
