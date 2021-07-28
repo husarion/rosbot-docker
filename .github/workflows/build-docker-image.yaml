@@ -35,6 +35,6 @@ jobs:
         file: ./Dockerfile
         platforms: linux/arm64, linux/amd64, linux/arm/v7
         push: true
-        tags: husarion/rosbot-docker
-        cache-from: type=registry,ref=husarion/rosbot-docker
+        tags: husarion/rosbot
+        cache-from: type=registry,ref=husarion/rosbot
         cache-to: type=inline
