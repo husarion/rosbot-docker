@@ -38,12 +38,14 @@ services:
 
   # ROS 2 
   rviz2:
-    image: husarion/rviz2-rosbot:eloquent
+    image: husarion/rviz2-rosbot:vnc
     restart: on-failure
-    privileged: true
-    environment: 
-      - QT_X11_NO_MITSHM=1 
-      - DISPLAY=$DISPLAY 
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    command: ros2 run rviz2 rviz2
+    ports:
+      - "5900:5900"
+      - "6080:6080"
+    # environment: 
+    #   - QT_X11_NO_MITSHM=1 
+    #   - DISPLAY=$DISPLAY 
+    # volumes:
+      # - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # command: ros2 run rviz2 rviz2

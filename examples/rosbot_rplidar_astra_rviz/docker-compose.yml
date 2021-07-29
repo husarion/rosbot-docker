@@ -6,8 +6,7 @@ services:
     build:
       context: ../../ 
       dockerfile: ./Dockerfile
-    tty: true 
-    network_mode: host       
+    tty: true      
     restart: on-failure
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
@@ -22,7 +21,6 @@ services:
     image: ros:noetic-ros-core
     restart: on-failure
     tty: true 
-    network_mode: host  
     environment:
       - "ROS_MASTER_URI=http://my-ros-master:11311"    
     command: stdbuf -o L roscore
@@ -61,8 +59,7 @@ services:
       - "ROS_MASTER_URI=http://my-ros-master:11311"
     devices:
       - /dev/bus/usb/001/006
-    tty: true 
-    network_mode: host       
+    tty: true      
     command: roslaunch astra_camera astra.launch
 
   rplidar:
@@ -73,6 +70,5 @@ services:
         - "ROS_MASTER_URI=http://my-ros-master:11311"
     devices:
       - /dev/ttyUSB0
-    tty: true 
-    network_mode: host       
+    tty: true      
     command: roslaunch rplidar_ros rplidar.launch # For Rosbot 2.0 PRO use roslaunch rplidar_ros rplidar_a3.launch

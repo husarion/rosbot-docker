@@ -14,7 +14,8 @@ RUN apt install -y ros-melodic-xacro \
     ros-melodic-rosserial-server \
     ros-melodic-rosserial-client \
     ros-melodic-rosserial-msgs \
-    ros-melodic-robot-localization
+    ros-melodic-robot-localization \
+    ros-melodic-robot-state-publisher
 
 RUN cd ~/ && git clone https://github.com/vsergeev/python-periphery.git && \
     cd ~/python-periphery && git checkout v1.1.2 &&\
