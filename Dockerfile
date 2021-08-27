@@ -10,13 +10,14 @@ RUN apt update && apt install -y \
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 RUN pip3 install -U platformio
 
-COPY .mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
-
 WORKDIR /app
+
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=main --depth 1
+
+COPY platformio.ini rosbot-stm32-firmware/platformio.ini
 
 RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
-    git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=main && \
     cd rosbot-stm32-firmware && \
     git submodule update --init --recursive && \
     pio run
