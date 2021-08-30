@@ -34,3 +34,7 @@ Running examples is similar as it is shown in flashing firmware step.
 cd examples/<rosbot example>
 docker-compose up
  ```
+
+## Configuring Orbbec Astra
+
+In *docker-compose.yaml* you have to change `device` passed to docker. For more information refer to `astra-docker` [README.md](https://github.com/husarion/astra-docker)
