@@ -33,12 +33,12 @@ RUN apt update \
 
 RUN python3 -m pip install --upgrade pyserial
 
-RUN apt install -y ros-melodic-xacro \ 
-        ros-melodic-rosserial-python \ 
-        ros-melodic-rosserial-server \
-        ros-melodic-rosserial-client \
-        ros-melodic-rosserial-msgs \
-        ros-melodic-robot-localization
+RUN apt install -y ros-$ROS_DISTRO-xacro \ 
+        ros-$ROS_DISTRO-rosserial-python \ 
+        ros-$ROS_DISTRO-rosserial-server \
+        ros-$ROS_DISTRO-rosserial-client \
+        ros-$ROS_DISTRO-rosserial-msgs \
+        ros-$ROS_DISTRO-robot-localization
 
 RUN git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 \
     && cd /python-periphery \
@@ -61,7 +61,7 @@ RUN mkdir -p ros_ws/src \
     && git clone https://github.com/husarion/rosbot_ekf.git --branch=master ros_ws/src/rosbot_ekf 
 
 RUN cd ros_ws \
-    && source /opt/ros/melodic/setup.bash \
+    && source /opt/ros/$ROS_DISTRO/setup.bash \
     && catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
 
 COPY ./flash_firmware.sh .
