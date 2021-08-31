@@ -2,6 +2,7 @@ version: "2.3"
 
 
 services:
+
   # ROS Foxy Rviz2 VNC
   rviz2:
     image: husarion/ros2-desktop-vnc:latest
@@ -42,6 +43,7 @@ services:
       - "ROS_IP=rosbot"
       - "ROS_MASTER_URI=http://my-ros-master:11311"
     restart: on-failure
+    environment:
       - "SERIAL_PORT=/dev/ttyS4" # default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 `pro
     devices:
       - "/dev/ttyS4"   # must match environment SERIAL_PORT 

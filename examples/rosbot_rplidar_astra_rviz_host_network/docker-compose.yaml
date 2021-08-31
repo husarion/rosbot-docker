@@ -14,6 +14,7 @@ services:
       - ./rosbot_pro.rviz:/root/.rviz2/default.rviz
     shm_size: '512m'
 
+    
   # ROS Noetic + ROS 2 Foxy
   bridge:
     image: ros:foxy-ros1-bridge

@@ -27,12 +27,10 @@ FROM ros:melodic-ros-core
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update \
-    && apt install -y python3-pip \
-        git
-
+RUN apt update && apt install -y python3-pip git
 RUN python3 -m pip install --upgrade pyserial
 
+# install ROS packages
 RUN apt install -y ros-$ROS_DISTRO-xacro \ 
         ros-$ROS_DISTRO-rosserial-python \ 
         ros-$ROS_DISTRO-rosserial-server \
@@ -40,30 +38,41 @@ RUN apt install -y ros-$ROS_DISTRO-xacro \
         ros-$ROS_DISTRO-rosserial-msgs \
         ros-$ROS_DISTRO-robot-localization
 
+# setup python GPIO
 RUN git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 \
     && cd /python-periphery \
     && python3 setup.py install --record files.txt
 
+# setup GPIO for tinkerboard
 RUN git clone https://github.com/TinkerBoard/gpio_lib_python.git \
     && cd /gpio_lib_python \
     && python3 setup.py install --record files.txt
 
+# clone and build CORE2 firmware installer
 RUN git clone https://github.com/husarion/stm32loader.git \
     && cd stm32loader \
     && python3 setup.py install
 
 WORKDIR /app
 
+# copy firmware built in previous stage
 COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2/firmware.bin /root
 
+# clone robot github repositories
 RUN mkdir -p ros_ws/src \
     && git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description \
     && git clone https://github.com/husarion/rosbot_ekf.git --branch=master ros_ws/src/rosbot_ekf 
 
+# build ROS workspace
 RUN cd ros_ws \
     && source /opt/ros/$ROS_DISTRO/setup.bash \
     && catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
 
+# clear ubuntu packages
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# copy scripts
 COPY ./flash_firmware.sh .
 COPY ./ros_entrypoint.sh /
 
