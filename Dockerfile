@@ -14,15 +14,13 @@ WORKDIR /app
 
 RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=main --depth 1
 
-COPY platformio.ini rosbot-stm32-firmware/platformio.ini
-
 RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
     cd rosbot-stm32-firmware && \
     git submodule update --init --recursive && \
-    pio run
+    pio run 
 
-# Creating the ROS 2 image ...
+# Creating the ROS image ...
 
 FROM ros:melodic
 
@@ -54,7 +52,13 @@ RUN git clone https://github.com/husarion/stm32loader.git && \
 
 WORKDIR /app
 
-COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2/firmware.bin /root
+COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root
+
+RUN mv /root/firmware.bin /root/firmware_diff.bin
+
+COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root
+
+RUN mv /root/firmware.bin /root/firmware_mecanum.bin
 
 RUN mkdir -p ros_ws/src && \
     git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description && \
@@ -64,7 +68,8 @@ RUN cd ros_ws/ && \
     source /opt/ros/melodic/setup.bash && \
     catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
 
-COPY ./flash_firmware.sh .
+COPY ./flash_firmware_diff.sh .
+COPY ./flash_firmware_mecanum.sh .
 COPY ./ros_entrypoint.sh /
 
 ENTRYPOINT ["/ros_entrypoint.sh"]

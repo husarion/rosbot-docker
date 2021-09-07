@@ -9,4 +9,4 @@ services:
     tty: true 
     restart: on-failure
     privileged: true
-    command: ./flash_firmware.sh
+    command: ./flash_firmware_diff.sh # for the mecanum wheels use: ./flash_firmware_mecanum.diff
