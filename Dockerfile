@@ -12,12 +12,28 @@ RUN pip3 install -U platformio
 
 WORKDIR /app
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=main --depth 1
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=0.14.5 --depth 1
 
 RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
     cd rosbot-stm32-firmware && \
     git submodule update --init --recursive && \
+    pio project init -e core2_diff -O \
+    "build_flags= \
+    -I\$PROJECTSRC_DIR/TARGET_CORE2 \
+    -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+    -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+    -DMBED_BUILD_PROFILE_RELEASE \
+    -DROS_NOETIC_MSGS=0 \
+    -DKINEMATIC_TYPE=0" && \
+    pio project init -e core2_mec -O \
+    "build_flags= \
+    -I\$PROJECTSRC_DIR/TARGET_CORE2 \
+    -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+    -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+    -DMBED_BUILD_PROFILE_RELEASE \
+    -DROS_NOETIC_MSGS=0 \
+    -DKINEMATIC_TYPE=1" && \
     pio run 
 
 # Creating the ROS image ...
