@@ -25,7 +25,7 @@ services:
 
   # ROS Melodic rosbot hardware layer
   rosbot:
-    image: husarion/rosbot
+    image: husarion/rosbot:latest
     tty: true      
     restart: on-failure
     environment:

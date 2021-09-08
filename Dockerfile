@@ -1,8 +1,8 @@
 # Building firmware.bin ... 
+
 FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
 
-RUN apt update \
-    && apt install -y \
+RUN apt update && apt install -y \
         python3 \
         python3-pip \
         git
@@ -10,16 +10,31 @@ RUN apt update \
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 RUN pip3 install -U platformio
 
-COPY .mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
-
 WORKDIR /app
+
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=0.14.5 --depth 1
 
 RUN export LC_ALL=C.UTF-8 \
     && export LANG=C.UTF-8 \
-    && git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=main \
-    && cd rosbot-stm32-firmware \
+    && cd rosbot-stm32-firmware  \
     && git submodule update --init --recursive \
-    && pio run
+    && pio project init -e core2_diff -O \
+        "build_flags= \
+        -I\$PROJECTSRC_DIR/TARGET_CORE2 \
+        -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+        -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+        -DMBED_BUILD_PROFILE_RELEASE \
+        -DROS_NOETIC_MSGS=0 \
+        -DKINEMATIC_TYPE=0" \
+    && pio project init -e core2_mec -O \
+        "build_flags= \
+        -I\$PROJECTSRC_DIR/TARGET_CORE2 \
+        -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+        -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+        -DMBED_BUILD_PROFILE_RELEASE \
+        -DROS_NOETIC_MSGS=0 \
+        -DKINEMATIC_TYPE=1" \
+    && pio run 
 
 
 # Creating the ROS 2 image ...
@@ -31,8 +46,7 @@ RUN apt update && apt install -y python3-pip git
 RUN python3 -m pip install --upgrade pyserial
 
 # install ROS packages
-RUN apt install -y ros-$ROS_DISTRO-xacro \ 
-        ros-$ROS_DISTRO-rosserial-python \ 
+RUN apt install -y ros-$ROS_DISTRO-rosserial-python \ 
         ros-$ROS_DISTRO-rosserial-server \
         ros-$ROS_DISTRO-rosserial-client \
         ros-$ROS_DISTRO-rosserial-msgs \
@@ -56,7 +70,8 @@ RUN git clone https://github.com/husarion/stm32loader.git \
 WORKDIR /app
 
 # copy firmware built in previous stage
-COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2/firmware.bin /root
+COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
+COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root/firmware_mecanum.bin
 
 # clone robot github repositories
 RUN mkdir -p ros_ws/src \
@@ -73,7 +88,8 @@ RUN apt clean && \
     rm -rf /var/lib/apt/lists/*
 
 # copy scripts
-COPY ./flash_firmware.sh .
+COPY ./flash_firmware_diff.sh .
+COPY ./flash_firmware_mecanum.sh .
 COPY ./ros_entrypoint.sh /
 
 ENTRYPOINT ["/ros_entrypoint.sh"]

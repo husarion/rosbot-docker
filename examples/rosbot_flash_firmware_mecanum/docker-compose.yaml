@@ -3,10 +3,8 @@ version: "2.3"
 services:
   # ROS Melodic
   core2-flash:
-    build:
-      context: ../../ 
-      dockerfile: ./Dockerfile
+    image: husarion/rosbot:latest
     tty: true 
     restart: on-failure
     privileged: true
-    command: ./flash_firmware.sh
+    command: ./flash_firmware_mecanum.sh
