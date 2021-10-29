@@ -2,22 +2,23 @@
 
 FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
 
+ENV APP_VERSION="5.1.0"
+
 RUN apt update && apt install -y \
         python3 \
         python3-pip \
         git
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
-RUN pip3 install -U platformio
+RUN pip3 install -U platformio==${APP_VERSION}
 
 WORKDIR /app
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=0.14.5 --depth 1
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=0.14.5 --depth 1 --recurse-submodules
 
 RUN export LC_ALL=C.UTF-8 \
     && export LANG=C.UTF-8 \
     && cd rosbot-stm32-firmware  \
-    && git submodule update --init --recursive \
     && pio project init -e core2_diff -O \
         "build_flags= \
         -I\$PROJECTSRC_DIR/TARGET_CORE2 \
