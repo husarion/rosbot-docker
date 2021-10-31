@@ -1,24 +1,24 @@
 # Building firmware.bin ... 
+FROM --platform=linux/amd64 ubuntu:18.04 AS stm32_fw
 
-FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
+ENV PIO_APP_VERSION=5.2.2
 
-ENV APP_VERSION="5.1.0"
-
-RUN apt update && apt install -y \
-        python3 \
-        python3-pip \
-        git
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    git \
+    && rm -rf /var/lib/apt/lists/* 
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
-RUN pip3 install -U platformio==${APP_VERSION}
+RUN pip3 install platformio==${PIO_APP_VERSION}
 
 WORKDIR /app
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=0.14.5 --depth 1 --recurse-submodules
+RUN git clone --recurse-submodules https://github.com/husarion/rosbot-stm32-firmware.git --branch=latest 
 
 RUN export LC_ALL=C.UTF-8 \
     && export LANG=C.UTF-8 \
-    && cd rosbot-stm32-firmware  \
+    && cd rosbot-stm32-firmware \
     && pio project init -e core2_diff -O \
         "build_flags= \
         -I\$PROJECTSRC_DIR/TARGET_CORE2 \
@@ -37,21 +37,24 @@ RUN export LC_ALL=C.UTF-8 \
         -DKINEMATIC_TYPE=1" \
     && pio run 
 
-
-# Creating the ROS 2 image ...
+# Creating the ROS image ...
 FROM ros:melodic-ros-core
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update && apt install -y python3-pip git
-RUN python3 -m pip install --upgrade pyserial
+# install pip, git and ROS packages
+RUN apt-get update && apt-get install -y \ 
+    python3-pip \ 
+    git \
+    ros-$ROS_DISTRO-rosserial-python \ 
+    ros-$ROS_DISTRO-rosserial-server \
+    ros-$ROS_DISTRO-rosserial-client \
+    ros-$ROS_DISTRO-rosserial-msgs \
+    ros-$ROS_DISTRO-robot-localization \
+    && rm -rf /var/lib/apt/lists/*
 
-# install ROS packages
-RUN apt install -y ros-$ROS_DISTRO-rosserial-python \ 
-        ros-$ROS_DISTRO-rosserial-server \
-        ros-$ROS_DISTRO-rosserial-client \
-        ros-$ROS_DISTRO-rosserial-msgs \
-        ros-$ROS_DISTRO-robot-localization
+# upgrade serial lib
+RUN pip3 install --upgrade pyserial
 
 # setup python GPIO
 RUN git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 \
@@ -83,11 +86,7 @@ RUN mkdir -p ros_ws/src \
 RUN cd ros_ws \
     && source /opt/ros/$ROS_DISTRO/setup.bash \
     && catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
-
-# clear ubuntu packages
-RUN apt clean && \
-    rm -rf /var/lib/apt/lists/*
-
+    
 # copy scripts
 COPY ./flash_firmware_diff.sh .
 COPY ./flash_firmware_mecanum.sh .
