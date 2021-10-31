@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -36,5 +36,5 @@ jobs:
         platforms: linux/arm64, linux/amd64, linux/arm/v7
         push: true
         tags: husarion/rosbot
-        cache-from: type=registry,ref=husarion/rosbot
-        cache-to: type=inline
+        # cache-from: type=registry,ref=husarion/rosbot
+        # cache-to: type=inline
