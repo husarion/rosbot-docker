@@ -28,13 +28,19 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
+    - name: print docker version
+      run: docker --version
+
+    - name: print docker buildx version
+      run: docker buildx version   
+
     - name: build docker image
       run: >
         docker buildx build
         --platform linux/amd64
         -t rosbot-docker-test
         .
-        
+
     # - name: Build and push
     #   uses: docker/build-push-action@v2
     #   with:
