@@ -7,7 +7,8 @@ FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
 RUN apt update && apt install -y \
         python3 \
         python3-pip \
-        git
+        git \
+        tree
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 # RUN pip3 install -U platformio==${PIO_VERSION}
@@ -22,6 +23,8 @@ RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git
 WORKDIR /app/rosbot-stm32-firmware
 
 RUN git submodule update --init --recursive
+
+RUN tree lib
 
 RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
