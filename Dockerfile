@@ -14,7 +14,7 @@ RUN pip3 install -U platformio==${APP_VERSION}
 
 WORKDIR /app
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch=0.14.5 --depth 1 --recurse-submodules
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --recurse-submodules
 
 RUN export LC_ALL=C.UTF-8 \
     && export LANG=C.UTF-8 \
