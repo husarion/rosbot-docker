@@ -27,14 +27,21 @@ jobs:
         registry: docker.io
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
-    - name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-        platforms: linux/amd64
-        push: true
-        no-cache: true
-        tags: husarion/rosbot:latest
+        
+    - name: build docker image
+      run: >
+        docker buildx build
+        --platform linux/amd64
+        -t rosbot-docker-test
+        .
+        
+    # - name: Build and push
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     platforms: linux/amd64
+    #     push: true
+    #     no-cache: true
+    #     tags: husarion/rosbot:latest
         
         # cache-from: type=registry,ref=husarion/rosbot
         # cache-to: type=inline
