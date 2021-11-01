@@ -7,7 +7,7 @@ on: push
   
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout
@@ -34,20 +34,20 @@ jobs:
     - name: print docker buildx version
       run: docker buildx version   
 
-    - name: build docker image
-      run: >
-        docker buildx build
-        --platform linux/amd64
-        -t rosbot-docker-test
-        .
+    # - name: build docker image
+    #   run: >
+    #     docker buildx build
+    #     --platform linux/amd64
+    #     -t rosbot-docker-test
+    #     .
 
-    # - name: Build and push
-    #   uses: docker/build-push-action@v2
-    #   with:
-    #     platforms: linux/amd64
-    #     push: true
-    #     no-cache: true
-    #     tags: husarion/rosbot:latest
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        platforms: linux/amd64
+        push: true
+        no-cache: true
+        tags: husarion/rosbot:latest
         
         # cache-from: type=registry,ref=husarion/rosbot
         # cache-to: type=inline
