@@ -2,53 +2,47 @@
 
 FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
 
-ENV APP_VERSION="5.1.0"
+# ENV PIO_VERSION="5.1.0"
 
 RUN apt update && apt install -y \
         python3 \
         python3-pip \
-        git
+        git \
+        tree
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
-RUN pip3 install -U platformio==${APP_VERSION}
+# RUN pip3 install -U platformio==${PIO_VERSION}
+RUN pip3 install -U platformio
+
+COPY .mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 
 WORKDIR /app
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --recurse-submodules
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git
 
-RUN export LC_ALL=C.UTF-8 \
-    && export LANG=C.UTF-8 \
-    && cd rosbot-stm32-firmware  \
-    && pio project init -e core2_diff -O \
+WORKDIR /app/rosbot-stm32-firmware
+
+RUN git submodule update --init --recursive
+
+RUN export LC_ALL=C.UTF-8 && \
+    export LANG=C.UTF-8 && \
+    pio project init -e core2_diff -O \
         "build_flags= \
         -I\$PROJECTSRC_DIR/TARGET_CORE2 \
         -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
         -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
         -DMBED_BUILD_PROFILE_RELEASE \
         -DROS_NOETIC_MSGS=0 \
-        -DKINEMATIC_TYPE=0" \
-    && pio run 
-
-# RUN export LC_ALL=C.UTF-8 \
-#     && export LANG=C.UTF-8 \
-#     && cd rosbot-stm32-firmware  \
-#     && pio project init -e core2_diff -O \
-#         "build_flags= \
-#         -I\$PROJECTSRC_DIR/TARGET_CORE2 \
-#         -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-#         -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-#         -DMBED_BUILD_PROFILE_RELEASE \
-#         -DROS_NOETIC_MSGS=0 \
-#         -DKINEMATIC_TYPE=0" \
-#     && pio project init -e core2_mec -O \
-#         "build_flags= \
-#         -I\$PROJECTSRC_DIR/TARGET_CORE2 \
-#         -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-#         -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-#         -DMBED_BUILD_PROFILE_RELEASE \
-#         -DROS_NOETIC_MSGS=0 \
-#         -DKINEMATIC_TYPE=1" \
-#     && pio run 
+        -DKINEMATIC_TYPE=0" && \
+    pio project init -e core2_mec -O \
+        "build_flags= \
+        -I\$PROJECTSRC_DIR/TARGET_CORE2 \
+        -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+        -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+        -DMBED_BUILD_PROFILE_RELEASE \
+        -DROS_NOETIC_MSGS=0 \
+        -DKINEMATIC_TYPE=1" && \
+    pio run 
 
 
 # Creating the ROS 2 image ...

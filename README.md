@@ -24,12 +24,13 @@ cd examples/rosbot_flash_firmware_mecanum
 docker-compose up
  ```
 
-## Running examples
+## Building
 
-Running examples is similar as it is shown in flashing firmware step.
  ``` bash
-cd examples/<rosbot example>
-docker-compose up
+docker buildx build \
+--platform linux/amd64 \
+-t rosbot-docker-test \
+.
  ```
 
 ## Configuring Orbbec Astra
