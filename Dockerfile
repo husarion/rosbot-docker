@@ -20,14 +20,6 @@ RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
     cd rosbot-stm32-firmware && \
     git submodule update --init --recursive && \
-    pio project init -e core2_diff -O \
-        "build_flags= \
-        -I\$PROJECTSRC_DIR/TARGET_CORE2 \
-        -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-        -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-        -DMBED_BUILD_PROFILE_RELEASE \
-        -DROS_NOETIC_MSGS=0 \
-        -DKINEMATIC_TYPE=0" && \
     pio run 
 
 # RUN export LC_ALL=C.UTF-8 \
