@@ -2,7 +2,7 @@
 
 FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
 
-ENV PIO_VERSION="5.1.0"
+# ENV PIO_VERSION="5.1.0"
 
 RUN apt update && apt install -y \
         python3 \
@@ -10,17 +10,21 @@ RUN apt update && apt install -y \
         git
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
-RUN pip3 install -U platformio==${PIO_VERSION}
+# RUN pip3 install -U platformio==${PIO_VERSION}
+RUN pip3 install -U platformio
+
+COPY .mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 
 WORKDIR /app
 
 RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git
 
+WORKDIR /app/rosbot-stm32-firmware
+
+RUN git submodule update --init --recursive
+
 RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
-    cd rosbot-stm32-firmware && \
-    git submodule update --init --recursive && \
-    sleep 10 && \
     pio run 
 
 # RUN export LC_ALL=C.UTF-8 \
