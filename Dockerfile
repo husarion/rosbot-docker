@@ -20,6 +20,7 @@ RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
     cd rosbot-stm32-firmware && \
     git submodule update --init --recursive && \
+    sleep 10 && \
     pio run 
 
 # RUN export LC_ALL=C.UTF-8 \
