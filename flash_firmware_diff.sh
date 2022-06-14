@@ -13,4 +13,9 @@ armv7l)
     sleep 1
     sudo stm32loader -c tinker -e -w -v /root/firmware_diff.bin
     ;;
+aarch64)
+    sudo stm32loader -c rpi -u -W
+    sleep 1
+    sudo stm32loader -c rpi -e -w -v /root/firmware_diff.bin
+    ;;
 esac

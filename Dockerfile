@@ -58,22 +58,22 @@ RUN apt install -y ros-$ROS_DISTRO-rosserial-python \
         ros-$ROS_DISTRO-rosserial-server \
         ros-$ROS_DISTRO-rosserial-client \
         ros-$ROS_DISTRO-rosserial-msgs \
-        ros-$ROS_DISTRO-robot-localization
-
-# setup python GPIO
-RUN git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 \
-    && cd /python-periphery \
-    && python3 setup.py install --record files.txt
-
-# setup GPIO for tinkerboard
-RUN git clone https://github.com/TinkerBoard/gpio_lib_python.git \
-    && cd /gpio_lib_python \
-    && python3 setup.py install --record files.txt
-
-# clone and build CORE2 firmware installer
-RUN git clone https://github.com/husarion/stm32loader.git \
-    && cd stm32loader \
-    && python3 setup.py install
+        ros-$ROS_DISTRO-robot-localization && \
+    # setup python GPIO
+    git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 && \
+    cd /python-periphery && \
+    python3 setup.py install --record files.txt && \
+    # setup GPIO for tinkerboard
+    git clone https://github.com/TinkerBoard/gpio_lib_python.git && \
+    cd /gpio_lib_python && \
+    python3 setup.py install --record files.txt && \
+    # clone and build CORE2 firmware installer
+    git clone https://github.com/husarion/stm32loader.git && \
+    cd stm32loader && \
+    python3 setup.py install && \
+    # clear ubuntu packages
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -90,10 +90,6 @@ RUN mkdir -p ros_ws/src \
 RUN cd ros_ws \
     && source /opt/ros/$ROS_DISTRO/setup.bash \
     && catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
-
-# clear ubuntu packages
-RUN apt clean && \
-    rm -rf /var/lib/apt/lists/*
 
 # copy scripts
 COPY ./flash_firmware_diff.sh .
