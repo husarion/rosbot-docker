@@ -60,16 +60,19 @@ RUN apt install -y ros-$ROS_DISTRO-rosserial-python \
         ros-$ROS_DISTRO-robot-localization && \
     # setup python GPIO
     git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 && \
-    cd /python-periphery && \
+    cd python-periphery/ && \
     python3 setup.py install --record files.txt && \
+    cd .. && \
     # setup GPIO for tinkerboard
     git clone https://github.com/TinkerBoard/gpio_lib_python.git && \
-    cd /gpio_lib_python && \
+    cd gpio_lib_python/ && \
     python3 setup.py install --record files.txt && \
+    cd .. && \
     # clone and build CORE2 firmware installer
     git clone https://github.com/husarion/stm32loader.git && \
-    cd stm32loader && \
+    cd stm32loader/ && \
     python3 setup.py install && \
+    cd .. && \
     # clear ubuntu packages
     apt clean && \
     rm -rf /var/lib/apt/lists/*
