@@ -3,7 +3,6 @@
 FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
 
 # ENV PIO_VERSION="5.1.0"
-
 RUN apt update && apt install -y \
         python3 \
         python3-pip \
