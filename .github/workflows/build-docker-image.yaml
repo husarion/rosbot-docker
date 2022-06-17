@@ -3,7 +3,7 @@ name: Build/Publish Docker Image
 on:
   push:
     branches:
-      - 'main'
+      - 'melodic-rpi'
   pull_request:
     types: [closed]
   
@@ -35,6 +35,6 @@ jobs:
       with:
         platforms: linux/amd64, linux/arm64, linux/arm/v7
         push: true
-        tags: husarion/rosbot:latest   
-        cache-from: type=registry,ref=husarion/rosbot
+        tags: husarion/rosbot:melodic-rpi   
+        cache-from: type=registry,ref=husarion/rosbot:melodic-rpi
         cache-to: type=inline

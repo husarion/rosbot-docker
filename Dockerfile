@@ -1,6 +1,21 @@
-# Building firmware.bin ... 
 
-FROM --platform=linux/amd64 ubuntu:18.04 as stm32_fw
+## ============================ STM32FLASH =================================
+FROM ubuntu:20.04 AS stm32flash_builder
+
+# official releases are only for intel archs, so we need to build stm32flash from sources
+RUN apt-get update && apt-get install -y \
+        git \
+        build-essential && \
+    git clone https://github.com/stm32duino/stm32flash.git && \
+    cd stm32flash/ && \
+    make all
+
+## =========================== STM32 firmware===============================
+# FROM --platform=linux/amd64 ubuntu:18.04 as stm32_firmware_builder
+# TODO: wget from releases instead
+FROM ubuntu:20.04 AS stm32_firmware_builder
+
+SHELL ["/bin/bash", "-c"]
 
 # ENV PIO_VERSION="5.1.0"
 RUN apt update && apt install -y \
@@ -13,13 +28,11 @@ RUN apt update && apt install -y \
 # RUN pip3 install -U platformio==${PIO_VERSION}
 RUN pip3 install -U platformio
 
-COPY .mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
+    mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
+    cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 
-WORKDIR /app
-
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git
-
-WORKDIR /app/rosbot-stm32-firmware
+WORKDIR /rosbot-stm32-firmware
 
 RUN git submodule update --init --recursive
 
@@ -43,8 +56,7 @@ RUN export LC_ALL=C.UTF-8 && \
         -DKINEMATIC_TYPE=1" && \
     pio run 
 
-
-# Creating the ROS 2 image ...
+## =========================== ROS 2 image ===============================
 FROM ros:melodic-ros-core
 
 SHELL ["/bin/bash", "-c"]
@@ -58,30 +70,12 @@ RUN apt install -y ros-$ROS_DISTRO-rosserial-python \
         ros-$ROS_DISTRO-rosserial-client \
         ros-$ROS_DISTRO-rosserial-msgs \
         ros-$ROS_DISTRO-robot-localization && \
-    # setup python GPIO
-    git clone https://github.com/vsergeev/python-periphery.git --branch=v1.1.2 && \
-    cd python-periphery/ && \
-    python3 setup.py install --record files.txt && \
-    cd .. && \
-    # setup GPIO for tinkerboard
-    git clone https://github.com/TinkerBoard/gpio_lib_python.git && \
-    cd gpio_lib_python/ && \
-    python3 setup.py install --record files.txt && \
-    cd .. && \
-    # clone and build CORE2 firmware installer
-    git clone https://github.com/husarion/stm32loader.git && \
-    cd stm32loader/ && \
-    python3 setup.py install && \
-    cd .. && \
+    pip3 install RPi.GPIO && \
     # clear ubuntu packages
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# copy firmware built in previous stage
-COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
-COPY --from=stm32_fw /app/rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root/firmware_mecanum.bin
 
 # clone robot github repositories
 RUN mkdir -p ros_ws/src \
@@ -92,6 +86,11 @@ RUN mkdir -p ros_ws/src \
 RUN cd ros_ws \
     && source /opt/ros/$ROS_DISTRO/setup.bash \
     && catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
+
+# copy firmware built in previous stage
+COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
+COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root/firmware_mecanum.bin
+COPY --from=stm32flash_builder /stm32flash/stm32flash /stm32flash
 
 # copy scripts
 COPY ./flash_firmware_diff.sh .
