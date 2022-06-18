@@ -71,6 +71,8 @@ RUN apt install -y ros-$ROS_DISTRO-rosserial-python \
         ros-$ROS_DISTRO-rosserial-msgs \
         ros-$ROS_DISTRO-robot-localization && \
     pip3 install RPi.GPIO && \
+    pip3 install sh && \
+    pip3 install pyserial && \
     # clear ubuntu packages
     apt clean && \
     rm -rf /var/lib/apt/lists/*
@@ -90,12 +92,12 @@ RUN cd ros_ws \
 # copy firmware built in previous stage
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root/firmware_mecanum.bin
-COPY --from=stm32flash_builder /stm32flash/stm32flash /stm32flash
+COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 
 # copy scripts
-COPY ./flash_firmware_diff.sh .
-COPY ./flash_firmware_mecanum.sh .
+COPY ./flash-firmware.py /
 COPY ./ros_entrypoint.sh /
+
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
