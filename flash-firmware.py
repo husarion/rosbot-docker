@@ -6,8 +6,8 @@ import time
 import sys
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("file", nargs='?', default="/root/firmware_diff.bin", help="Flashing the firmware on STM32 microcontroller. Default = /root/firmware_diff.bin")
+parser = argparse.ArgumentParser(description='Flashing the firmware on STM32 microcontroller in ROSbot')
+parser.add_argument("file", nargs='?', default="/root/firmware_diff.bin", help="Path to a firmware file. Default = /root/firmware_diff.bin")
 args = parser.parse_args()
 
 print("=====================================================")
@@ -17,11 +17,11 @@ print("=====================================================")
 boot0_pin=11    # GPIO 17
 reset_pin=12    # GPIO 18
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(boot0_pin, GPIO.OUT)
-GPIO.setup(reset_pin, GPIO.OUT)
-
 try:
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(boot0_pin, GPIO.OUT)
+    GPIO.setup(reset_pin, GPIO.OUT)
+
     print("*********************")
     print("enter bootloader mode\r\n")
     GPIO.output(boot0_pin, GPIO.HIGH)
