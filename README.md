@@ -17,7 +17,7 @@ Firmware if flashed from inside of the container. In order to use specific kinem
 ``` bash
 docker run --rm -it --privileged \
 husarion/rosbot:melodic-rpi \
-flash-firmware.py /root/firmware_diff.bin
+/flash-firmware.py /root/firmware_diff.bin
 ```
 
 ### Mecanum kinematics
@@ -25,7 +25,7 @@ flash-firmware.py /root/firmware_diff.bin
 ```bash
 docker run --rm -it --privileged \
 husarion/rosbot:melodic-rpi \
-flash-firmware.py /root/firmware_mecanum.bin
+/flash-firmware.py /root/firmware_mecanum.bin
 ```
 
 ## Building
