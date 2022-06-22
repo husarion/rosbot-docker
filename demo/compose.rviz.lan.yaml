@@ -9,4 +9,4 @@ services:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID=228
+      - ROS_DOMAIN_ID

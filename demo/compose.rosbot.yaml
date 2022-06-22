@@ -17,27 +17,24 @@ services:
       - ./config:/ros2_ws/src/husarion_nav2/config
     command: ros2 launch husarion_nav2 navigation2_bringup.launch.py
 
-  # ROS Noetic + ROS 2 Galactic
   bridge:
-    image: ros:galactic-ros1-bridge
+    image: husarion/ros:galactic-ros1-bridge
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
     command: ros2 run ros1_bridge dynamic_bridge
 
-  # ROS Master (using custom port in case Master is already running on host OS)
   ros-master:
     image: ros:melodic-ros-core
     restart: unless-stopped
     command: stdbuf -o L roscore
 
-  # ROS Melodic rosbot hardware layer
   rosbot:
     image: husarion/rosbot:melodic-rpi 
     restart: unless-stopped
     devices:
-      - /dev/ttyAMA0   # must match environment SERIAL_PORT 
+      - ${SERIAL_PORT} 
     environment:
-      - SERIAL_PORT=/dev/ttyAMA0  # default: ttyS1 - rosbot2.0; ttyS4 - rosbot2.0 `pro
+      - SERIAL_PORT  
       - ROS_MASTER_URI=http://ros-master:11311
     command: roslaunch --wait rosbot_description rosbot_docker.launch
