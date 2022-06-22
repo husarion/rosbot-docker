@@ -4,10 +4,10 @@
 
 1. Clone this repo on your PC:
 
-```bash
-git clone https://github.com/husarion/rosbot-docker.git
-cd rosbot-docker/
-```
+    ```bash
+    git clone https://github.com/husarion/rosbot-docker.git
+    cd rosbot-docker/
+    ```
 
 2. modify `demo/.env` file:
 
@@ -53,12 +53,12 @@ docker compose -f compose.rosbot.yaml -f compose.rosbot.lan.yaml up
 
 ## Controlling ROSbot over the Internet
 
-1. Clone this repo both on your PC:
+1. Clone this repo on your PC:
 
-```bash
-git clone https://github.com/husarion/rosbot-docker.git
-cd rosbot-docker/
-```
+    ```bash
+    git clone https://github.com/husarion/rosbot-docker.git
+    cd rosbot-docker/
+    ```
 
 2. modify `demo/.env` file:
 
