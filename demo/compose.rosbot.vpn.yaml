@@ -17,6 +17,13 @@ services:
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
+  slam-toolbox:
+    network_mode: service:husarnet-rosbot
+    volumes: 
+      - ./secret/dds-config.xml:/dds-config.xml
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+
   bridge:
     network_mode: service:husarnet-rosbot
     volumes: 

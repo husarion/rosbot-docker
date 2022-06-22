@@ -15,6 +15,12 @@ services:
     environment:
       - ROS_DOMAIN_ID
 
+  slam-toolbox:
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_DOMAIN_ID
+
   bridge:
     network_mode: host
     ipc: host

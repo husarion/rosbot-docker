@@ -14,8 +14,20 @@ services:
     image: husarion/nav2:galactic
     restart: unless-stopped
     volumes: 
-      - ./config:/ros2_ws/src/husarion_nav2/config
-    command: ros2 launch husarion_nav2 navigation2_bringup.launch.py
+      - ./config/nav2_params.yaml:/ros2_ws/src/husarion_nav2/config/nav2_params.yaml
+    command: >
+      ros2 launch nav2_bringup navigation_launch.py    
+        params_file:=/ros2_ws/src/husarion_nav2/config/nav2_params.yaml
+
+  slam-toolbox:
+    image: husarion/slam-toolbox:galactic 
+    restart: unless-stopped
+    volumes: 
+      - ./config/slam_params.yaml:/ros2_ws/src/husarion_nav2/config/slam_params.yaml
+    command: >
+      ros2 launch slam_toolbox online_sync_launch.py 
+        slam_params_file:=/ros2_ws/src/husarion_nav2/config/slam_params.yaml
+
 
   bridge:
     image: husarion/ros:galactic-ros1-bridge
@@ -30,7 +42,7 @@ services:
     command: stdbuf -o L roscore
 
   rosbot:
-    image: husarion/rosbot:melodic-rpi 
+    image: husarion/rosbot:melodic-rpi
     restart: unless-stopped
     devices:
       - ${SERIAL_PORT} 
