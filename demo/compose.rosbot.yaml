@@ -8,33 +8,40 @@ services:
     restart: unless-stopped
     devices:
       - /dev/ttyUSB0
-    command: ros2 launch rplidar_ros2 rplidar_launch.py
+    command: >
+      ros2 launch 
+      rplidar_ros2 rplidar_launch.py
 
   nav2:
-    image: husarion/nav2:galactic
+    image: husarion/navigation2:humble
     restart: unless-stopped
     volumes: 
-      - ./config/nav2_params.yaml:/ros2_ws/src/husarion_nav2/config/nav2_params.yaml
+      - ./config/nav2_params.yaml:/nav2_params.yaml
     command: >
-      ros2 launch nav2_bringup navigation_launch.py    
-        params_file:=/ros2_ws/src/husarion_nav2/config/nav2_params.yaml
+      ros2 launch 
+      nav2_bringup navigation_launch.py    
+        params_file:=/nav2_params.yaml
 
   slam-toolbox:
-    image: husarion/slam-toolbox:galactic 
+    image: husarion/slam-toolbox:humble 
     restart: unless-stopped
+    container_name: slam-toolbox
     volumes: 
-      - ./config/slam_params.yaml:/ros2_ws/src/husarion_nav2/config/slam_params.yaml
+      - ./config/slam_params.yaml:/slam_params.yaml
+      - ./maps:/maps
     command: >
-      ros2 launch slam_toolbox online_sync_launch.py 
-        slam_params_file:=/ros2_ws/src/husarion_nav2/config/slam_params.yaml
-
+      ros2 launch 
+      slam_toolbox online_sync_launch.py 
+        slam_params_file:=/slam_params.yaml
 
   bridge:
     image: husarion/ros:galactic-ros1-bridge
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
-    command: ros2 run ros1_bridge dynamic_bridge
+    command: >
+      ros2 run 
+      ros1_bridge dynamic_bridge
 
   ros-master:
     image: ros:melodic-ros-core
@@ -49,4 +56,6 @@ services:
     environment:
       - SERIAL_PORT  
       - ROS_MASTER_URI=http://ros-master:11311
-    command: roslaunch --wait rosbot_description rosbot_docker.launch
+    command: >
+      roslaunch --wait 
+      rosbot_description rosbot_docker.launch
