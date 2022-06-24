@@ -9,7 +9,7 @@
     cd rosbot-docker/
     ```
 
-2. modify `demo/.env` file:
+2. Create `demo/.env` based on `demo/.env.template` file and modify it if needed (see comments)
 
     ```bash
     # for LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
@@ -60,7 +60,7 @@ docker compose -f compose.rosbot.yaml -f compose.rosbot.lan.yaml up
     cd rosbot-docker/
     ```
 
-2. modify `demo/.env` file:
+2. Create `demo/.env` based on `demo/.env.template` file and modify it if needed (see comments)
 
     ```bash
     # SBC <> STM32 serial connection. Set:
@@ -110,3 +110,8 @@ Go to the `/home/husarion/rosbot-docker/demo` folder and run:
 docker compose -f compose.rosbot.yaml -f compose.rosbot.vpn.yaml up
 ```
 
+To save a current map, execute:
+
+```bash
+./map-save.sh
+```
