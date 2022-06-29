@@ -30,6 +30,16 @@
     rsync -vRr ./ husarion@192.168.8.186:/home/husarion/rosbot-docker
     ```
 
+> **tip**
+>
+> You can keep your local folder (on a laptop) auto-synchronized with remote (on a ROSbot) with:
+>
+> ```bash
+> ./sync_with_rosbot.sh 10.5.10.64
+> ```
+>
+> where `10.5.10.64` is your ROSbot's IP address
+
 ### Launching on PC
 
 ```bash
