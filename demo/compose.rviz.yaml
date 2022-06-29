@@ -6,7 +6,7 @@ services:
 
   # ROS Galactic
   rviz:
-    image: husarion/rviz2
+    image: husarion/rviz2:galactic
     restart: on-failure
     volumes: 
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
