@@ -1,0 +1,13 @@
+services:
+
+  flash-fw:
+    build:
+      context: ./../
+      dockerfile: ./Dockerfile
+    privileged: true
+    environment:
+      - SERIAL_PORT=/dev/ttyS4
+    devices:
+      - /dev/ttyS4
+    command: >
+      python3 ./../flash-firmware.py
