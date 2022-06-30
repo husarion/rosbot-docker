@@ -14,3 +14,4 @@ services:
       # - ./config/rosbot_pro_localization.rviz:/root/.rviz2/default.rviz
     environment:
       - DISPLAY
+      - LIBGL_ALWAYS_SOFTWARE=1
