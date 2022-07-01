@@ -10,4 +10,4 @@ services:
     devices:
       - /dev/ttyS4
     command: >
-      python3 ./../flash-firmware.py
+      python3 ./../flash-firmware.py /root/firmware_diff.bin 
