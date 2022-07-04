@@ -1,6 +1,7 @@
 
 ## ============================ STM32FLASH =================================
-FROM ubuntu:20.04 AS stm32flash_builder
+# stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
+FROM ubuntu:18.04 AS stm32flash_builder
 
 # official releases are only for intel archs, so we need to build stm32flash from sources
 RUN apt-get update && apt-get install -y \
@@ -70,12 +71,15 @@ RUN apt install -y ros-$ROS_DISTRO-rosserial-python \
         ros-$ROS_DISTRO-rosserial-client \
         ros-$ROS_DISTRO-rosserial-msgs \
         ros-$ROS_DISTRO-robot-localization && \
-    pip3 install RPi.GPIO && \
+    pip3 install python-periphery && \
     pip3 install sh && \
     pip3 install pyserial && \
     # clear ubuntu packages
     apt clean && \
     rm -rf /var/lib/apt/lists/*
+
+#
+# bison gawk
 
 WORKDIR /app
 
