@@ -1,4 +1,7 @@
 
+ARG ROS_DISTRO=melodic
+ARG ROS_NOETIC_MSGS=0
+
 ## ============================ STM32FLASH =================================
 # stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
 FROM ubuntu:18.04 AS stm32flash_builder
@@ -15,8 +18,6 @@ RUN apt-get update && apt-get install -y \
 # FROM --platform=linux/amd64 ubuntu:18.04 as stm32_firmware_builder
 # TODO: wget from releases instead
 FROM ubuntu:20.04 AS stm32_firmware_builder
-
-ARG ROS_NOETIC_MSGS=0
 
 SHELL ["/bin/bash", "-c"]
 
@@ -61,7 +62,6 @@ RUN export LC_ALL=C.UTF-8 && \
 
 ## =========================== ROS image ===============================
 
-ARG ROS_DISTRO=melodic
 FROM ros:$ROS_DISTRO-ros-core
 
 SHELL ["/bin/bash", "-c"]
