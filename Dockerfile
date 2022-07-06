@@ -1,6 +1,5 @@
 
 ARG ROS_DISTRO=melodic
-ARG ROS_NOETIC_MSGS=0
 
 ## ============================ STM32FLASH =================================
 # stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
@@ -18,6 +17,8 @@ RUN apt-get update && apt-get install -y \
 # FROM --platform=linux/amd64 ubuntu:18.04 as stm32_firmware_builder
 # TODO: wget from releases instead
 FROM ubuntu:20.04 AS stm32_firmware_builder
+
+ARG ROS_NOETIC_MSGS=0
 
 SHELL ["/bin/bash", "-c"]
 
@@ -73,6 +74,7 @@ RUN apt update && apt install -y \
         ros-$ROS_DISTRO-rosserial-server \
         ros-$ROS_DISTRO-rosserial-client \
         ros-$ROS_DISTRO-rosserial-msgs \
+        ros-$ROS_DISTRO-move-base-msgs \
         ros-$ROS_DISTRO-robot-localization && \
     pip3 install python-periphery && \
     pip3 install sh && \
