@@ -10,6 +10,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ros-distro: melodic
+            ros-noetic-msgs: 0
+            platforms: "linux/amd64, linux/arm64, linux/arm/v7"
+          - ros-distro: noetic
+            ros-noetic-msgs: 1
+            platforms: "linux/amd64, linux/arm64"
 
     steps:
     - name: Checkout
@@ -33,8 +43,11 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-        platforms: linux/amd64, linux/arm64, linux/arm/v7
+        platforms: ${{ matrix.platforms }}
         push: true
-        tags: husarion/rosbot:melodic-rpi   
-        cache-from: type=registry,ref=husarion/rosbot:melodic-rpi
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
+          DROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }
+        tags: husarion/rosbot:${{ matrix.ros-distro }}  
+        cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
         cache-to: type=inline

@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
 # TODO: wget from releases instead
 FROM ubuntu:20.04 AS stm32_firmware_builder
 
+ARG ROS_NOETIC_MSGS=0
+
 SHELL ["/bin/bash", "-c"]
 
 # ENV PIO_VERSION="5.1.0"
@@ -45,7 +47,7 @@ RUN export LC_ALL=C.UTF-8 && \
         -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
         -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
         -DMBED_BUILD_PROFILE_RELEASE \
-        -DROS_NOETIC_MSGS=0 \
+        -DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
         -DKINEMATIC_TYPE=0" && \
     pio project init -e core2_mec -O \
         "build_flags= \
@@ -53,20 +55,21 @@ RUN export LC_ALL=C.UTF-8 && \
         -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
         -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
         -DMBED_BUILD_PROFILE_RELEASE \
-        -DROS_NOETIC_MSGS=0 \
+        -DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
         -DKINEMATIC_TYPE=1" && \
     pio run 
 
-## =========================== ROS 2 image ===============================
-FROM ros:melodic-ros-core
+## =========================== ROS image ===============================
+
+ARG ROS_DISTRO=melodic
+FROM ros:$ROS_DISTRO-ros-core
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update && apt install -y python3-pip git
-RUN python3 -m pip install --upgrade pyserial
-
-# install ROS packages
-RUN apt install -y ros-$ROS_DISTRO-rosserial-python \ 
+RUN apt update && apt install -y \
+        git \
+        python3-pip \
+        ros-$ROS_DISTRO-rosserial-python \ 
         ros-$ROS_DISTRO-rosserial-server \
         ros-$ROS_DISTRO-rosserial-client \
         ros-$ROS_DISTRO-rosserial-msgs \
@@ -74,24 +77,21 @@ RUN apt install -y ros-$ROS_DISTRO-rosserial-python \
     pip3 install python-periphery && \
     pip3 install sh && \
     pip3 install pyserial && \
+    python3 -m pip install --upgrade pyserial && \
     # clear ubuntu packages
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-#
-# bison gawk
-
-WORKDIR /app
+WORKDIR /ros_ws
 
 # clone robot github repositories
-RUN mkdir -p ros_ws/src \
-    && git clone https://github.com/husarion/rosbot_description.git --branch=master ros_ws/src/rosbot_description \
-    && git clone https://github.com/husarion/rosbot_ekf.git --branch=master ros_ws/src/rosbot_ekf 
+RUN mkdir -p src && \
+    git clone https://github.com/husarion/rosbot_ros.git --branch=melodic src/rosbot_ros && \
+    git clone https://github.com/husarion/rosbot_ekf.git --branch=master src/rosbot_ekf 
 
 # build ROS workspace
-RUN cd ros_ws \
-    && source /opt/ros/$ROS_DISTRO/setup.bash \
-    && catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
+RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
+    catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
 
 # copy firmware built in previous stage
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
@@ -101,7 +101,6 @@ COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 # copy scripts
 COPY ./flash-firmware.py /
 COPY ./ros_entrypoint.sh /
-
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
