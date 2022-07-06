@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 ## =========================== STM32 firmware===============================
 # FROM --platform=linux/amd64 ubuntu:18.04 as stm32_firmware_builder
 # TODO: wget from releases instead
-FROM ubuntu:20.04 AS stm32_firmware_builder
+FROM --platform=linux/amd64 ubuntu:20.04 AS stm32_firmware_builder
 
 ARG ROS_NOETIC_MSGS=0
 
