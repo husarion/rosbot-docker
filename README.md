@@ -3,10 +3,10 @@
 Docker Image for ROS Melodic Node providing interface for STM32 firmware over ROS-serial.
 
 `rosbot-docker` contain following ROS packages:
-- [rosbot_description](https://github.com/husarion/rosbot_description)
+- [rosbot_ros](https://github.com/husarion/rosbot_ros)
 - [rosbot_ekf](https://github.com/husarion/rosbot_ekf)
 
-With *docker-compose* configuration shown in [examples](./examples) it can communicate with hardware of both Rosbot 2.0 and Rosbot 2.0 Pro.
+With *docker-compose* configuration shown in [demo](./demo) it can communicate with hardware of both Rosbot 2.0 and Rosbot 2.0 Pro.
 
 ## Flashing firmware | switch kinematics
 
@@ -37,14 +37,14 @@ docker buildx build \
 .
 ```
 
-## Configuring Orbbec Astra
+<!-- ## Configuring Orbbec Astra
 
-In *docker-compose.yaml* you have to change `device` passed to docker. For more information refer to `astra-docker` [README.md](https://github.com/husarion/astra-docker)
+In *docker-compose.yaml* you have to change `device` passed to docker. For more information refer to `astra-docker` [README.md](https://github.com/husarion/astra-docker) -->
 
 
 ## ROS node
 
-Most important nodes published by this docker after launching [rosbot_docker.launch](https://github.com/husarion/rosbot_description/blob/master/src/rosbot_description/launch/rosbot_docker.launch) are shown below.
+Most important nodes published by this docker after launching [rosbot_docker.launch](https://github.com/husarion/rosbot_ros/blob/melodic/src/rosbot_bringup/launch/rosbot_docker.launch) are shown below.
 
 ### Subscribes
 
@@ -63,6 +63,6 @@ Most important nodes published by this docker after launching [rosbot_docker.lau
 - `/range/rr` (*sensor_msgs/Range*, **/serial_bridge**)
 
 For more details on what is being published and subscribed by nodes running in this container please refer to launch file and packages:
-- [rosbot_description](https://github.com/husarion/rosbot_description)
+- [rosbot_ros](https://github.com/husarion/rosbot_ros)
 - [rosbot_ekf](https://github.com/husarion/rosbot_ekf)
 - [rosbot-stm32-firmware](https://github.com/husarion/rosbot-stm32-firmware)

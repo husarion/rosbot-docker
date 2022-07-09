@@ -6,8 +6,8 @@ services:
       dockerfile: ./Dockerfile
     privileged: true
     environment:
-      - SERIAL_PORT=/dev/ttyS4
+      - SERIAL_PORT
     devices:
-      - /dev/ttyS4
+      - ${SERIAL_PORT}
     command: >
       python3 ./../flash-firmware.py /root/firmware_diff.bin 

@@ -13,7 +13,7 @@ services:
       rplidar_ros2 rplidar_launch.py
 
   nav2:
-    image: husarion/navigation2:humble
+    image: husarion/navigation2:galactic
     restart: unless-stopped
     volumes: 
       - ./config/nav2_params.yaml:/nav2_params.yaml
@@ -23,7 +23,7 @@ services:
         params_file:=/nav2_params.yaml
 
   slam-toolbox:
-    image: husarion/slam-toolbox:humble 
+    image: husarion/slam-toolbox:galactic 
     restart: unless-stopped
     container_name: slam-toolbox
     volumes: 
@@ -44,12 +44,12 @@ services:
       ros1_bridge dynamic_bridge
 
   ros-master:
-    image: ros:melodic-ros-core
+    image: ros:noetic-ros-core
     restart: unless-stopped
     command: stdbuf -o L roscore
 
   rosbot:
-    image: husarion/rosbot:melodic-rpi
+    image: husarion/rosbot:noetic
     restart: unless-stopped
     devices:
       - ${SERIAL_PORT} 
@@ -58,4 +58,4 @@ services:
       - ROS_MASTER_URI=http://ros-master:11311
     command: >
       roslaunch --wait 
-      rosbot_description rosbot_docker.launch
+      rosbot_bringup rosbot_docker.launch
