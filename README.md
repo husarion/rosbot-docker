@@ -1,4 +1,5 @@
 # rosbot-docker
+
 Docker Image for ROS Melodic Node providing interface for STM32 firmware over ROS-serial.
 
 `rosbot-docker` contain following ROS packages:
@@ -9,29 +10,32 @@ With *docker-compose* configuration shown in [examples](./examples) it can commu
 
 ## Flashing firmware | switch kinematics
 
-Firmware if flashed from inside of container. In order to use specific kinematics flash matching firmware.
+Firmware if flashed from inside of the container. In order to use specific kinematics flash matching firmware.
 
-For differential drive flash firmware with:
-``` bash
-cd examples/rosbot_flash_firmware_diff
-docker-compose up
- ```
-
- For mecanum kinematics flash firmware with:
+### Differential kinematics (normal wheels)
 
 ``` bash
-cd examples/rosbot_flash_firmware_mecanum
-docker-compose up
- ```
+docker run --rm -it --privileged \
+husarion/rosbot:melodic-rpi \
+/flash-firmware.py /root/firmware_diff.bin
+```
+
+### Mecanum kinematics
+
+```bash
+docker run --rm -it --privileged \
+husarion/rosbot:melodic-rpi \
+/flash-firmware.py /root/firmware_mecanum.bin
+```
 
 ## Building
 
- ``` bash
+``` bash
 docker buildx build \
 --platform linux/amd64 \
 -t rosbot-docker-test \
 .
- ```
+```
 
 ## Configuring Orbbec Astra
 
@@ -57,8 +61,6 @@ Most important nodes published by this docker after launching [rosbot_docker.lau
 - `/range/fr` (*sensor_msgs/Range*, **/serial_bridge**)
 - `/range/rl` (*sensor_msgs/Range*, **/serial_bridge**)
 - `/range/rr` (*sensor_msgs/Range*, **/serial_bridge**)
-
-
 
 For more details on what is being published and subscribed by nodes running in this container please refer to launch file and packages:
 - [rosbot_description](https://github.com/husarion/rosbot_description)

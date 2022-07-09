@@ -1,0 +1,17 @@
+
+# Quick Start
+# $ xhost local:root
+# $ docker compose -f compose.remote-desktop.yaml up
+#
+# Open this URL in the web browser: http://<IP-of-device-in-lan>:8080/vnc_auto.html
+
+services:
+  remote-desktop:
+    image: donowak/remote-desktop:lan
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    ipc: host
+    ports:
+      - 8080:8080
+    environment:
+      - DISPLAY
