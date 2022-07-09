@@ -8,7 +8,7 @@ Docker Image for ROS Melodic Node providing interface for STM32 firmware over RO
 
 With *docker-compose* configuration shown in [demo](./demo) it can communicate with hardware of both Rosbot 2.0 and Rosbot 2.0 Pro.
 
-## Flashing firmware | switch kinematics
+## Flashing the firmware | switch kinematics
 
 Firmware if flashed from inside of the container. In order to use specific kinematics flash matching firmware.
 
@@ -16,7 +16,7 @@ Firmware if flashed from inside of the container. In order to use specific kinem
 
 ``` bash
 docker run --rm -it --privileged \
-husarion/rosbot:melodic-rpi \
+husarion/rosbot:noetic \
 /flash-firmware.py /root/firmware_diff.bin
 ```
 
@@ -24,11 +24,11 @@ husarion/rosbot:melodic-rpi \
 
 ```bash
 docker run --rm -it --privileged \
-husarion/rosbot:melodic-rpi \
+husarion/rosbot:noetic \
 /flash-firmware.py /root/firmware_mecanum.bin
 ```
 
-## Building
+## Building locally
 
 ``` bash
 docker buildx build \
