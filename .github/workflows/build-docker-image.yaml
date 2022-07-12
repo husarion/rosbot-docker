@@ -47,7 +47,7 @@ jobs:
         push: true
         build-args: |
           ROS_DISTRO=${{ matrix.ros-distro }}
-          DROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }}
+          ROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}  
         cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
         cache-to: type=inline
