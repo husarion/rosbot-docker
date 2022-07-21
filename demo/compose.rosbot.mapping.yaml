@@ -1,0 +1,27 @@
+# Quick Start (at fist stop ROS Master if working on host)
+# $ docker compose -f compose.rosbot.hardware.yaml -f compose.rosbot.mapping.yaml -f compose.rosbot.lan.yaml up
+
+services:
+
+  navigation:
+    image: husarion/navigation2:galactic
+    container_name: nav2-stack
+    restart: unless-stopped
+    volumes:
+      - ./config/nav2_params.yaml:/nav2_params.yaml
+    command: >
+      ros2 launch nav2_bringup navigation_launch.py    
+        params_file:=/nav2_params.yaml
+        use_sim_time:=${USE_SIM_TIME}
+
+  localization-mapping:
+    image: husarion/slam-toolbox:galactic
+    container_name: slam-toolbox
+    restart: unless-stopped
+    volumes:
+      - ./config/slam_params.yaml:/slam_params.yaml
+      - ./maps:/maps
+    command: >
+      ros2 launch slam_toolbox online_sync_launch.py
+        slam_params_file:=/slam_params.yaml
+        use_sim_time:=${USE_SIM_TIME}

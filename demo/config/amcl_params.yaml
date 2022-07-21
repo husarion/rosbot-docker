@@ -19,7 +19,7 @@ amcl:
     laser_model_type: "likelihood_field"
     max_beams: 60
     max_particles: 30000
-    min_particles: 7500
+    min_particles: 7000
     odom_frame_id: "odom"
     pf_err: 0.05
     pf_z: 0.99

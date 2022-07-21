@@ -1,9 +1,8 @@
 services:
 
   flash-fw:
-    build:
-      context: ./../
-      dockerfile: ./Dockerfile
+    image: husarion/rosbot:noetic
+    container_name: firmware-flasher-noetic
     privileged: true
     environment:
       - SERIAL_PORT

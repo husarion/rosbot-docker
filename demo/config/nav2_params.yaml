@@ -3,9 +3,9 @@ bt_navigator:
     use_sim_time: False
     global_frame: map
     robot_base_frame: base_link
-    enable_groot_monitoring: True
-    groot_zmq_publisher_port: 1666
-    groot_zmq_server_port: 1667
+    enable_groot_monitoring: False
+    # groot_zmq_publisher_port: 1666
+    # groot_zmq_server_port: 1667
     default_bt_xml_filename: "default_bt_xml_filename"
     plugin_lib_names:
     - nav2_compute_path_to_pose_action_bt_node
@@ -114,8 +114,8 @@ local_costmap:
       robot_base_frame: base_link
       use_sim_time: False
       rolling_window: true
-      width: 6
-      height: 6
+      width: 3
+      height: 3
       resolution: 0.05
       footprint: '[[0.14, 0.16], [0.14, -0.16], [-0.14, -0.16], [-0.14, 0.16]]'
       plugins: ["voxel_layer", "inflation_layer"]
