@@ -8,18 +8,21 @@ services:
     ipc: host
     environment:
       - ROS_DOMAIN_ID
+      - RMW_IMPLEMENTATION
 
   navigation:
     network_mode: host
     ipc: host
     environment:
       - ROS_DOMAIN_ID
+      - RMW_IMPLEMENTATION
 
   rplidar:
     network_mode: host
     ipc: host
     environment:
       - ROS_DOMAIN_ID
+      - RMW_IMPLEMENTATION
 
   bridge:
     network_mode: host
@@ -28,6 +31,7 @@ services:
       - ROS_IP=127.0.0.1
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_DOMAIN_ID
+      - RMW_IMPLEMENTATION
 
   ros-master:
     network_mode: host

@@ -10,6 +10,7 @@ services:
     restart: on-failure
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
+      - RMW_IMPLEMENTATION
     command: ros2 run ros1_bridge dynamic_bridge
 
   # ROS Melodic master

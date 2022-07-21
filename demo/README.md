@@ -29,18 +29,26 @@ Compose configuration that allows you to control ROSbot 2 / ROSbot 2 PRO / ROSbo
 3. Create `demo/.env` based on `demo/.env.template` file and modify it if needed (see comments)
 
     ```bash
-    # for LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
+    # For LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
     ROS_DOMAIN_ID=228
-    
-    # for simulation example you need to use simulation time, otherwise set USE_SIM_TIME as False
-    # USE_SIM_TIME=True
+
+    # For simulation example you need to use simulation time
     USE_SIM_TIME=False
 
-    # SBC <> STM32 serial connection. Set:
-    # /dev/ttyS1 for ROSbot 2
-    # /dev/ttyS4 for ROSbot 2 PRO
-    # /dev/ttyAMA0 for ROSbbot 2R
-    SERIAL_PORT=/dev/ttyAMA0
+    # SBC <> STM32 serial connection. 
+    # Set:
+    # /dev/ttyS1    for ROSbot 2
+    # /dev/ttyS4    for ROSbot 2 PRO
+    # /dev/ttyAMA0  for ROSbbot 2R
+    SERIAL_PORT=/dev/ttyS4
+
+    # Serial baudrate for rplidar driver
+    # Set:
+    # 115200        for A2  
+    # 256000        for A3 
+    RPLIDAR_BAUDRATE=256000
+
+    ...
     ```
 
     If you have other ROS 2 devices running in your LAN network make sure to provide a unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
@@ -72,7 +80,7 @@ This docker-compose configuration allows you to run examples in a variety of way
   - On ROSbot:
       ```bash
       docker compose \
-          -f compose.rosbot.yaml \
+          -f compose.rosbot.hardware.yaml \
           -f compose.rosbot.mapping.yaml \
           -f compose.rosbot.lan.yaml \
           up
@@ -92,7 +100,7 @@ This docker-compose configuration allows you to run examples in a variety of way
     - On ROSbot:
         ```bash
         docker compose \
-            -f compose.rosbot.yaml \
+            -f compose.rosbot.hardware.yaml \
             -f compose.rosbot.mapping.yaml \
             -f compose.rosbot.vpn.yaml \
             up
@@ -110,6 +118,15 @@ This docker-compose configuration allows you to run examples in a variety of way
 ## Autonomus localization: Control ROSbot from RViz running on your laptop (AMCL)
 In order for the robot to be able to use the previously prepared map for localization and navigating, launch:
 
+- On ROSbot:
+    ```bash
+    docker compose \
+        -f compose.rosbot.hardware.yaml \
+        -f compose.rosbot.amcl.yaml \
+        -f compose.rosbot.lan.yaml \
+        up
+    ```
+
 - On laptop:
     Navigate to `/demo` folder and comment out the line of the `compose.rviz.yaml` file so that the rviz node uses the `rosbot_localization.rviz` configuration file. It should looks like this:
     ```yaml
@@ -123,15 +140,6 @@ In order for the robot to be able to use the previously prepared map for localiz
     ```bash
     xhost local:root
     docker compose -f compose.rviz.yaml -f compose.rviz.lan.yaml up
-    ```
-
-- On ROSbot:
-    ```bash
-    docker compose \
-        -f compose.rosbot.yaml \
-        -f compose.rosbot.amcl.yaml \
-        -f compose.rosbot.lan.yaml \
-        up
     ```
 
 **The above commands run an example on a lan network, but the same works for other types of connection.**
