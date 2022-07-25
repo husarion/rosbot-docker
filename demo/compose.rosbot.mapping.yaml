@@ -5,7 +5,6 @@ services:
 
   navigation:
     image: husarion/navigation2:galactic
-    container_name: nav2-stack
     restart: unless-stopped
     volumes:
       - ./config/nav2_params.yaml:/nav2_params.yaml

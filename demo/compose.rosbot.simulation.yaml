@@ -6,7 +6,6 @@ services:
   # ROS Noetic + ROS 2 Galactic
   bridge:
     image: husarion/ros:galactic-ros1-bridge
-    container_name: ros-bridge
     restart: on-failure
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
@@ -16,7 +15,6 @@ services:
   # ROS Melodic master
   ros-master:
     image: ros:melodic-ros-core
-    container_name: ros-master
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
     command: stdbuf -o L roscore
@@ -24,7 +22,6 @@ services:
   # ROS Melodic
   rosbot_simulation:
     image: husarion/rosbot:melodic-simulation
-    container_name: rosbot-simulation
     restart: on-failure
     runtime: nvidia
     environment:

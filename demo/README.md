@@ -1,32 +1,64 @@
 # Demos
+
 Compose configuration that allows you to control ROSbot 2 / ROSbot 2 PRO / ROSbot 2R with [Navigation2](https://navigation.ros.org/) stack and [slam-toolbox](https://github.com/SteveMacenski/slam_toolbox).
 
-# Quick start
+## Choose your configuration
 
-## Prerequisites ###
+This docker-compose configuration allows you to run examples in a variety of ways. Set up your ROSbot and Rviz visualization.
 
-1. Make sure the right version of firmware for STM32F4 MCU is flashed on ROSbot. To flash the right firmware, open ROSbot's terminal or connect via `ssh` and execute this command:
+1. **ROSbot with SLAM or AMCL (Simulation/Real Case)**
+
+    Choose whether you want to launch simulation or bring up your robot hardware (column named `ROSbot or Gazebo`), whether you want to map the surrounding terrain (SLAM) or navigate it (AMCL) using a pre-built map (`Navigation Mode`), and finally specify the network configuration (`Network Configuration`).
+
+    Choose one solution from each column:
+    |                                                                                                                                                                                                                    ROSbot or Gazebo Bringup                                                                                                                                                                                                                     |                                                                                                                                                       Navigation Mode                                                                                                                                                       |                                                                                                                                                                                                                                   Network Configuration                                                                                                                                                                                                                                   |
+    | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+    | `compose.rosbot.hardware.yaml` <br>*(this file allows you to run <br>the basic functionality of the robot.<br>If you choose this option run **all**<br> compose files from this tabel on ROSbot)*<br>***or***<br> `compose.rosbot.simulation.yaml` <br>*(Gazebo simulation, run **all** compose <br> files from this tabel on your PC<br>  with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) drivers)* | `compose.rosbot.mapping.yaml` <br>*(creating a map of the environment <br> using slam-toolbox. <br>Remeber to [save the map]((https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map-(slam-toolbox)))!)*<br>***or***<br> `compose.rosbot.localization.yaml` <br>*(AMCL based on a previously created map)* | You can use the default Docker network configuration <br>and then you don't need any additional file <br> *(Use this solution if you are running **simulation**)* <br> ***or*** <br> `compose.rosbot.lan.yaml`<br> *(LAN network)* <br> ***or*** <br>`compose.rosbot.vpn.yaml`<br>*(VPN network using [Husarnet](https://husarnet.com/). <br>This case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1/demo#controlling-rosbot-over-the-internet-(vpn)))* |
+
+2. **Visualization: Rviz**
+
+    Choose one solution from each column:
+
+    |                                    Run Rviz node                                    |                                                                                                                                                                                      Set Network Configuration                                                                                                                                                                                       |
+    | :---------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+    | `compose.rviz.yaml`<br>*(run **all** compose files from <br>this tabel on your PC)* | Use **the same** configuration <br>as in the table from step 1<br><br>**None**<br>***or*** <br>`compose.rviz.lan.yaml`<br>*(LAN network)* <br> ***or*** <br> `compose.rviz.vpn.yaml`<br>*(VPN network using [Husarnet](https://husarnet.com/). <br>This case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1-demo-devel/demo#controlling-rosbot-over-the-internet))* |
+
+## Prerequisites
+
+1. **Flash the microcontroller.** To flash the right firmware, open ROSbot's terminal or connect via `ssh` and execute this command:
+   
    - for differential drive (regular wheels):
+   
    ```bash
    docker run --rm -it --privileged \
    husarion/rosbot:noetic \
    /flash-firmware.py /root/firmware_diff.bin
    ```
    - for omnidirectional wheeled ROSbot (mecanum wheels):
+   
    ```bash
    docker run --rm -it --privileged \
    husarion/rosbot:noetic \
    /flash-firmware.py /root/firmware_mecanum.bin
    ```
 
-2. Clone this repo on your PC:
+2. **Clone this repo on your PC**:
 
     ```bash
     git clone https://github.com/husarion/rosbot-docker.git
+    ```
+
+    ```bash
     cd rosbot-docker/
     ```
 
-3. Create `demo/.env` based on `demo/.env.template` file and modify it if needed (see comments)
+3. **Create `demo/.env`** 
+
+    ```bash
+    cp .env.template .env
+    ```
+    
+    modify it if needed (see comments)
 
     ```bash
     # For LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
@@ -40,15 +72,24 @@ Compose configuration that allows you to control ROSbot 2 / ROSbot 2 PRO / ROSbo
     # /dev/ttyS1    for ROSbot 2
     # /dev/ttyS4    for ROSbot 2 PRO
     # /dev/ttyAMA0  for ROSbbot 2R
-    SERIAL_PORT=/dev/ttyS4
+    SERIAL_PORT=/dev/ttyAMA0
 
     # Serial baudrate for rplidar driver
     # Set:
-    # 115200        for A2  
-    # 256000        for A3 
-    RPLIDAR_BAUDRATE=256000
+    # 115200        for RPLIDAR A2  
+    # 256000        for RPLIDAR A3 
+    RPLIDAR_BAUDRATE=115200
 
-    ...
+    # DDS implementation
+    # ROS 2 is built on top of DDS/RTPS as its middleware, which provides discovery, serialization and transportation.
+    # More informations: https://docs.ros.org/en/galactic/Concepts/About-Different-Middleware-Vendors.html
+    # Set:
+    # rmw_cyclonedds_cpp    for Eclipse’s Cyclone DDS
+    # rmw_fastrtps_cpp      for eProsima’s Fast DDS
+    RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+    # Uncomment for compose.*.vpn.yaml files and paste your own Husarnet Join Code from app.husarnet.com here:
+    # JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
     ```
 
     If you have other ROS 2 devices running in your LAN network make sure to provide a unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
@@ -69,70 +110,73 @@ Compose configuration that allows you to control ROSbot 2 / ROSbot 2 PRO / ROSbo
 >
 > where `10.5.10.64` is your ROSbot's IP address
 
+## Quick start
 
-## Choose your configuration
-This docker-compose configuration allows you to run examples in a variety of ways. Set up your ROSbot and Rviz visualization.
+### Mapping (SLAM)
 
-1. **ROSbot with SLAM or AMCL (Simulation/Real Case)**
+Control ROSbot from RViz running on your laptop create a map and save it. 
 
-    Choose whether you want to launch simulation or bring up your robot hardware (column named `ROSbot or Gazebo`), whether you want to map the surrounding terrain (SLAM) or navigate it (AMCL) using a pre-built map (`Navigation Mode`), and finally specify the network configuration (`Network Configuration`).
+After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
 
-    Choose one solution from each column:
-    |                                                                                                                                                                                                                    ROSbot or Gazebo Bringup                                                                                                                                                                                                                     |                                                                                                                                                       Navigation Mode                                                                                                                                                       |                                                                                                                                                                                                                                   Network Configuration                                                                                                                                                                                                                                   |
-    | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-    | `compose.rosbot.hardware.yaml` <br>*(this file allows you to run <br>the basic functionality of the robot.<br>If you choose this option run **all**<br> compose files from this tabel on ROSbot)*<br>***or***<br> `compose.rosbot.simulation.yaml` <br>*(Gazebo simulation, run **all** compose <br> files from this tabel on your PC<br>  with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) drivers)* | `compose.rosbot.mapping.yaml` <br>*(creating a map of the environment <br> using slam-toolbox. <br>Remeber to [save the map]((https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map-(slam-toolbox)))!)*<br>***or***<br> `compose.rosbot.localization.yaml` <br>*(AMCL based on a previously created map)* | You can use the default Docker network configuration <br>and then you don't need any additional file <br> *(Use this solution if you are running **simulation**)* <br> ***or*** <br> `compose.rosbot.lan.yaml`<br> *(LAN network)* <br> ***or*** <br>`compose.rosbot.vpn.yaml`<br>*(VPN network using [Husarnet](https://husarnet.com/). <br>This case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1/demo#controlling-rosbot-over-the-internet-(vpn)))* |
+```bash
+./map-save.sh
+```
 
-2. **Visualization: Rviz**
+Your map has been saved in docker volume and is now in the `maps/` folder.
 
-    Choose one solution from each column:
+There are two configurations for LAN, and VPN. Choose preffered one:
 
-    |                                    Run Rviz node                                    |                                                                                                                                                                                      Set Network Configuration                                                                                                                                                                                       |
-    | :---------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-    | `compose.rviz.yaml`<br>*(run **all** compose files from <br>this tabel on your PC)* | Use **the same** configuration <br>as in the table from step 1<br><br>**None**<br>***or*** <br>`compose.rviz.lan.yaml`<br>*(LAN network)* <br> ***or*** <br> `compose.rviz.vpn.yaml`<br>*(VPN network using [Husarnet](https://husarnet.com/). <br>This case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1-demo-devel/demo#controlling-rosbot-over-the-internet))* |
+#### LAN
 
+- Execute on ROSbot:
 
-# Examples
-## Mapping: Control ROSbot from RViz running on your laptop (slam-toolbox)
-- case with LAN network:
-  - On ROSbot:
-      ```bash
-      docker compose \
-          -f compose.rosbot.hardware.yaml \
-          -f compose.rosbot.mapping.yaml \
-          -f compose.rosbot.lan.yaml \
-          up
-      ```
+  ```bash
+  docker compose \
+  -f compose.rosbot.hardware.yaml \
+  -f compose.rosbot.mapping.yaml \
+  -f compose.rosbot.lan.yaml \
+  up
+  ```
 
-  - On laptop:
-      ```bash
-      xhost local:root
-      docker compose -f compose.rviz.yaml -f compose.rviz.lan.yaml up
-      ```
-      Prepare map with Rviz2 using 2D Goal Pose.
+- Execute on laptop:
+      
+  ```bash
+  xhost local:root
+  ```
 
-- case with VPN network:
+  ```bash
+  docker compose -f compose.rviz.yaml -f compose.rviz.lan.yaml up
+  ```
+      
+  Prepare map with Rviz2 using 2D Goal Pose.
+
+#### VPN (over the internet):
   
-    Remember, this case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1/demo#controlling-rosbot-over-the-internet-(vpn)).
+Remember, this case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1/demo#controlling-rosbot-over-the-internet-(vpn)).
 
-    - On ROSbot:
-        ```bash
-        docker compose \
-            -f compose.rosbot.hardware.yaml \
-            -f compose.rosbot.mapping.yaml \
-            -f compose.rosbot.vpn.yaml \
-            up
-        ```
+- On ROSbot:
+
+    ```bash
+    docker compose \
+    -f compose.rosbot.hardware.yaml \
+    -f compose.rosbot.mapping.yaml \
+    -f compose.rosbot.vpn.yaml \
+    up
+    ```
         
-    - On laptop:
-        ```bash
-        xhost local:root
-        docker compose -f compose.rviz.yaml -f compose.rviz.vpn.yaml up
-        ```
-        Prepare map with Rviz2 using 2D Goal Pose.
+- On laptop:
+    ```bash
+    xhost local:root
+    ```
 
-**If the map is ready, [save it](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map-(slam-toolbox)).**
+    ```bash
+    docker compose -f compose.rviz.yaml -f compose.rviz.vpn.yaml up
+    ```
+    
+Prepare a map with Rviz2 using 2D Goal Pose.
 
-## Autonomus localization: Control ROSbot from RViz running on your laptop (AMCL)
+## Localization (AMCL)
+
 In order for the robot to be able to use the previously prepared map for localization and navigating, launch:
 
 - On ROSbot:
@@ -156,6 +200,9 @@ In order for the robot to be able to use the previously prepared map for localiz
     Next, run compose files:
     ```bash
     xhost local:root
+    ```
+
+    ```bash
     docker compose -f compose.rviz.yaml -f compose.rviz.lan.yaml up
     ```
 

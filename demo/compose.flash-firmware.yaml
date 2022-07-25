@@ -2,11 +2,9 @@ services:
 
   flash-fw:
     image: husarion/rosbot:noetic
-    container_name: firmware-flasher-noetic
     privileged: true
     environment:
       - SERIAL_PORT
     devices:
       - ${SERIAL_PORT}
-    command: >
-      python3 ./../flash-firmware.py /root/firmware_diff.bin 
+    command: /flash-firmware.py /root/firmware_diff.bin 

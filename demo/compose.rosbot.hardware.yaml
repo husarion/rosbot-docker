@@ -5,7 +5,6 @@ services:
 
   rplidar:
     image: husarion/rplidar:galactic
-    container_name: rplidar-galactic
     restart: unless-stopped
     devices:
       - /dev/ttyUSB0
@@ -15,7 +14,6 @@ services:
 
   bridge:
     image: husarion/ros:galactic-ros1-bridge
-    container_name: ros-bridge
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
@@ -24,13 +22,11 @@ services:
 
   ros-master:
     image: ros:noetic-ros-core
-    container_name: ros-master
     restart: unless-stopped
     command: stdbuf -o L roscore
 
   rosbot:
     image: husarion/rosbot:noetic
-    container_name: rosbot-hardware-noetic
     restart: unless-stopped
     devices:
       - ${SERIAL_PORT}
