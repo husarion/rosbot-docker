@@ -53,6 +53,23 @@ Compose configuration that allows you to control ROSbot 2 / ROSbot 2 PRO / ROSbo
 
     If you have other ROS 2 devices running in your LAN network make sure to provide a unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
 
+4. Copy the changes to your ROSbot, eg. with [`rsync`](https://linux.die.net/man/1/rsync). Assuming your ROSbot IP address is `192.168.8.186`, just execute:
+
+    ```bash
+    rsync -vRr ./ husarion@192.168.8.186:/home/husarion/rosbot-docker
+    ```
+
+> **tip**
+>
+> You can keep your local folder (on a laptop) auto-synchronized with remote (on a ROSbot) with:
+>
+> ```bash
+> ./sync_with_rosbot.sh 10.5.10.64
+> ```
+>
+> where `10.5.10.64` is your ROSbot's IP address
+
+
 ## Choose your configuration
 This docker-compose configuration allows you to run examples in a variety of ways. Set up your ROSbot and Rviz visualization.
 
@@ -122,7 +139,7 @@ In order for the robot to be able to use the previously prepared map for localiz
     ```bash
     docker compose \
         -f compose.rosbot.hardware.yaml \
-        -f compose.rosbot.amcl.yaml \
+        -f compose.rosbot.localization.yaml \
         -f compose.rosbot.lan.yaml \
         up
     ```
