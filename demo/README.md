@@ -10,14 +10,14 @@ This docker-compose configuration allows you to run examples in a variety of way
 
     Choose whether you want to launch simulation or bring up your robot hardware (column named `ROSbot or Gazebo`), whether you want to map the surrounding terrain (SLAM) or navigate it (AMCL) using a pre-built map (`Navigation Mode`), and finally specify the network configuration (`Network Configuration`).
 
-    Choose one solution from each column:
-    |                                                                                                                                                                                                                    ROSbot or Gazebo Bringup                                                                                                                                                                                                                     |                                                                                                                                                       Navigation Mode                                                                                                                                                       |                                                                                                                                                                                                                                   Network Configuration                                                                                                                                                                                                                                   |
-    | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-    | `compose.rosbot.hardware.yaml` <br>*(this file allows you to run <br>the basic functionality of the robot.<br>If you choose this option run **all**<br> compose files from this tabel on ROSbot)*<br>***or***<br> `compose.rosbot.simulation.yaml` <br>*(Gazebo simulation, run **all** compose <br> files from this tabel on your PC<br>  with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) drivers)* | `compose.rosbot.mapping.yaml` <br>*(creating a map of the environment <br> using slam-toolbox. <br>Remeber to [save the map]((https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map-(slam-toolbox)))!)*<br>***or***<br> `compose.rosbot.localization.yaml` <br>*(AMCL based on a previously created map)* | You can use the default Docker network configuration <br>and then you don't need any additional file <br> *(Use this solution if you are running **simulation**)* <br> ***or*** <br> `compose.rosbot.lan.yaml`<br> *(LAN network)* <br> ***or*** <br>`compose.rosbot.vpn.yaml`<br>*(VPN network using [Husarnet](https://husarnet.com/). <br>This case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1/demo#controlling-rosbot-over-the-internet-(vpn)))* |
+    **Choose one solution from each column:**
+    |                                                                                                                                                                                                    ROSbot or Gazebo Bringup <br> *(real case or simulation)*                                                                                                                                                                                                    |                                                                                                                                              Navigation Mode                                                                                                                                               |                                                                                                                                                                                                                                   Network Configuration                                                                                                                                                                                                                                   |
+    | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+    | `compose.rosbot.hardware.yaml` <br>*(this file allows you to run <br>the basic functionality of the robot.<br>If you choose this option run **all**<br> compose files from this tabel on ROSbot)*<br>***or***<br> `compose.rosbot.simulation.yaml` <br>*(Gazebo simulation, run **all** compose <br> files from this tabel on your PC<br>  with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) drivers)* | `compose.rosbot.mapping.yaml` <br>*(creating a map of the environment <br> using slam-toolbox. <br>Remeber to [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map)!)*<br>***or***<br> `compose.rosbot.localization.yaml` <br>*(AMCL based on a previously created map)* | You can use the default Docker network configuration <br>and then you don't need any additional file <br> *(Use this solution if you are running **simulation**)* <br> ***or*** <br> `compose.rosbot.lan.yaml`<br> *(LAN network)* <br> ***or*** <br>`compose.rosbot.vpn.yaml`<br>*(VPN network using [Husarnet](https://husarnet.com/). <br>This case requires additional [steps](https://github.com/husarion/rosbot-docker/tree/ros1/demo#controlling-rosbot-over-the-internet-(vpn)))* |
 
 2. **Visualization: Rviz**
 
-    Choose one solution from each column:
+    **Choose one solution (compose file) from each column:**
 
     |                                    Run Rviz node                                    |                                                                                                                                                                                      Set Network Configuration                                                                                                                                                                                       |
     | :---------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -48,13 +48,10 @@ This docker-compose configuration allows you to run examples in a variety of way
     git clone https://github.com/husarion/rosbot-docker.git
     ```
 
-    ```bash
-    cd rosbot-docker/
-    ```
-
 3. **Create `demo/.env`** 
 
     ```bash
+    cd rosbot-docker/demo
     cp .env.template .env
     ```
     
@@ -116,15 +113,7 @@ This docker-compose configuration allows you to run examples in a variety of way
 
 Control ROSbot from RViz running on your laptop create a map and save it. 
 
-After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
-
-```bash
-./map-save.sh
-```
-
-Your map has been saved in docker volume and is now in the `maps/` folder.
-
-There are two configurations for LAN, and VPN. Choose preffered one:
+There are two configurations for LAN, and VPN. Navigate to `/demo` folder and choose preffered one:
 
 #### LAN
 
@@ -142,13 +131,9 @@ There are two configurations for LAN, and VPN. Choose preffered one:
       
   ```bash
   xhost local:root
-  ```
-
-  ```bash
+  
   docker compose -f compose.rviz.yaml -f compose.rviz.lan.yaml up
   ```
-      
-  Prepare map with Rviz2 using 2D Goal Pose.
 
 #### VPN (over the internet):
   
@@ -167,13 +152,23 @@ Remember, this case requires additional [steps](https://github.com/husarion/rosb
 - On laptop:
     ```bash
     xhost local:root
-    ```
-
-    ```bash
+    
     docker compose -f compose.rviz.yaml -f compose.rviz.vpn.yaml up
     ```
     
-Prepare a map with Rviz2 using 2D Goal Pose.
+Next, prepare map with Rviz2 using **2D Goal Pose**.
+
+![](./docks/nav2_goal.png)
+
+#### Saving the map
+
+After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
+
+```bash
+./map-save.sh
+```
+
+Your map has been saved in docker volume and is now in the `maps/` folder.
 
 ## Localization (AMCL)
 
@@ -182,10 +177,10 @@ In order for the robot to be able to use the previously prepared map for localiz
 - On ROSbot:
     ```bash
     docker compose \
-        -f compose.rosbot.hardware.yaml \
-        -f compose.rosbot.localization.yaml \
-        -f compose.rosbot.lan.yaml \
-        up
+    -f compose.rosbot.hardware.yaml \
+    -f compose.rosbot.localization.yaml \
+    -f compose.rosbot.lan.yaml \
+    up
     ```
 
 - On laptop:
@@ -200,14 +195,15 @@ In order for the robot to be able to use the previously prepared map for localiz
     Next, run compose files:
     ```bash
     xhost local:root
-    ```
-
-    ```bash
+    
     docker compose -f compose.rviz.yaml -f compose.rviz.lan.yaml up
     ```
 
 **The above commands run an example on a lan network, but the same works for other types of connection.**
 
+Set initial pose of ROSbot using `2D Pose Estimate` and navigate with `Nav2 Goal`.
+
+![](./docks/2d_pose_estimate.png)
 ## Creating, Saving and Loading the Map with Gazebo (Simulation)
 
 On your PC with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) drivers launch:
@@ -215,10 +211,10 @@ On your PC with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/
 ```bash
 xhost local:root
 docker compose \
-    -f compose.rosbot.simulation.yaml \
-    -f compose.rosbot.mapping.yaml \
-    -f compose.rviz.yaml \
-    up
+-f compose.rosbot.simulation.yaml \
+-f compose.rosbot.mapping.yaml \
+-f compose.rviz.yaml \
+up
 ```
 Prepare map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map-(slam-toolbox)).
 
@@ -230,10 +226,10 @@ Next, see what the `compose.rviz.yaml` file should look like ([link](https://git
 ```bash
 xhost local:root
 docker compose \
-    -f compose.rosbot.simulation.yaml \
-    -f compose.rosbot.localization.yaml \
-    -f compose.rviz.yaml \
-    up 
+-f compose.rosbot.simulation.yaml \
+-f compose.rosbot.localization.yaml \
+-f compose.rviz.yaml \
+up 
 ```
 
 ### Results:
