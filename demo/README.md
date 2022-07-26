@@ -216,7 +216,7 @@ docker compose \
 -f compose.rviz.yaml \
 up
 ```
-Prepare map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map-(slam-toolbox)).
+Prepare map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map).
 
 ### Results:
 [![Watch the video](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW_xfemxP2RCJoKHXTmrEfozXNDK_svjRH8w&usqp=CAU)](
@@ -272,14 +272,3 @@ up
     ```
 
 5. Launch your compose files.
-
-## Saving the Map (slam-toolbox)
-
-If the map is ready, open a new terminal, navigate to `demo/` folder and execute:
-
-- On ROSbot:
-    ```bash
-    ./map-save.sh
-    ```
-
-Your map has been saved in docker volume and is now in the maps/ folder.
