@@ -1,4 +1,4 @@
-# Demos
+# Demo
 
 These docker compose yaml configruations present how to run autonomous mapping and navigation demo with ROSbot and [Navigation2](https://navigation.ros.org/) stack. 
 
@@ -210,7 +210,7 @@ up
 
 Prepare map with Rviz2 using **2D Goal Pose**.
 
-![](./docks/nav2_goal.png)
+![](./docs/nav2_goal.png)
 
 After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
 
@@ -310,7 +310,7 @@ up
 
 Set initial pose of ROSbot using `2D Pose Estimate` and navigate with `Nav2 Goal`.
 
-![](./docks/2d_pose_estimate.png)
+![](./docs/2d_pose_estimate.png)
 
 ## Quick start (simulation model of ROSbot in Gazebo)
 
