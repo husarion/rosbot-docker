@@ -3,7 +3,6 @@
 
 services:
 
-  # ROS Noetic + ROS 2 Galactic
   bridge:
     image: husarion/ros:galactic-ros1-bridge
     restart: on-failure
@@ -12,14 +11,12 @@ services:
       - RMW_IMPLEMENTATION
     command: ros2 run ros1_bridge dynamic_bridge
 
-  # ROS Melodic master
   ros-master:
-    image: ros:melodic-ros-core
+    image: ros:noetic-ros-core
     environment:
       - ROS_MASTER_URI=http://ros-master:11311
     command: stdbuf -o L roscore
 
-  # ROS Melodic
   rosbot_simulation:
     image: husarion/rosbot:melodic-simulation
     restart: on-failure

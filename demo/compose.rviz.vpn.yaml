@@ -4,7 +4,6 @@
 
 services:
 
-  # ROS Galactic
   rviz:
     network_mode: service:husarnet-rviz
     volumes:

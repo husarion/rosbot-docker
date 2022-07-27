@@ -1,17 +1,17 @@
 # Demos
 
-These docker compose yaml configruations present how to run autonomous mapping and navigation with ROSbot and [Navigation2](https://navigation.ros.org/) stack. 
+These docker compose yaml configruations present how to run autonomous mapping and navigation demo with ROSbot and [Navigation2](https://navigation.ros.org/) stack. 
 
 There are two phases:
 
-1. Navigation and creating a map - by using [slam-toolbox](https://github.com/SteveMacenski/slam_toolbox)
-2. Navigation based on created map - with [AMCL](https://navigation.ros.org/configuration/packages/configuring-amcl.html)
+1. **Creating a map** - navigation and creating a map by using [slam-toolbox](https://github.com/SteveMacenski/slam_toolbox)
+2. **Localization on an already created map** - Navigation based on created map - with [AMCL](https://navigation.ros.org/configuration/packages/configuring-amcl.html)
 
 Both cases are presented below in three setups: 
 
-1. In a Local Area Network (LAN) - robot running navigation stack and laptop running RViz are in the same Wi-Fi network
+1. In a Local Area Network (LAN) - robot running navigation stack and PC / laptop running RViz are in the same Wi-Fi network.
 2. Over the Internet (VPN) - robot and laptop can be in separate networks.
-3. Gazebo simulation
+3. Gazebo simulation.
 
 ## Quick start (Physical ROSbot)
 
@@ -34,12 +34,6 @@ modify it if needed (see comments)
 # For LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
 ROS_DOMAIN_ID=228
 
-# For simulation example you need to use simulation time
-# Set:
-# False    for running on a physical ROSbot
-# True     for a Gazebo simulation
-USE_SIM_TIME=False
-
 # SBC <> STM32 serial connection. 
 # Set:
 # /dev/ttyS1    for ROSbot 2
@@ -58,6 +52,18 @@ RPLIDAR_BAUDRATE=115200
 # rmw_cyclonedds_cpp    for Eclipse’s Cyclone DDS (currently the default)
 # rmw_fastrtps_cpp      for eProsima’s Fast DDS (in progress)
 RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+# Choose a config file for rviz
+# Set:
+# rosbot_mapping.rviz    for mapping phase
+# rosbot_localization    for localization phase
+RVIZ_CONFIG_FILE=rosbot_mapping.rviz
+
+# For simulation example you need to use simulation time
+# Set:
+# False    for running on a physical ROSbot
+# True     for a Gazebo simulation
+USE_SIM_TIME=False
 
 # Uncomment for compose.*.vpn.yaml files and paste your own Husarnet Join Code from app.husarnet.com here:
 # JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
@@ -104,6 +110,8 @@ You will find your **Husarnet Join Code** on your account at Husarnet Dashboard:
 2. Select or create a network
 3. Click **[Add element]** button and select a **Join Code** tab:
 
+In this example [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work therefore. IPv6 addresses provided by Husarnet VPN need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and make sure to have **THE SAME** `secret/` on both devices:
+
 Execute these commands in the Linux terminal
 
 ```bash
@@ -111,6 +119,8 @@ Execute these commands in the Linux terminal
 ```
 
 ### 6. Create a map
+
+Deppending on the network configuration (LAN/VPN) execute the choosen pair of commands in the PC or ROSbot's terminal:
 
 <table>
 
@@ -128,8 +138,8 @@ Execute these commands in the Linux terminal
 
 <tr>
 
-<td> 
-PC / laptop
+<td>
+<b>PC / laptop</b>
 </td> 
 
 <td>  
@@ -164,7 +174,7 @@ up
 <tr>
 
 <td> 
-ROSbot
+<b>ROSbot</b>
 </td> 
 
 <td>  
@@ -212,6 +222,8 @@ Your map has been saved in docker volume and is now in the `maps/` folder.
 
 ### 7. Localization on an already created map
 
+Deppending on the network configuration (LAN/VPN) execute the choosen pair of commands in the PC or ROSbot's terminal:
+
 <table>
 
 <!-- ------------------------------------------------- -->
@@ -229,7 +241,7 @@ Your map has been saved in docker volume and is now in the `maps/` folder.
 <tr>
 
 <td> 
-PC / laptop
+<b>PC / laptop</b>
 </td> 
 
 <td>  
@@ -262,7 +274,7 @@ up
 <tr>
 
 <td> 
-ROSbot
+<b>ROSbot</b>
 </td> 
 
 <td>  
@@ -300,36 +312,95 @@ Set initial pose of ROSbot using `2D Pose Estimate` and navigate with `Nav2 Goal
 
 ![](./docks/2d_pose_estimate.png)
 
+## Quick start (simulation model of ROSbot in Gazebo)
 
-<!-- ######################################################## -->
-<!-- ######################################################## -->
-<!-- ######################################################## -->
-<!-- ######################################################## -->
-<!-- ######################################################## -->
-<!-- ######################################################## -->
-<!-- ######################################################## -->
 
-## Creating, Saving and Loading the Map with Gazebo (Simulation)
+### 1. Clone this repo **on your laptop**
 
-On your PC with [Nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) drivers launch:
+```bash
+git clone https://github.com/husarion/rosbot-docker/
+```
+
+### 2. Prepare `demo/.env` file
+
+```bash
+cd rosbot-docker/demo
+cp .env.template .env
+```
+
+modify it if needed (see comments)
+
+```bash
+# For LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
+ROS_DOMAIN_ID=228
+
+# SBC <> STM32 serial connection. 
+# Set:
+# /dev/ttyS1    for ROSbot 2
+# /dev/ttyS4    for ROSbot 2 PRO
+# /dev/ttyAMA0  for ROSbbot 2R
+SERIAL_PORT=/dev/ttyAMA0
+
+# Serial baudrate for rplidar driver
+# Set:
+# 115200        for RPLIDAR A2  
+# 256000        for RPLIDAR A3 
+RPLIDAR_BAUDRATE=115200
+
+# DDS implementation
+# Set:
+# rmw_cyclonedds_cpp    for Eclipse’s Cyclone DDS (currently the default)
+# rmw_fastrtps_cpp      for eProsima’s Fast DDS (in progress)
+RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+# Choose a config file for rviz
+# Set:
+# rosbot_mapping.rviz    for mapping phase
+# rosbot_localization    for localization phase
+RVIZ_CONFIG_FILE=rosbot_mapping.rviz
+
+# For simulation example you need to use simulation time
+# Set:
+# False    for running on a physical ROSbot
+# True     for a Gazebo simulation
+USE_SIM_TIME=True
+
+# Uncomment for compose.*.vpn.yaml files and paste your own Husarnet Join Code from app.husarnet.com here:
+# JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
+```
+
+### 3. Create a map
+
+On your PC with launch:
 
 ```bash
 xhost local:root
+```
+
+```bash
 docker compose \
 -f compose.rosbot.simulation.yaml \
 -f compose.rosbot.mapping.yaml \
 -f compose.rviz.yaml \
 up
 ```
-Prepare map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map).
 
-### Results:
-[![Watch the video](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW_xfemxP2RCJoKHXTmrEfozXNDK_svjRH8w&usqp=CAU)](
-https://youtu.be/OiZTFYMlgis)
+In Rviz2 window, click the **[Startup]** button in a "**Navigation 2**" field.
 
-Next, see what the `compose.rviz.yaml` file should look like ([link](https://github.com/husarion/rosbot-docker/tree/ros1/demo#autonomus-localization:-control-rosbot-from-rviz-running-on-your-laptop-(amcl))) and launch `Navigation2` stack with `AMLC`:
+Prepare a map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map).
+
+
+[![Watch the video](https://img.youtube.com/vi/OiZTFYMlgis/default.jpg)](https://youtu.be/OiZTFYMlgis)
+
+### 4. Localization on an already created map
+
+Next launch `Navigation2` stack with `AMLC`:
+
 ```bash
 xhost local:root
+```
+
+```bash
 docker compose \
 -f compose.rosbot.simulation.yaml \
 -f compose.rosbot.localization.yaml \
@@ -339,41 +410,5 @@ up
 
 ### Results:
 
-[![Watch the video](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW_xfemxP2RCJoKHXTmrEfozXNDK_svjRH8w&usqp=CAU)](https://www.youtube.com/watch?v=j_tRVuZiR18)
+[![Watch the video](https://img.youtube.com/vi/j_tRVuZiR18/default.jpg)](https://youtu.be/j_tRVuZiR18)
 
-## Controlling ROSbot over the Internet (VPN)
-1. Edit `demo/.env` file.
-    
-    Log in on your account at https://app.husarnet.com, create a new network, click the **[Add element]** button and copy the Join Code. Paste it in `.env` file as a value for `JOINCODE` environment variable. Do it both on ROSbot and on your PC i.e.:
-    ```bash
-    # for LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
-    ROS_DOMAIN_ID=228
-
-    # for simulation example you need to use simulation time
-    USE_SIM_TIME=False
-
-    # SBC <> STM32 serial connection. Set:
-    # /dev/ttyS1 for ROSbot 2
-    # /dev/ttyS4 for ROSbot 2 PRO
-    # /dev/ttyAMA0 for ROSbbot 2R
-    SERIAL_PORT=/dev/ttyS4
-
-    # Uncomment for compose.*.vpn.yaml files and paste your own Husarnet Join Code from app.husarnet.com here:
-    JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/mVdwvA9oqtt5ahjmmGfF83
-    ```
-
-3. Generate DDS config files.
-
-    In this example [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work therefore. IPv6 addresses provided by Husarnet VPN need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and copy **THE SAME** `secret/` folder to both devices:
-
-    ```bash
-    ./generate-vpn-config.sh
-    ```
-
-4. Copy the changes to your ROSbot, eg. with [`rsync`](https://linux.die.net/man/1/rsync). Assuming your ROSbot IP address is `192.168.8.186`, just execute:
-
-    ```bash
-    rsync -vRr ./ husarion@192.168.8.186:/home/husarion/rosbot-docker
-    ```
-
-5. Launch your compose files.
