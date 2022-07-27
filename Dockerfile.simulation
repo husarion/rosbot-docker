@@ -7,10 +7,7 @@ SHELL ["/bin/bash", "-c"]
 
 # install dependencies
 RUN apt-get update && \
-    apt install -y \
-        python3-pip \
-        git && \
-    pip3 install -U argcomplete && \
+    apt install -y git && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -20,13 +17,19 @@ RUN git clone https://github.com/husarion/rosbot_ros.git --branch=melodic /ros_w
 WORKDIR /ros_ws
 
 # install dependencies
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
+RUN apt-get update && \
+    apt install -y python3-pip && \
+    pip3 install -U argcomplete && \
+    source /opt/ros/$ROS_DISTRO/setup.bash && \
     cd /ros_ws/src && \
     catkin_init_workspace && \
     cd /ros_ws && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install --from-paths src --ignore-src -r -y --rosdistro $ROS_DISTRO && \
-    catkin_make -DCMAKE_BUILD_TYPE=Release
+    catkin_make -DCMAKE_BUILD_TYPE=Release && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # replace entrypoint
 ENTRYPOINT ["/ros_ws/ros_entrypoint.sh"]
