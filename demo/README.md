@@ -13,6 +13,30 @@ Both cases are presented below in three setups:
 2. Over the Internet (VPN) - robot and laptop can be in separate networks.
 3. Gazebo simulation.
 
+> **Prerequisites**
+>
+> Make sure you have [Docker and Docker-Compose](https://docs.docker.com/desktop/install/linux-install/) installed on your laptop. 
+> 
+> If you don't have, here's a quick summary for Ubuntu 20.04 (just click the `copy` button, and paste it to the Linux terminal):
+> ```bash
+> sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg lsb-release
+> ```
+> ```bash
+> sudo mkdir -p /etc/apt/keyrings
+> ```
+> ```bash
+> curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+> ```
+> ```bash
+> echo \
+>  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+>  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+> ```
+> ```bash
+> sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+> ```
+
+
 ## Quick start (Physical ROSbot)
 
 ### 1. Clone this repo **on your laptop**
@@ -30,48 +54,73 @@ cp .env.template .env
 
 modify it if needed (see comments)
 
+> **Warning**
+>
+> Make sure you have Docker Compose with at least `v2.3.0` version installed on your PC/laptop
+>
+> ```bash
+> $ docker compose version
+> Docker Compose version v2.3.3
+> ```
+>
+> Inline comments in `.env` files are supported from this version
+
 ```bash
-# For LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
-ROS_DOMAIN_ID=228
+# ======================================================
+# For LAN examples you need to have unique ROS_DOMAIN_ID to 
+# avoid reading messages from other robots in the network
+# ======================================================
 
-# SBC <> STM32 serial connection. 
-# Set:
-# /dev/ttyS1    for ROSbot 2
-# /dev/ttyS4    for ROSbot 2 PRO
-# /dev/ttyAMA0  for ROSbbot 2R
-SERIAL_PORT=/dev/ttyAMA0
+ROS_DOMAIN_ID=79
 
+# ======================================================
+# SBC <> STM32 serial connection.
+# ======================================================
+
+# SERIAL_PORT=/dev/ttyS1     # ROSbot 2
+# SERIAL_PORT=/dev/ttyS4     # ROSbot 2 PRO
+SERIAL_PORT=/dev/ttyAMA0   # ROSbbot 2R
+
+# ======================================================
 # Serial baudrate for rplidar driver
-# Set:
-# 115200        for RPLIDAR A2  
-# 256000        for RPLIDAR A3 
-RPLIDAR_BAUDRATE=115200
+# ======================================================
 
-# DDS implementation
-# Set:
-# rmw_cyclonedds_cpp    for Eclipse’s Cyclone DDS (currently the default)
-# rmw_fastrtps_cpp      for eProsima’s Fast DDS (in progress)
-RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
+# RPLIDAR_BAUDRATE=256000     # RPLIDAR A3
 
-# Choose a config file for rviz
-# Set:
-# rosbot_mapping.rviz    for mapping phase
-# rosbot_localization    for localization phase
-RVIZ_CONFIG_FILE=rosbot_mapping.rviz
-
+# ======================================================
 # For simulation example you need to use simulation time
-# Set:
-# False    for running on a physical ROSbot
-# True     for a Gazebo simulation
-USE_SIM_TIME=False
+# ======================================================
 
-# Uncomment for compose.*.vpn.yaml files and paste your own Husarnet Join Code from app.husarnet.com here:
+USE_SIM_TIME=False      # for a physical ROSbot
+# USE_SIM_TIME=True       # for a Gazebo simulation
+
+# ======================================================
+# DDS implementation
+# ======================================================
+
+RMW_IMPLEMENTATION=rmw_fastrtps_cpp         # for eProsima’s Fast DDS
+# RMW_IMPLEMENTATION=rmw_cyclonedds_cpp       # or Eclipse’s Cyclone DDS
+
+# ======================================================
+# Uncomment for compose.*.vpn.yaml files and paste 
+# your own Husarnet Join Code from app.husarnet.com here:
+# ======================================================
+
 # JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
 ```
 
 If you have other ROS 2 devices running in your LAN network make sure to provide a unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
 
 ### 4. Sync your workspace with the ROSbot
+
+> **Prerequisites**
+>
+> Install [unison](https://en.wikipedia.org/wiki/Unison_(software)) and [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki):
+>
+> ```bash
+> sudo sudo apt-get update && sudo apt-get install -y unison inotify-tools
+> ```
 
 In the `demo/` folder there is a script for auto-syncing this repo with ROSbot (you do not need to manually change the same repo on ROSbot and on laptop)
 
@@ -331,41 +380,47 @@ cp .env.template .env
 modify it if needed (see comments)
 
 ```bash
-# For LAN examples you need to have unique ROS_DOMAIN_ID to avoid reading messages from other robots in the network
-ROS_DOMAIN_ID=228
+# ======================================================
+# For LAN examples you need to have unique ROS_DOMAIN_ID to 
+# avoid reading messages from other robots in the network
+# ======================================================
 
-# SBC <> STM32 serial connection. 
-# Set:
-# /dev/ttyS1    for ROSbot 2
-# /dev/ttyS4    for ROSbot 2 PRO
-# /dev/ttyAMA0  for ROSbbot 2R
-SERIAL_PORT=/dev/ttyAMA0
+ROS_DOMAIN_ID=79
 
+# ======================================================
+# SBC <> STM32 serial connection.
+# ======================================================
+
+# SERIAL_PORT=/dev/ttyS1     # ROSbot 2
+# SERIAL_PORT=/dev/ttyS4     # ROSbot 2 PRO
+SERIAL_PORT=/dev/ttyAMA0   # ROSbbot 2R
+
+# ======================================================
 # Serial baudrate for rplidar driver
-# Set:
-# 115200        for RPLIDAR A2  
-# 256000        for RPLIDAR A3 
-RPLIDAR_BAUDRATE=115200
+# ======================================================
 
-# DDS implementation
-# Set:
-# rmw_cyclonedds_cpp    for Eclipse’s Cyclone DDS (currently the default)
-# rmw_fastrtps_cpp      for eProsima’s Fast DDS (in progress)
-RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
+# RPLIDAR_BAUDRATE=256000     # RPLIDAR A3
 
-# Choose a config file for rviz
-# Set:
-# rosbot_mapping.rviz    for mapping phase
-# rosbot_localization    for localization phase
-RVIZ_CONFIG_FILE=rosbot_mapping.rviz
-
+# ======================================================
 # For simulation example you need to use simulation time
-# Set:
-# False    for running on a physical ROSbot
-# True     for a Gazebo simulation
-USE_SIM_TIME=True
+# ======================================================
 
-# Uncomment for compose.*.vpn.yaml files and paste your own Husarnet Join Code from app.husarnet.com here:
+# USE_SIM_TIME=False      # for a physical ROSbot
+USE_SIM_TIME=True       # for a Gazebo simulation
+
+# ======================================================
+# DDS implementation
+# ======================================================
+
+RMW_IMPLEMENTATION=rmw_fastrtps_cpp         # for eProsima’s Fast DDS
+# RMW_IMPLEMENTATION=rmw_cyclonedds_cpp       # or Eclipse’s Cyclone DDS
+
+# ======================================================
+# Uncomment for compose.*.vpn.yaml files and paste 
+# your own Husarnet Join Code from app.husarnet.com here:
+# ======================================================
+
 # JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
 ```
 
