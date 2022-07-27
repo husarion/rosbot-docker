@@ -1,13 +1,10 @@
 services:
 
   flash-fw:
-    build:
-      context: ./../
-      dockerfile: ./Dockerfile
+    image: husarion/rosbot:noetic
     privileged: true
     environment:
       - SERIAL_PORT
     devices:
       - ${SERIAL_PORT}
-    command: >
-      python3 ./../flash-firmware.py /root/firmware_diff.bin 
+    command: /flash-firmware.py /root/firmware_diff.bin 

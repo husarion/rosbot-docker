@@ -1,32 +1,32 @@
 # Quick Start (at fist stop ROS Master if working on host)
-# $ docker compose -f compose.rosbot.yaml -f compose.rosbot.vpn.yaml up
+# $ docker compose -f compose.rosbot.hardware.yaml -f compose.rosbot.vpn.yaml up
 
 services:
 
+  localization-mapping:
+    network_mode: service:husarnet-rosbot
+    volumes:
+      - ./secret/dds-config.xml:/dds-config.xml
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+
+  navigation:
+    network_mode: service:husarnet-rosbot
+    volumes:
+      - ./secret/dds-config.xml:/dds-config.xml
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+
   rplidar:
     network_mode: service:husarnet-rosbot
-    volumes: 
-      - ./secret/dds-config.xml:/dds-config.xml
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-
-  nav2:
-    network_mode: service:husarnet-rosbot
-    volumes: 
-      - ./secret/dds-config.xml:/dds-config.xml
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-
-  slam-toolbox:
-    network_mode: service:husarnet-rosbot
-    volumes: 
+    volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
   bridge:
     network_mode: service:husarnet-rosbot
-    volumes: 
+    volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
@@ -37,7 +37,7 @@ services:
       - /var/lib/husarnet
       - ./secret/id_rosbot:/var/lib/husarnet/id
     sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0 
+      - net.ipv6.conf.all.disable_ipv6=0
     cap_add:
       - NET_ADMIN
     devices:
