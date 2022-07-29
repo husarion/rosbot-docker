@@ -1,6 +1,6 @@
 # Demo
 
-These docker compose yaml configruations present how to run autonomous mapping and navigation demo with ROSbot and [Navigation2](https://navigation.ros.org/) stack. 
+These docker-compose .yaml configurations present how to run autonomous mapping and navigation demo with ROSbot and [Navigation2](https://navigation.ros.org/) stack. 
 
 There are two phases:
 
@@ -9,8 +9,8 @@ There are two phases:
 
 Both cases are presented below in three setups: 
 
-1. In a Local Area Network (LAN) - robot running navigation stack and PC / laptop running RViz are in the same Wi-Fi network.
-2. Over the Internet (VPN) - robot and laptop can be in separate networks.
+1. In a Local Area Network (LAN) - the robot running navigation stack and PC / laptop running RViz are in the same Wi-Fi network.
+2. Over the Internet (VPN) - the robot and the laptop can be in separate networks.
 3. Gazebo simulation.
 
 > **Prerequisites**
@@ -122,7 +122,7 @@ If you have other ROS 2 devices running in your LAN network make sure to provide
 > sudo sudo apt-get update && sudo apt-get install -y unison inotify-tools
 > ```
 
-In the `demo/` folder there is a script for auto-syncing this repo with ROSbot (you do not need to manually change the same repo on ROSbot and on laptop)
+In the `demo/` folder, there is a script for auto-syncing this repo with ROSbot (you do not need to manually change the same repo on ROSbot and on the laptop)
 
 If IP address of your robot is `10.5.10.64`, run:
 
@@ -159,7 +159,7 @@ You will find your **Husarnet Join Code** on your account at Husarnet Dashboard:
 2. Select or create a network
 3. Click **[Add element]** button and select a **Join Code** tab:
 
-In this example [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work therefore. IPv6 addresses provided by Husarnet VPN need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and make sure to have **THE SAME** `secret/` on both devices:
+In this example, [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work therefore IPv6 addresses provided by Husarnet VPN need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and make sure to have **THE SAME** `secret/` on both devices:
 
 Execute these commands in the Linux terminal
 
@@ -169,7 +169,7 @@ Execute these commands in the Linux terminal
 
 ### 6. Create a map
 
-Deppending on the network configuration (LAN/VPN) execute the choosen pair of commands in the PC or ROSbot's terminal:
+Deppending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC or ROSbot's terminal:
 
 <table>
 
@@ -270,8 +270,7 @@ After you create the map, open a new terminal on ROSbot, navigate to `demo/` fol
 Your map has been saved in docker volume and is now in the `maps/` folder.
 
 ### 7. Localization on an already created map
-
-Deppending on the network configuration (LAN/VPN) execute the choosen pair of commands in the PC or ROSbot's terminal:
+Depending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC or ROSbot's terminal:
 
 <table>
 
@@ -440,7 +439,7 @@ docker compose \
 up
 ```
 
-In Rviz2 window, click the **[Startup]** button in a "**Navigation 2**" field.
+In Rviz2 window, click the **[Startup]** button in the "**Navigation 2**" field.
 
 Prepare a map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map).
 
