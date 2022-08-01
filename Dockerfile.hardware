@@ -7,8 +7,8 @@ FROM ubuntu:18.04 AS stm32flash_builder
 
 # official releases are only for intel archs, so we need to build stm32flash from sources
 RUN apt-get update && apt-get install -y \
-        git \
-        build-essential && \
+		git \
+		build-essential && \
     git clone https://github.com/stm32duino/stm32flash.git && \
     cd stm32flash/ && \
     make all
@@ -24,10 +24,10 @@ SHELL ["/bin/bash", "-c"]
 
 # ENV PIO_VERSION="5.1.0"
 RUN apt update && apt install -y \
-        python3 \
-        python3-pip \
-        git \
-        tree
+		python3 \
+		python3-pip \
+		git \
+		tree
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 # RUN pip3 install -U platformio==${PIO_VERSION}
@@ -44,21 +44,21 @@ RUN git submodule update --init --recursive
 RUN export LC_ALL=C.UTF-8 && \
     export LANG=C.UTF-8 && \
     pio project init -e core2_diff -O \
-        "build_flags= \
-        -I\$PROJECTSRC_DIR/TARGET_CORE2 \
-        -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-        -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-        -DMBED_BUILD_PROFILE_RELEASE \
-        -DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
-        -DKINEMATIC_TYPE=0" && \
-    pio project init -e core2_mec -O \
-        "build_flags= \
-        -I\$PROJECTSRC_DIR/TARGET_CORE2 \
-        -DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-        -DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-        -DMBED_BUILD_PROFILE_RELEASE \
-        -DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
-        -DKINEMATIC_TYPE=1" && \
+    "build_flags= \
+		-I\$PROJECTSRC_DIR/TARGET_CORE2 \
+		-DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+		-DMBED_BUILD_PROFILE_RELEASE \
+		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
+		-DKINEMATIC_TYPE=0" && \
+		pio project init -e core2_mec -O \
+    "build_flags= \
+		-I\$PROJECTSRC_DIR/TARGET_CORE2 \
+		-DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
+		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
+		-DMBED_BUILD_PROFILE_RELEASE \
+		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
+		-DKINEMATIC_TYPE=1" && \
     pio run 
 
 ## =========================== ROS image ===============================
@@ -68,14 +68,18 @@ FROM ros:$ROS_DISTRO-ros-core
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y \
-        git \
-        python3-pip \
-        ros-$ROS_DISTRO-rosserial-python \ 
-        ros-$ROS_DISTRO-rosserial-server \
-        ros-$ROS_DISTRO-rosserial-client \
-        ros-$ROS_DISTRO-rosserial-msgs \
-        ros-$ROS_DISTRO-move-base-msgs \
-        ros-$ROS_DISTRO-robot-localization && \
+		git \
+		python3-pip \
+		ros-$ROS_DISTRO-rosserial-python \ 
+		ros-$ROS_DISTRO-rosserial-server \
+		ros-$ROS_DISTRO-rosserial-client \
+		ros-$ROS_DISTRO-rosserial-msgs \
+		ros-$ROS_DISTRO-move-base-msgs \
+		ros-$ROS_DISTRO-robot-localization \
+		ros-$ROS_DISTRO-xacro \
+		ros-$ROS_DISTRO-transmission-interface \
+		ros-$ROS_DISTRO-controller-manager \
+		ros-$ROS_DISTRO-robot-state-publisher && \
     pip3 install python-periphery && \
     pip3 install sh && \
     pip3 install pyserial && \
