@@ -69,7 +69,9 @@ modify it if needed (see comments)
 # ======================================================
 # For LAN examples you need to have unique ROS_DOMAIN_ID to 
 # avoid reading messages from other robots in the network
-# ======================================================
+#
+# ROS_DOMAIN_ID has to be in range 0-232
+======================================================
 
 ROS_DOMAIN_ID=79
 
@@ -112,7 +114,7 @@ RMW_IMPLEMENTATION=rmw_fastrtps_cpp         # for eProsima’s Fast DDS
 
 If you have other ROS 2 devices running in your LAN network make sure to provide a unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
 
-### 4. Sync your workspace with the ROSbot
+### 3. Sync your workspace with the ROSbot
 
 > **Prerequisites**
 >
@@ -130,7 +132,7 @@ If IP address of your robot is `10.5.10.64`, run:
 ./sync_with_rosbot.sh 10.5.10.64
 ```
 
-### 5. Flash the microcontroller 
+### 4. Flash the microcontroller 
 
 To flash the right firmware, open ROSbot's terminal or connect via `ssh` and execute this command:
    
@@ -149,7 +151,7 @@ husarion/rosbot:noetic \
 /flash-firmware.py /root/firmware_mecanum.bin
 ```
 
-### 7. [Optional] VPN config
+### 5. [Optional] VPN config
 
 If in the next steps you want to run VPN configuration get your Husarnet Join Code and paste it as a value for `JOINCODE` environment variable in the `.env` file.
 
@@ -168,8 +170,17 @@ Execute these commands in the Linux terminal
 ```
 
 ### 6. Create a map
+> **Enabling display**
+> 
+> In order to use GUI of applications running in containers (like rviz) run:
+> ``` bash
+> xhost local:root
+> ```
+> on your PC, before starting those containers
+>
 
-Deppending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC or ROSbot's terminal:
+
+Depending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC or ROSbot's terminal:
 
 <table>
 
@@ -382,7 +393,9 @@ modify it if needed (see comments)
 # ======================================================
 # For LAN examples you need to have unique ROS_DOMAIN_ID to 
 # avoid reading messages from other robots in the network
-# ======================================================
+# 
+# ROS_DOMAIN_ID has to be in range 0-232
+======================================================
 
 ROS_DOMAIN_ID=79
 
