@@ -52,7 +52,7 @@ controller_server:
     # Progress checker parameters
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.4
+      required_movement_radius: 0.5
       movement_time_allowance: 10.0
     # Goal checker parameters
     goal_checker:
@@ -76,22 +76,22 @@ controller_server:
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.26
+      max_vel_x: 0.32
       max_vel_y: 0.0
       max_vel_theta: 1.0
       min_speed_xy: 0.007
-      max_speed_xy: 0.32
+      max_speed_xy: 0.40
       min_speed_theta: 0.0
-      acc_lim_x: 2.5
+      acc_lim_x: 2.0
       acc_lim_y: 0.0
       acc_lim_theta: 3.2
-      decel_lim_x: -2.5
+      decel_lim_x: -2.0
       decel_lim_y: 0.0
       decel_lim_theta: -3.2
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
-      sim_time: 0.75 # low value to avoid slow movement near goal
+      sim_time: 2.5
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 1.0
@@ -212,7 +212,7 @@ planner_server:
       tolerance: 0.125                  # tolerance for planning if unable to reach exact pose, in meters, for 2D node
       downsample_costmap: false         # whether or not to downsample the map
       downsampling_factor: 1            # multiplier for the resolution of the costmap layer (e.g. 2 on a 5cm costmap would be 10cm)
-      allow_unknown: true              # allow traveling in unknown space
+      allow_unknown: false              # allow traveling in unknown space
       max_iterations: -1                # maximum total iterations to search for before failing
       max_on_approach_iterations: 1000  # maximum number of iterations to attempt to reach goal once in tolerance, 2D only
       max_planning_time: 2.0            # max time in s for planner to plan, smooth, and upsample. Will scale maximum smoothing and upsampling times based on remaining time after planning.

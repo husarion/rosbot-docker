@@ -563,6 +563,9 @@
       <geometry>
         <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -590,6 +593,9 @@
       <geometry>
         <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -617,6 +623,9 @@
       <geometry>
         <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -644,6 +653,9 @@
       <geometry>
         <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
