@@ -519,8 +519,9 @@
     <visual name="base_link_visual">
       <origin rpy=" 1.5707 0 1.5707" xyz="0 0 -0.02"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/box.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/box.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="white" />
     </visual>
   </link>
   <joint name="top_joint" type="fixed">
@@ -539,15 +540,16 @@
     <visual name="top">
       <origin rpy=" 1.5707 0 1.5707" xyz="0 0 0.055"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/upper.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/upper.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="red" />
     </visual>
   </link>
   <link name="front_left_wheel">
     <collision name="collision">
       <origin rpy="0 0 1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel-v2.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <surface>
         <friction>
@@ -561,11 +563,9 @@
     <visual name="front_left_wheel_visual">
       <origin rpy="0 0 1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 1.0"/>
-      </material>
+      <material name="black" />
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -577,7 +577,7 @@
     <collision name="collision">
       <origin rpy="0 0 -1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel-v2.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <surface>
         <friction>
@@ -591,11 +591,9 @@
     <visual name="front_right_wheel_visual">
       <origin rpy="0 0 -1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 1.0"/>
-      </material>
+      <material name="black" />
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -607,7 +605,7 @@
     <collision name="collision">
       <origin rpy="0 0 1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel-v2.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <surface>
         <friction>
@@ -621,11 +619,9 @@
     <visual name="rear_left_wheel_visual">
       <origin rpy="0 0 1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 1.0"/>
-      </material>
+      <material name="black" />
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -637,7 +633,7 @@
     <collision name="collision">
       <origin rpy="0 0 -1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel-v2.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <surface>
         <friction>
@@ -651,11 +647,9 @@
     <visual name="rear_right_wheel_visual">
       <origin rpy="0 0 -1.5707" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/wheel.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 1.0"/>
-      </material>
+      <material name="black" />
     </visual>
     <inertial>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
@@ -750,8 +744,9 @@
     <visual>
       <origin rpy="1.5707 0 1.5707" xyz="-0.01 0 -0.03"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/astra.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/astra.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="black" />
     </visual>
     <inertial>
       <mass value="1e-5"/>
@@ -784,14 +779,15 @@
     <collision>
       <origin rpy="1.5707 0 4.71" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/rplidar.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/rplidar.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <visual>
       <origin rpy="1.5707 0 4.71" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:/robot_model/meshes/rplidar.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:/robot_model/meshes/rplidar.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="black" />
     </visual>
     <inertial>
       <mass value="1e-5"/>

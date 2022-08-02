@@ -34,4 +34,4 @@ services:
       - SERIAL_PORT
       - ROS_MASTER_URI=http://ros-master:11311
     command: >
-      roslaunch rosbot_bringup rosbot_docker.launch
+      roslaunch --wait rosbot_bringup rosbot_docker.launch
