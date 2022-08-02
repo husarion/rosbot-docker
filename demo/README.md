@@ -118,19 +118,25 @@ If you have other ROS 2 devices running in your LAN network make sure to provide
 
 > **Prerequisites**
 >
-> Install [unison](https://en.wikipedia.org/wiki/Unison_(software)) and [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki):
+> Install [unison](https://en.wikipedia.org/wiki/Unison_(software)) and [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki) and [rsync](https://en.wikipedia.org/wiki/Rsync):
 >
 > ```bash
-> sudo sudo apt-get update && sudo apt-get install -y unison inotify-tools
+> sudo sudo apt-get update && sudo apt-get install -y unison inotify-tools rsync
 > ```
 
-In the `demo/` folder, there is a script for auto-syncing this repo with ROSbot (you do not need to manually change the same repo on ROSbot and on the laptop)
+In the `demo/` folder, there is a script for auto-syncing this repo with ROSbot (you do not need to manually change the same repo on ROSbot and on the laptop).
 
 If IP address of your robot is `10.5.10.64`, run:
 
 ```bash
 ./sync_with_rosbot.sh 10.5.10.64
 ```
+In order to allow changes on ROSbot to affect demo directory on your PC (for example for viewing saved map) use `--bidirectional` flag:
+
+```bash
+./sync_with_rosbot.sh 10.5.10.64 --bidirectional
+```
+
 
 ### 4. Flash the microcontroller 
 
