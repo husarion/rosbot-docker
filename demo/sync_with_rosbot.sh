@@ -11,14 +11,9 @@ if [ "$2" == "--bidirectional" ]; then
         sshpass -p "husarion" unison -batch ./ ssh://husarion@$1/rosbot-docker-demo
     done
 else
+    sshpass -p "husarion" rsync -vRr ./ husarion@$1:/home/husarion/rosbot-docker-demo
+
     while inotifywait -r -e modify,create,delete,move ./ ; do 
         sshpass -p "husarion" rsync -vRr ./ husarion@$1:/home/husarion/rosbot-docker-demo
     done
 fi
-
-# The same but with rsync
-# sshpass -p "husarion" rsync -vRr ./ husarion@$1:/home/husarion/rosbot-docker-demo
-
-# while inotifywait -r -e modify,create,delete,move ./ ; do 
-#     sshpass -p "husarion" rsync -vRr ./ husarion@$1:/home/husarion/rosbot-docker-demo
-# done
