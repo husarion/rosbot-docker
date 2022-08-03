@@ -1,13 +1,13 @@
 # Demo
 
-These docker-compose .yaml configurations present how to run autonomous mapping and navigation demo with ROSbot and [Navigation2](https://navigation.ros.org/) stack. 
+Docker Compose yaml configurations from this folder present how to run autonomous mapping and navigation demo with ROSbot [Navigation2](https://navigation.ros.org/) and [Slam Toolbox](http://wiki.ros.org/slam_toolbox). 
 
 There are two phases:
 
 1. **Creating a map** - navigation and creating a map by using [slam-toolbox](https://github.com/SteveMacenski/slam_toolbox)
 2. **Localization on an already created map** - Navigation based on created map - with [AMCL](https://navigation.ros.org/configuration/packages/configuring-amcl.html)
 
-Both cases are presented below in three setups: 
+Both cases are presented in three setups: 
 
 1. In a Local Area Network (LAN) - the robot running navigation stack and PC / laptop running RViz are in the same Wi-Fi network.
 2. Over the Internet (VPN) - the robot and the laptop can be in separate networks.
@@ -35,9 +35,13 @@ Both cases are presented below in three setups:
 > ```bash
 > sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 > ```
+>
+> Change `/var/run/docker.sock` permissions, so every user can can run docker commands without `sudo`:
+> ```bash
+> sudo chmod 666 /var/run/docker.sock
+> ```
 
-
-## Quick start (Physical ROSbot)
+## Quick start (with a physical ROSbot)
 
 ### 1. Clone this repo **on your laptop**
 
@@ -112,31 +116,31 @@ RMW_IMPLEMENTATION=rmw_fastrtps_cpp         # for eProsima’s Fast DDS
 # JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
 ```
 
-If you have other ROS 2 devices running in your LAN network make sure to provide a unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
+If you have other ROS 2 devices running in your LAN network make sure to provide an unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
 
 ### 3. Sync your workspace with the ROSbot
 
 > **Prerequisites**
 >
-> Install [unison](https://en.wikipedia.org/wiki/Unison_(software)) and [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki) and [rsync](https://en.wikipedia.org/wiki/Rsync):
+> Install [unison](https://en.wikipedia.org/wiki/Unison_(software)), [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki) and [rsync](https://en.wikipedia.org/wiki/Rsync):
 >
 > ```bash
 > sudo sudo apt-get update && sudo apt-get install -y unison inotify-tools rsync
 > ```
 
-In the `demo/` folder, there is a script for auto-syncing this repo with ROSbot (you do not need to manually change the same repo on ROSbot and on the laptop).
+In the `demo/` folder, there is a script for auto-syncing of this repo with your ROSbot (so you can clone this repo only on your laptop).
 
-If IP address of your robot is `10.5.10.64`, run:
+If IP address of your robot in LAN is `10.5.10.64`, run (it uses `rsync` for synchronization):
 
 ```bash
 ./sync_with_rosbot.sh 10.5.10.64
 ```
-In order to allow changes on ROSbot to affect demo directory on your PC (for example for viewing saved map) use `--bidirectional` flag:
+
+In order to allow changes on ROSbot to affect demo directory on your PC (for example for viewing saved map) use `--bidirectional` flag (it uses `unison` for that):
 
 ```bash
 ./sync_with_rosbot.sh 10.5.10.64 --bidirectional
 ```
-
 
 ### 4. Flash the microcontroller 
 
@@ -167,26 +171,26 @@ You will find your **Husarnet Join Code** on your account at Husarnet Dashboard:
 2. Select or create a network
 3. Click **[Add element]** button and select a **Join Code** tab:
 
-In this example, [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work therefore IPv6 addresses provided by Husarnet VPN need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and make sure to have **THE SAME** `secret/` on both devices:
+In this example, [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work over VPN, therefore IPv6 addresses provided by Husarnet need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and make sure to have **THE SAME** `secret/` on both devices:
 
-Execute these commands in the Linux terminal
+Execute this command in the Linux terminal
 
 ```bash
 ./generate-vpn-config.sh
 ```
 
 ### 6. Create a map
-> **Enabling display**
+
+> **Enabling a display**
 > 
 > In order to use GUI of applications running in containers (like rviz) run:
 > ``` bash
 > xhost local:root
 > ```
-> on your PC, before starting those containers
+> on your PC, before starting the containers
 >
 
-
-Depending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC or ROSbot's terminal:
+Depending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC and ROSbot's terminal:
 
 <table>
 
@@ -274,9 +278,11 @@ up
 
 </table>
 
-Prepare map with Rviz2 using **2D Goal Pose**.
+After about 35 seconds, you should see the ROSbot model in the Rviz window:
 
-![](./docs/nav2_goal.png)
+![](./.docs/rviz_mapping.png)
+
+Prepare map with Rviz2 using the **[Nav2 Goal]** button on the top bar.
 
 After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
 
@@ -284,9 +290,12 @@ After you create the map, open a new terminal on ROSbot, navigate to `demo/` fol
 ./map-save.sh
 ```
 
-Your map has been saved in docker volume and is now in the `maps/` folder.
+Your map has been saved in docker volume and is available in the `maps/` folder.
+
+Mapping phase is completed, you can stop / remove all running containers on ROSbot.
 
 ### 7. Localization on an already created map
+
 Depending on the network configuration (LAN/VPN) execute the chosen pair of commands in the PC or ROSbot's terminal:
 
 <table>
@@ -373,12 +382,17 @@ up
 
 </table>
 
-Set initial pose of ROSbot using `2D Pose Estimate` and navigate with `Nav2 Goal`.
+After about 35 seconds, you should see the ROSbot model in the Rviz window in a random place on the map you have previously created:
 
-![](./docs/2d_pose_estimate.png)
+![](./.docs/rviz_localization_start.png)
+
+By using the **[2D Pose Estimate]** button manualy tell the ROSbot where on the existing map is its starting position:
+
+![](./.docs/rviz_localization_pose_estimate.png)
+
+and tell the ROSbot where to go autonomously with **[Nav2 Goal]** button.
 
 ## Quick start (simulation model of ROSbot in Gazebo)
-
 
 ### 1. Clone this repo **on your laptop**
 
@@ -458,12 +472,15 @@ docker compose \
 up
 ```
 
-In Rviz2 window, click the **[Startup]** button in the "**Navigation 2**" field.
+In the Rviz2 window, click the **[Startup]** button in the "**Navigation 2**" field.
 
-Prepare a map with Rviz2 using 2D Goal Pose and [save the map](https://github.com/husarion/rosbot-docker/tree/ros1/demo#saving-the-map).
+Prepare a map with Rviz2 by driving the ROSbot around using the **[Nav2 Goal]** button.
 
+After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
 
-[![Watch the video](https://img.youtube.com/vi/OiZTFYMlgis/default.jpg)](https://youtu.be/OiZTFYMlgis)
+```bash
+./map-save.sh
+```
 
 ### 4. Localization on an already created map
 
@@ -481,7 +498,5 @@ docker compose \
 up 
 ```
 
-### Results:
-
-[![Watch the video](https://img.youtube.com/vi/j_tRVuZiR18/default.jpg)](https://youtu.be/j_tRVuZiR18)
+By using the **[2D Pose Estimate]** button manualy tell the ROSbot where on the existing map is its starting position and tell the ROSbot where to go autonomously by using the **[Nav2 Goal]** button.
 
