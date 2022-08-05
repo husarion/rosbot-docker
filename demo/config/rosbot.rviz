@@ -232,81 +232,17 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: ""
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        camera_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        front_left_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        front_right_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        laser:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        range_fl:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        range_fr:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        range_rl:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        range_rr:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rear_left_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_right_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: rviz_common/Group
       Displays:
@@ -442,5 +378,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1425
-  X: 983
-  Y: 567
+  X: 495
+  Y: 239
