@@ -44,4 +44,4 @@ services:
       - /dev/net/tun
     environment:
       - HOSTNAME=rosbot
-      - JOINCODE
+      - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}

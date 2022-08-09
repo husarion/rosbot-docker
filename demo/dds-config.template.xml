@@ -19,7 +19,7 @@
                 <defaultUnicastLocatorList>
                     <locator>
                         <udpv6>
-                            <address>rviz</address>
+                            <address>laptop</address>
                         </udpv6>
                     </locator>
                     <locator>
@@ -32,7 +32,7 @@
                     <initialPeersList>
                         <locator>
                             <udpv6>
-                                <address>rviz</address>
+                                <address>laptop</address>
                             </udpv6>
                         </locator>
                         <locator>
@@ -44,7 +44,7 @@
                     <metatrafficUnicastLocatorList>
                         <locator>
                             <udpv6>
-                                <address>rviz</address>
+                                <address>laptop</address>
                             </udpv6>
                         </locator>
                         <locator>

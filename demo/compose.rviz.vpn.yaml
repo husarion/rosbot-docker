@@ -15,7 +15,7 @@ services:
     image: husarnet/husarnet
     volumes:
       - /var/lib/husarnet
-      - ./secret/id_rviz:/var/lib/husarnet/id
+      - ./secret/id_laptop:/var/lib/husarnet/id
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     cap_add:
@@ -23,5 +23,5 @@ services:
     devices:
       - /dev/net/tun
     environment:
-      - HOSTNAME=rviz
-      - JOINCODE
+      - HOSTNAME=laptop
+      - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a PEERS=("rosbot" "rviz")
+declare -a PEERS=("rosbot" "laptop")
 OUTPUT_PATH="./secret"
 DDS_FILE_NAME="dds-config.template.xml"
 

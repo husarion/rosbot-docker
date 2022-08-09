@@ -11,7 +11,7 @@ services:
     command: >
       ros2 launch nav2_bringup navigation_launch.py    
         params_file:=/nav2_params.yaml
-        use_sim_time:=${USE_SIM_TIME}
+        use_sim_time:=${USE_SIM_TIME:-False}
 
   localization-mapping:
     image: husarion/navigation2:galactic
@@ -23,4 +23,4 @@ services:
       ros2 launch nav2_bringup localization_launch.py    
         params_file:=/amcl_params.yaml
         map:=/maps/map.yaml
-        use_sim_time:=${USE_SIM_TIME}
+        use_sim_time:=${USE_SIM_TIME:-False}

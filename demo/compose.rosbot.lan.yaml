@@ -7,22 +7,22 @@ services:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID
-      - RMW_IMPLEMENTATION
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   navigation:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID
-      - RMW_IMPLEMENTATION
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   rplidar:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID
-      - RMW_IMPLEMENTATION
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   bridge:
     network_mode: host
@@ -30,8 +30,8 @@ services:
     environment:
       - ROS_IP=127.0.0.1
       - ROS_MASTER_URI=http://127.0.0.1:11311
-      - ROS_DOMAIN_ID
-      - RMW_IMPLEMENTATION
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   ros-master:
     network_mode: host

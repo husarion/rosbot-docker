@@ -8,5 +8,5 @@ services:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID
-      - RMW_IMPLEMENTATION
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}

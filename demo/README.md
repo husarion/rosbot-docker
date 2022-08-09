@@ -71,15 +71,6 @@ modify it if needed (see comments)
 
 ```bash
 # ======================================================
-# For LAN examples you need to have unique ROS_DOMAIN_ID to 
-# avoid reading messages from other robots in the network
-#
-# ROS_DOMAIN_ID has to be in range 0-232
-======================================================
-
-ROS_DOMAIN_ID=79
-
-# ======================================================
 # SBC <> STM32 serial connection.
 # ======================================================
 
@@ -100,13 +91,6 @@ RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
 
 USE_SIM_TIME=False      # for a physical ROSbot
 # USE_SIM_TIME=True       # for a Gazebo simulation
-
-# ======================================================
-# DDS implementation
-# ======================================================
-
-RMW_IMPLEMENTATION=rmw_fastrtps_cpp         # for eProsima’s Fast DDS
-# RMW_IMPLEMENTATION=rmw_cyclonedds_cpp       # or Eclipse’s Cyclone DDS
 
 # ======================================================
 # Uncomment for compose.*.vpn.yaml files and paste 
@@ -411,15 +395,6 @@ modify it if needed (see comments)
 
 ```bash
 # ======================================================
-# For LAN examples you need to have unique ROS_DOMAIN_ID to 
-# avoid reading messages from other robots in the network
-# 
-# ROS_DOMAIN_ID has to be in range 0-232
-======================================================
-
-ROS_DOMAIN_ID=79
-
-# ======================================================
 # SBC <> STM32 serial connection.
 # ======================================================
 
@@ -440,13 +415,6 @@ RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
 
 # USE_SIM_TIME=False      # for a physical ROSbot
 USE_SIM_TIME=True       # for a Gazebo simulation
-
-# ======================================================
-# DDS implementation
-# ======================================================
-
-RMW_IMPLEMENTATION=rmw_fastrtps_cpp         # for eProsima’s Fast DDS
-# RMW_IMPLEMENTATION=rmw_cyclonedds_cpp       # or Eclipse’s Cyclone DDS
 
 # ======================================================
 # Uncomment for compose.*.vpn.yaml files and paste 

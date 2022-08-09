@@ -4,7 +4,7 @@ services:
     image: husarion/rosbot:noetic
     privileged: true
     environment:
-      - SERIAL_PORT
+      - SERIAL_PORT=${SERIAL_PORT:?err}
     devices:
       - ${SERIAL_PORT}
     command: /flash-firmware.py /root/firmware_diff.bin 
