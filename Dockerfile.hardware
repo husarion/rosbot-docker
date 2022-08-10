@@ -111,7 +111,10 @@ COPY ./flash-firmware.py /
 COPY ./ros_entrypoint.sh /
 
 RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
-	echo ". /ros_ws/devel/setup.bash" >> ~/.bashrc
+	echo ". /ros_ws/devel/setup.bash" >> ~/.bashrc && \
+	# allows us to run: docker exec -it rosbot bash --login -c "rostopic list"
+	echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.profile && \
+	echo ". /ros_ws/devel/setup.bash" >> ~/.profile
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
