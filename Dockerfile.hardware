@@ -110,5 +110,8 @@ COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 COPY ./flash-firmware.py /
 COPY ./ros_entrypoint.sh /
 
+RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
+	echo ". /ros_ws/devel/setup.bash"
+
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
