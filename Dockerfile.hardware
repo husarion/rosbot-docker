@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
 # TODO: wget from releases instead
 FROM --platform=linux/amd64 ubuntu:20.04 AS stm32_firmware_builder
 
+ARG ROSBOT_FW_RELEASE=0.16.1
 ARG ROS_NOETIC_MSGS=0
 
 SHELL ["/bin/bash", "-c"]
@@ -27,13 +28,21 @@ RUN apt update && apt install -y \
 		python3 \
 		python3-pip \
 		git \
+		wget \
 		tree
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 # RUN pip3 install -U platformio==${PIO_VERSION}
 RUN pip3 install -U platformio
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
+# RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
+# 	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
+# 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
+
+
+RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${ROSBOT_FW_RELEASE}.tar.gz && \
+	tar -xf *.tar.gz && \
+	mv rosbot-stm32-firmware* rosbot-stm32-firmware && \
 	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 

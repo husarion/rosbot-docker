@@ -16,9 +16,11 @@ jobs:
         include:
           - ros-distro: melodic
             ros-noetic-msgs: 0
+            rosbot-fw-release: 0.16.1
             platforms: "linux/amd64, linux/arm64, linux/arm/v7"
           - ros-distro: noetic
             ros-noetic-msgs: 1
+            rosbot-fw-release: 0.16.1
             platforms: "linux/amd64, linux/arm64"
 
     steps:
@@ -50,6 +52,7 @@ jobs:
         build-args: |
           ROS_DISTRO=${{ matrix.ros-distro }}
           ROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }}
+          ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}  
         cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
         cache-to: type=inline
