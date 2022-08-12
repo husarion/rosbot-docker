@@ -5,23 +5,24 @@
 services:
 
   rviz:
-    network_mode: service:husarnet-rviz
+    # network_mode: service:husarnet-rosbot
+    network_mode: host
     volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
-  husarnet-rviz:
-    image: husarnet/husarnet
-    volumes:
-      - /var/lib/husarnet
-      - ./secret/id_laptop:/var/lib/husarnet/id
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun
-    environment:
-      - HOSTNAME=laptop
-      - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}
+  # husarnet-rviz:
+  #   image: husarnet/husarnet
+  #   volumes:
+  #     - /var/lib/husarnet
+  #     - ./secret/id_laptop:/var/lib/husarnet/id
+  #   sysctls:
+  #     - net.ipv6.conf.all.disable_ipv6=0
+  #   cap_add:
+  #     - NET_ADMIN
+  #   devices:
+  #     - /dev/net/tun
+  #   environment:
+  #     - HOSTNAME=laptop
+  #     - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}
