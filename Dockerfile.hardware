@@ -38,7 +38,8 @@ RUN pip3 install -U platformio
 # RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
 # 	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
 # 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
-
+# WORKDIR /rosbot-stm32-firmware
+# RUN git submodule update --init --recursive
 
 RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${ROSBOT_FW_RELEASE}.tar.gz && \
 	tar -xf *.tar.gz && \
@@ -47,8 +48,6 @@ RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${R
 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 
 WORKDIR /rosbot-stm32-firmware
-
-RUN git submodule update --init --recursive
 
 RUN export LC_ALL=C.UTF-8 && \
 	export LANG=C.UTF-8 && \
