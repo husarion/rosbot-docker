@@ -4,48 +4,75 @@
 services:
 
   localization-mapping:
-    # network_mode: service:husarnet-rosbot
-    network_mode: host
+    network_mode: service:husarnet-rosbot
+    # network_mode: host
+    # ipc: host
     volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
+      # - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      # - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
   navigation:
-    # network_mode: service:husarnet-rosbot
-    network_mode: host
+    network_mode: service:husarnet-rosbot
+    # network_mode: host
+    # ipc: host
     volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
+      # - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      # - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
   rplidar:
-    # network_mode: service:husarnet-rosbot
-    network_mode: host
+    network_mode: service:husarnet-rosbot
+    # network_mode: host
+    # ipc: host
     volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
+      # - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      # - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
   bridge:
-    # network_mode: service:husarnet-rosbot
-    network_mode: host
+    network_mode: service:husarnet-rosbot
+    # network_mode: host
+    # ipc: host
     volumes:
       - ./secret/dds-config.xml:/dds-config.xml
     environment:
+      # - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      # - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+      # - ROS_IP=127.0.0.1
+      # - ROS_MASTER_URI=http://127.0.0.1:11311
 
-  # husarnet-rosbot:
-  #   image: husarnet/husarnet
-  #   volumes:
-  #     - /var/lib/husarnet
-  #     - ./secret/id_rosbot:/var/lib/husarnet/id
-  #   sysctls:
-  #     - net.ipv6.conf.all.disable_ipv6=0
-  #   cap_add:
-  #     - NET_ADMIN
-  #   devices:
-  #     - /dev/net/tun
+  # ros-master:
+  #   network_mode: host
+  #   ipc: host
   #   environment:
-  #     - HOSTNAME=rosbot
-  #     - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}
+  #     - ROS_IP=127.0.0.1
+
+  # rosbot:
+  #   network_mode: host
+  #   ipc: host
+  #   environment:
+  #     - ROS_IP=127.0.0.1
+  #     - ROS_MASTER_URI=http://127.0.0.1:11311
+
+  husarnet-rosbot:
+    image: husarnet/husarnet
+    volumes:
+      - /var/lib/husarnet
+      - ./secret/id_rosbot:/var/lib/husarnet/id
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - HOSTNAME=rosbot
+      - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}
