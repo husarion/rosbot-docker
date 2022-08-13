@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dds>
+    <profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+        <transport_descriptors>
+            <transport_descriptor>
+                <transport_id>HusarnetTransport</transport_id>
+                <type>UDPv6</type>
+                <!-- <maxInitialPeersRange>30</maxInitialPeersRange> -->
+                <!-- <non_blocking_send>true</non_blocking_send> -->
+            </transport_descriptor>
+        </transport_descriptors>
+
+        <participant profile_name="husarnet_simple_profile" is_default_profile="true">
+            <rtps>
+                <userTransports>
+                    <transport_id>HusarnetTransport</transport_id>
+                </userTransports>
+                <useBuiltinTransports>true</useBuiltinTransports>
+                <!-- <defaultUnicastLocatorList>
+                    <locator>
+                        <udpv6>
+                            <address>legion-y540</address>
+                        </udpv6>
+                    </locator>
+                    <locator>
+                        <udpv6>
+                            <address>rosbot2r</address>
+                        </udpv6>
+                    </locator>
+                </defaultUnicastLocatorList> -->
+                <builtin>
+                    <initialPeersList>
+                        <metatrafficUnicastLocatorList>
+                            <locator/>
+                        </metatrafficUnicastLocatorList>
+                        <!-- <locator>
+                            <udpv6>
+                                <address>fc94:2e23:3393:c777:9bc6:d708:488:bc0f</address>
+                            </udpv6>
+                        </locator>
+                        <locator>
+                            <udpv6>
+                                <address>fc94:b420:70e4:fb45:2b42:caf8:1ebd:9128</address>
+                            </udpv6>
+                        </locator>
+                        <locator>
+                            <udpv6>
+                                <address>fc94:1e33:3f99:8db1:3f31:c99a:1f94:d72d</address>
+                            </udpv6>
+                        </locator> -->
+                        <locator>
+                            <udpv6>
+                                <address>legion-y540</address>
+                            </udpv6>
+                        </locator>
+                        <locator>
+                            <udpv6>
+                                <address>rosbot2r</address>
+                            </udpv6>
+                        </locator>
+                        <locator>
+                            <udpv6>
+                                <address>laptop</address>
+                            </udpv6>
+                        </locator>
+                    </initialPeersList>
+                    <!-- <metatrafficUnicastLocatorList>
+                        <locator>
+                            <udpv6>
+                                <address>legion-y540</address>
+                            </udpv6>
+                        </locator>
+                        <locator>
+                            <udpv6>
+                                <address>rosbot2r</address>
+                            </udpv6>
+                        </locator>
+                    </metatrafficUnicastLocatorList>      -->
+                </builtin>
+            </rtps>
+        </participant>
+    </profiles>
+</dds>

@@ -5,8 +5,8 @@
 services:
 
   rviz:
-    network_mode: service:husarnet-rviz
-    # network_mode: host
+    # network_mode: service:husarnet-rviz
+    network_mode: host
     # ipc: host
     volumes:
       - ./secret/dds-config.xml:/dds-config.xml
