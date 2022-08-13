@@ -16,23 +16,8 @@
                     <transport_id>HusarnetTransport</transport_id>
                 </userTransports>
                 <useBuiltinTransports>true</useBuiltinTransports>
-                <!-- <defaultUnicastLocatorList>
-                    <locator>
-                        <udpv6>
-                            <address>legion-y540</address>
-                        </udpv6>
-                    </locator>
-                    <locator>
-                        <udpv6>
-                            <address>rosbot2r</address>
-                        </udpv6>
-                    </locator>
-                </defaultUnicastLocatorList> -->
                 <builtin>
                     <initialPeersList>
-                        <!-- <metatrafficUnicastLocatorList>
-                            <locator/>
-                        </metatrafficUnicastLocatorList> -->
                         <locator>
                             <udpv6>
                                 <address>fc94:2e23:3393:c777:9bc6:d708:488:bc0f</address>
@@ -52,25 +37,8 @@
                             <udpv6>
                                 <address>rosbot2r</address>
                             </udpv6>
-                        </locator>
-                        <locator>
-                            <udpv6>
-                                <address>laptop</address>
-                            </udpv6>
                         </locator> -->
                     </initialPeersList>
-                    <!-- <metatrafficUnicastLocatorList>
-                        <locator>
-                            <udpv6>
-                                <address>legion-y540</address>
-                            </udpv6>
-                        </locator>
-                        <locator>
-                            <udpv6>
-                                <address>rosbot2r</address>
-                            </udpv6>
-                        </locator>
-                    </metatrafficUnicastLocatorList>      -->
                 </builtin>
             </rtps>
         </participant>
