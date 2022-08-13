@@ -15,17 +15,17 @@ services:
       # - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 
-  husarnet-rviz:
-    image: husarnet/husarnet
-    volumes:
-      - /var/lib/husarnet
-      - ./secret/id_laptop:/var/lib/husarnet/id
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun
-    environment:
-      - HOSTNAME=laptop
-      - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}
+  # husarnet-rviz:
+  #   image: husarnet/husarnet
+  #   volumes:
+  #     - /var/lib/husarnet
+  #     - ./secret/id_laptop:/var/lib/husarnet/id
+  #   sysctls:
+  #     - net.ipv6.conf.all.disable_ipv6=0
+  #   cap_add:
+  #     - NET_ADMIN
+  #   devices:
+  #     - /dev/net/tun
+  #   environment:
+  #     - HOSTNAME=laptop
+  #     - JOINCODE=${JOINCODE:?find JOINCODE at https://app.husarnet.com}
