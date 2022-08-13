@@ -5,6 +5,7 @@ services:
 
   localization-mapping:
     network_mode: service:husarnet-rosbot
+    ipc: service:husarnet-rosbot
     # network_mode: host
     # ipc: host
     volumes:
@@ -16,6 +17,7 @@ services:
 
   navigation:
     network_mode: service:husarnet-rosbot
+    ipc: service:husarnet-rosbot
     # network_mode: host
     # ipc: host
     volumes:
@@ -27,6 +29,7 @@ services:
 
   rplidar:
     network_mode: service:husarnet-rosbot
+    ipc: service:husarnet-rosbot
     # network_mode: host
     # ipc: host
     volumes:
@@ -38,6 +41,7 @@ services:
 
   bridge:
     network_mode: service:husarnet-rosbot
+    ipc: service:husarnet-rosbot
     # network_mode: host
     # ipc: host
     volumes:
@@ -64,6 +68,7 @@ services:
 
   husarnet-rosbot:
     image: husarnet/husarnet
+    ipc: shareable
     volumes:
       - /var/lib/husarnet
       - ./secret/id_rosbot:/var/lib/husarnet/id
