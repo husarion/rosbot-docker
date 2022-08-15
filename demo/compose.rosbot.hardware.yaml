@@ -4,12 +4,12 @@
 services:
 
   rplidar:
-    image: husarion/rplidar:humble
+    image: husarion/rplidar:humble-ros2
     restart: unless-stopped
     devices:
       - /dev/ttyUSB0
     command: >
-      ros2 launch rplidar_ros rplidar.launch.py
+      ros2 launch sllidar_ros2 sllidar_launch.py 
         serial_baudrate:=${RPLIDAR_BAUDRATE:-115200}
 
   bridge:

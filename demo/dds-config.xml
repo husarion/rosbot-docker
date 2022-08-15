@@ -17,20 +17,7 @@
                 </userTransports>
                 <useBuiltinTransports>true</useBuiltinTransports>
                 <builtin>
-                    <!-- <metatrafficUnicastLocatorList>
-                        <locator/>
-                    </metatrafficUnicastLocatorList> -->
                     <initialPeersList>
-                        <!-- <locator>
-                            <udpv6>
-                                <address>fc94:2e23:3393:c777:9bc6:d708:488:bc0f</address>
-                            </udpv6>
-                        </locator>
-                        <locator>
-                            <udpv6>
-                                <address>fc94:b420:70e4:fb45:2b42:caf8:1ebd:9128</address>
-                            </udpv6>
-                        </locator> -->
                         <locator>
                             <udpv6>
                                 <address>legion-y540</address>
