@@ -75,7 +75,7 @@ RUN export LC_ALL=C.UTF-8 && \
 
 ## =========================== ROS package builder ===============================
 
-FROM ros:$ROS_DISTRO-ros-core
+FROM ros:$ROS_DISTRO-ros-core AS pkg-builder
 
 SHELL ["/bin/bash", "-c"]
 
@@ -113,7 +113,7 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 
 ## =========================== ROS image ===============================
 
-FROM ros:$ROS_DISTRO-ros-core AS pkg-builder
+FROM ros:$ROS_DISTRO-ros-core 
 
 SHELL ["/bin/bash", "-c"]
 
