@@ -2,8 +2,8 @@ name: Docker image for simulation
 
 on:
   push:
-    branches:
-      - 'ros1'
+    # branches:
+    #   - 'ros1'
   pull_request:
     types: [closed]
   
@@ -36,7 +36,8 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    - name: Build and push
+    - name: Build and push (production)
+      if: github.ref_name == 'ros1'
       uses: docker/build-push-action@v2
       with:
         context: .
@@ -47,4 +48,18 @@ jobs:
           ROS_DISTRO=${{ matrix.ros-distro }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}-simulation
         cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}-simulation
+        cache-to: type=inline
+
+    - name: Build and push (development)
+      if: github.ref_name != 'ros1'
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.simulation
+        platforms: linux/amd64
+        push: true
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
+        tags: husarion/rosbot:${{ matrix.ros-distro }}-simulation-${{ github.head_ref || github.ref_name }}
+        cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}-simulation-${{ github.head_ref || github.ref_name }}
         cache-to: type=inline

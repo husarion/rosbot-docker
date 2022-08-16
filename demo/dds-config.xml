@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dds>
+    <profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+        <transport_descriptors>
+            <transport_descriptor>
+                <transport_id>HusarnetTransport</transport_id>
+                <type>UDPv6</type>
+                <maxInitialPeersRange>30</maxInitialPeersRange>
+                <!-- <non_blocking_send>true</non_blocking_send> -->
+            </transport_descriptor>
+        </transport_descriptors>
+
+        <participant profile_name="husarnet_simple_profile" is_default_profile="true">
+            <rtps>
+                <userTransports>
+                    <transport_id>HusarnetTransport</transport_id>
+                </userTransports>
+                <useBuiltinTransports>true</useBuiltinTransports>
+                <builtin>
+                    <initialPeersList>
+                        <locator>
+                            <udpv6>
+                                <address>replace-it-with-ipv6-addr-of-your-laptop</address>
+                            </udpv6>
+                        </locator>
+                        <locator>
+                            <udpv6>
+                                <address>replace-it-with-ipv6-addr-of-your-rosbot</address>
+                            </udpv6>
+                        </locator>
+                    </initialPeersList>
+                </builtin>
+            </rtps>
+        </participant>
+    </profiles>
+</dds>
