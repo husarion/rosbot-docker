@@ -73,7 +73,7 @@ RUN export LC_ALL=C.UTF-8 && \
 		-DKINEMATIC_TYPE=1" && \
 	pio run 
 
-## =========================== ROS image ===============================
+## =========================== ROS package builder ===============================
 
 FROM ros:$ROS_DISTRO-ros-core
 
@@ -110,6 +110,35 @@ RUN mkdir -p src && \
 # build ROS workspace
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 	catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
+
+## =========================== ROS image ===============================
+
+FROM ros:$ROS_DISTRO-ros-core AS pkg-builder
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt update && apt install -y \
+		python3-pip \
+		ros-$ROS_DISTRO-rosserial-python \ 
+		ros-$ROS_DISTRO-rosserial-server \
+		ros-$ROS_DISTRO-rosserial-client \
+		ros-$ROS_DISTRO-rosserial-msgs \
+		ros-$ROS_DISTRO-move-base-msgs \
+		ros-$ROS_DISTRO-robot-localization \
+		ros-$ROS_DISTRO-xacro \
+		ros-$ROS_DISTRO-transmission-interface \
+		ros-$ROS_DISTRO-controller-manager \
+		ros-$ROS_DISTRO-robot-state-publisher && \
+	pip3 install python-periphery && \
+	pip3 install sh && \
+	pip3 install pyserial && \
+	python3 -m pip install --upgrade pyserial && \
+	# clear ubuntu packages
+	apt clean && \
+	rm -rf /var/lib/apt/lists/*
+
+# copy ROS package from previous step
+COPY --from=pkg-builder /ros_ws /ros_ws
 
 # copy firmware built in previous stage
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
