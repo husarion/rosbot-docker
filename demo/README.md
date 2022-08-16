@@ -183,8 +183,8 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 <tr>
 
 <th> </th> 
-<th> LAN </th> 
-<th> VPN </th>
+<th> ROSbot </th> 
+<th> PC / laptop </th> 
 
 </tr>
 
@@ -193,45 +193,11 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 <tr>
 
 <td>
-<b>PC / laptop</b>
+<b>LAN 🏠</b>
 </td> 
 
 <td>  
 
-
-```
-docker compose \
--f compose.rviz.yaml \
--f compose.rviz.lan.yaml \
-up
-```
-
-</td>
-
-<td>  
-
-
-
-```
-docker compose \
--f compose.rviz.yaml \
--f compose.rviz.vpn.yaml \
-up
-```
-
-</td>
-
-</tr>
-
-<!-- ------------------------------------------------- -->
-
-<tr>
-
-<td> 
-<b>ROSbot</b>
-</td> 
-
-<td>  
 
 ```bash
 docker compose \
@@ -245,12 +211,44 @@ up
 
 <td>  
 
+```
+docker compose \
+-f compose.rviz.yaml \
+-f compose.rviz.lan.yaml \
+up
+```
+
+</td>
+
+</tr>
+
+<!-- ------------------------------------------------- -->
+
+<tr>
+
+<td> 
+<b>VPN 🌎</b>
+</td> 
+
+<td>  
 
 ```bash
 docker compose \
 -f compose.rosbot.hardware.yaml \
 -f compose.rosbot.mapping.yaml \
 -f compose.rosbot.vpn.yaml \
+up
+```
+
+</td>
+
+<td>  
+
+
+```
+docker compose \
+-f compose.rviz.yaml \
+-f compose.rviz.vpn.yaml \
 up
 ```
 
@@ -289,8 +287,9 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 <tr>
 
 <th> </th> 
-<th> LAN </th> 
-<th> VPN </th>
+<th> ROSbot </th> 
+<th> PC / laptop </th> 
+
 
 </tr>
 
@@ -299,40 +298,7 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 <tr>
 
 <td> 
-<b>PC / laptop</b>
-</td> 
-
-<td>  
-
-
-```
-docker compose \
--f compose.rviz.yaml \
--f compose.rviz.lan.yaml \
-up
-```
-
-</td>
-
-<td>  
-
-```
-docker compose \
--f compose.rviz.yaml \
--f compose.rviz.vpn.yaml \
-up
-```
-
-</td>
-
-</tr>
-
-<!-- ------------------------------------------------- -->
-
-<tr>
-
-<td> 
-<b>ROSbot</b>
+<b>LAN 🏠</b>
 </td> 
 
 <td>  
@@ -349,12 +315,43 @@ up
 
 <td>  
 
+```
+docker compose \
+-f compose.rviz.yaml \
+-f compose.rviz.lan.yaml \
+up
+```
+
+</td>
+
+</tr>
+
+<!-- ------------------------------------------------- -->
+
+<tr>
+
+<td> 
+<b>VPN 🌎</b>
+</td> 
+
+<td>  
 
 ```bash
 docker compose \
 -f compose.rosbot.hardware.yaml \
 -f compose.rosbot.localization.yaml \
 -f compose.rosbot.vpn.yaml \
+up
+```
+
+</td>
+
+<td>  
+
+```
+docker compose \
+-f compose.rviz.yaml \
+-f compose.rviz.vpn.yaml \
 up
 ```
 
