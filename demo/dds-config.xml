@@ -20,12 +20,12 @@
                     <initialPeersList>
                         <locator>
                             <udpv6>
-                                <address>legion-y540</address>
+                                <address>replace-it-with-ipv6-addr-of-your-laptop</address>
                             </udpv6>
                         </locator>
                         <locator>
                             <udpv6>
-                                <address>rosbot2r</address>
+                                <address>replace-it-with-ipv6-addr-of-your-rosbot</address>
                             </udpv6>
                         </locator>
                     </initialPeersList>

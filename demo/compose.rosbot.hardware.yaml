@@ -4,7 +4,7 @@
 services:
 
   rplidar:
-    image: husarion/rplidar:humble-ros2
+    image: husarion/rplidar:galactic
     restart: unless-stopped
     devices:
       - /dev/ttyUSB0
@@ -26,7 +26,7 @@ services:
     command: stdbuf -o L roscore
 
   rosbot:
-    image: husarion/rosbot:noetic
+    image: husarion/rosbot:noetic-ros1-smaller-image
     restart: unless-stopped
     devices:
       - ${SERIAL_PORT}

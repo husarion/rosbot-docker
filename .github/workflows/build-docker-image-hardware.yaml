@@ -2,8 +2,8 @@ name: Docker image for hardware
 
 on:
   push:
-    branches:
-      - 'ros1'
+    # branches:
+    #   - 'ros1'
   pull_request:
     types: [closed]
   
@@ -42,7 +42,8 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    - name: Build and push
+    - name: Build and push (production)
+      if: github.ref_name == 'ros1'
       uses: docker/build-push-action@v2
       with:
         context: .
@@ -55,4 +56,20 @@ jobs:
           ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}  
         cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
+        cache-to: type=inline
+
+    - name: Build and push (development)
+      if: github.ref_name != 'ros1'
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.hardware
+        platforms: ${{ matrix.platforms }}
+        push: true
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
+          ROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }}
+          ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
+        tags: husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
+        cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
         cache-to: type=inline
