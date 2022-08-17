@@ -145,7 +145,7 @@ husarion/rosbot:noetic \
 
 ### 5. [Optional] VPN config
 
-If in the next steps you want to run VPN configuration to make your system working **not only in LAN but also over the Internet** get your Husarnet Join Code and use it for connection your ROSbot and laptop to the same Husarnet network. 
+If in the next steps you want to run VPN configuration to make your system working **not only in LAN but also over the Internet** get your Husarnet Join Code and use it for connecting your ROSbot and laptop to the same Husarnet network. 
 
 [Husarnet P2P VPN](https://husarnet.com/) is already preinstalled on your ROSbot. You need to install it on your laptop/pc as well. **Steps on how to connect ROSbot and your laptop to the same Husarnet network are described [here](https://husarion.com/tutorials/howtostart/rosbot2r-quick-start/#remote-access-over-the-internet-vpn)**. 
 
