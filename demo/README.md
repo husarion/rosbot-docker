@@ -1,6 +1,6 @@
 # Demo
 
-Docker Compose yaml configurations from this folder present how to run autonomous mapping and navigation demo with ROSbot [Navigation2](https://navigation.ros.org/) and [Slam Toolbox](http://wiki.ros.org/slam_toolbox). 
+Run autonomous mapping and navigation demo with ROSbot [Navigation2](https://navigation.ros.org/) and [Slam Toolbox](http://wiki.ros.org/slam_toolbox) in Docker. 
 
 There are two phases:
 
@@ -74,7 +74,6 @@ modify it if needed (see comments)
 # SBC <> STM32 serial connection.
 # ======================================================
 
-# SERIAL_PORT=/dev/ttyS1     # ROSbot 2
 # SERIAL_PORT=/dev/ttyS4     # ROSbot 2 PRO
 SERIAL_PORT=/dev/ttyAMA0   # ROSbbot 2R
 
