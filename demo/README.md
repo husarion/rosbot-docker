@@ -90,13 +90,6 @@ RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
 
 USE_SIM_TIME=False      # for a physical ROSbot
 # USE_SIM_TIME=True       # for a Gazebo simulation
-
-# ======================================================
-# Uncomment for compose.*.vpn.yaml files and paste 
-# your own Husarnet Join Code from app.husarnet.com here:
-# ======================================================
-
-# JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
 ```
 
 If you have other ROS 2 devices running in your LAN network make sure to provide an unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
@@ -111,6 +104,8 @@ If you have other ROS 2 devices running in your LAN network make sure to provide
 > sudo sudo apt-get update && sudo apt-get install -y unison inotify-tools rsync
 > ```
 
+In this project you will be asked to modify `.env` and `dds-config.xml` files. You need to have the same changes applied both on your robot and laptop/pc.
+
 In the `demo/` folder, there is a script for auto-syncing of this repo with your ROSbot (so you can clone this repo only on your laptop).
 
 If IP address of your robot in LAN is `10.5.10.64`, run (it uses `rsync` for synchronization):
@@ -118,6 +113,10 @@ If IP address of your robot in LAN is `10.5.10.64`, run (it uses `rsync` for syn
 ```bash
 ./sync_with_rosbot.sh 10.5.10.64
 ```
+
+> **Tip no. 1** 💡
+>
+> You can use Husarnet VPN hostname instead of IPv6 address
 
 In order to allow changes on ROSbot to affect demo directory on your PC (for example for viewing saved map) use `--bidirectional` flag (it uses `unison` for that):
 
@@ -146,24 +145,47 @@ husarion/rosbot:noetic \
 
 ### 5. [Optional] VPN config
 
-If in the next steps you want to run VPN configuration get your Husarnet Join Code and paste it as a value for `JOINCODE` environment variable in the `.env` file.
+If in the next steps you want to run VPN configuration to make your system working **not only in LAN but also over the Internet** get your Husarnet Join Code and use it for connection your ROSbot and laptop to the same Husarnet network. 
 
-You will find your **Husarnet Join Code** on your account at Husarnet Dashboard:
+[Husarnet P2P VPN](https://husarnet.com/) is already preinstalled on your ROSbot. You need to install it on your laptop/pc as well. **Steps on how to connect ROSbot and your laptop to the same Husarnet network are described [here](https://husarion.com/tutorials/howtostart/rosbot2r-quick-start/#remote-access-over-the-internet-vpn)**. 
 
-1. Log in to https://app.husarnet.com/
-2. Select or create a network
-3. Click **[Add element]** button and select a **Join Code** tab:
+**Preparing `dds-config.xml` file:**
 
-In this example, [Husarnet P2P VPN](https://husarnet.com/) is used for providing over the Internet connectivity. Default DDS discovery using multicasting doesn't work over VPN, therefore IPv6 addresses provided by Husarnet need to be applied to a peer list in a `dds-config.xml` file. To do not copy those IPv6 addresses there is a simple utility script that does it for you. Everything you need to do is to launch it **ONLY ONCE** and make sure to have **THE SAME** `secret/` on both devices:
+Default DDS discovery using multicasting doesn't work over VPN, therefore IPv6 addresses provided by Husarnet need to be applied to a peer list in a `dds-config.xml` file.
 
-Execute this command in the Linux terminal
+To do so, based on `dds-config.template.xml` file create the `dds-config.xml` file and paste Husarnet IPv6 address of your laptop and ROSbot here:
 
-```bash
-./generate-vpn-config.sh
+```xml
+<initialPeersList>
+    <locator>
+        <udpv6>
+            <address>replace-it-with-ipv6-addr-of-your-laptop</address>
+        </udpv6>
+    </locator>
+    <locator>
+        <udpv6>
+            <address>replace-it-with-ipv6-addr-of-your-rosbot</address>
+        </udpv6>
+    </locator>
+</initialPeersList>
 ```
+
+> **Tip no. 2** 💡
+>
+> There is a simple utility script to generate `dds-config.xml` file for you by just providing Husarnet hostnames of your devices as arguments (if these hostnames are `mylaptop` and `myrosbot`):
+> 
+> ```bash
+> ./dds-config-generate.sh mylaptop myrosbot
+> ```
+
+> **Tip no. 3** 💡
+>
+> FastDDS version preinstalled in ROS 2 Humble allows you to use Husarnet hostnames instead of IPv6 addresses.
 
 ### 6. Create a map
 
+> **Tip no. 4** 💡
+>
 > **Enabling a display**
 > 
 > In order to use GUI of applications running in containers (like rviz) run:
@@ -394,7 +416,6 @@ modify it if needed (see comments)
 # SBC <> STM32 serial connection.
 # ======================================================
 
-# SERIAL_PORT=/dev/ttyS1     # ROSbot 2
 # SERIAL_PORT=/dev/ttyS4     # ROSbot 2 PRO
 SERIAL_PORT=/dev/ttyAMA0   # ROSbbot 2R
 
@@ -411,13 +432,6 @@ RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
 
 # USE_SIM_TIME=False      # for a physical ROSbot
 USE_SIM_TIME=True       # for a Gazebo simulation
-
-# ======================================================
-# Uncomment for compose.*.vpn.yaml files and paste 
-# your own Husarnet Join Code from app.husarnet.com here:
-# ======================================================
-
-# JOINCODE=fc94:b01d:1803:8dd8:b293:5c7d:7639:932a/xxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ### 3. Create a map

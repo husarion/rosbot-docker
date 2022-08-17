@@ -66,3 +66,9 @@ For more details on what is being published and subscribed by nodes running in t
 - [rosbot_ros](https://github.com/husarion/rosbot_ros)
 - [rosbot_ekf](https://github.com/husarion/rosbot_ekf)
 - [rosbot-stm32-firmware](https://github.com/husarion/rosbot-stm32-firmware)
+
+## Autonomous Navigation Demo
+
+in a [/demo](/demo) folder your will find an example of how to use ROSbot docker image in a real autonomous navigation use case.
+
+![](demo/.docs/rviz_mapping.png)
