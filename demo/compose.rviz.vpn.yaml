@@ -8,7 +8,7 @@ services:
     network_mode: host
     # ipc: host
     volumes:
-      - ./dds-config.xml:/dds-config.xml
+      - ./dds-config.client.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
 

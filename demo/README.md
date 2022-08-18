@@ -153,15 +153,10 @@ If in the next steps you want to run VPN configuration to make your system worki
 
 Default DDS discovery using multicasting doesn't work over VPN, therefore IPv6 addresses provided by Husarnet need to be applied to a peer list in a `dds-config.xml` file.
 
-To do so, based on `dds-config.template.xml` file create the `dds-config.xml` file and paste Husarnet IPv6 address of your laptop and ROSbot here:
+To do so, based on `dds-config.server.template.xml` and `dds-config.client.template.xml` files create `dds-config.server.xml` and `dds-config.server.xml` files respectively and paste Husarnet IPv6 address of your ROSbot here:
 
 ```xml
 <initialPeersList>
-    <locator>
-        <udpv6>
-            <address>replace-it-with-ipv6-addr-of-your-laptop</address>
-        </udpv6>
-    </locator>
     <locator>
         <udpv6>
             <address>replace-it-with-ipv6-addr-of-your-rosbot</address>
@@ -172,10 +167,10 @@ To do so, based on `dds-config.template.xml` file create the `dds-config.xml` fi
 
 > **Tip no. 2** 💡
 >
-> There is a simple utility script to generate `dds-config.xml` file for you by just providing Husarnet hostnames of your devices as arguments (if these hostnames are `mylaptop` and `myrosbot`):
+> There is a simple utility script to generate `dds-config.server.xml` and `dds-config.server.xml` files for you by just providing Husarnet hostnames of your ROSbot as an argument (if these hostname is `myrosbot`):
 > 
 > ```bash
-> ./dds-config-generate.sh mylaptop myrosbot
+> ./dds-config-generate.sh myrosbot
 > ```
 
 > **Tip no. 3** 💡

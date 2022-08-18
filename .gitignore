@@ -1,4 +1,5 @@
 demo/secret
 demo/.env
 demo/maps
-demo/dds-config.xml
+demo/dds-config.client.xml
+demo/dds-config.server.xml
