@@ -11,9 +11,13 @@ services:
     ipc: host
 
   dds-router:
-    image: husarnet/dds-router:experimental
+    image: husarnet/dds-router:v0.4.0
     network_mode: host
     ipc: host
     volumes:
       - ./router-config.client.yaml:/config.yaml
-    command: ddsrouter -c /config.yaml -r 10 -d
+    # command: ddsrouter -c /config.yaml -r 10 -d
+    command: >
+      ddsrouter 
+      --config-path /config.yaml 
+      --debug
