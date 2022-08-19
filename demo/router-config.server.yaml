@@ -3,15 +3,15 @@ version: v2.0
 threads: 50
 
 builtin:
-  - name: "rt/scan"
-    type: "sensor_msgs::msg::dds_::LaserScan_"
+  # - name: "rt/scan"
+  #   type: "sensor_msgs::msg::dds_::LaserScan_"
   # - name: "rt/chatter"
   #   type: "std_msgs::msg::dds_::String_"
 
 allowlist:
-  # - name: "*"
-  - name: "rt/scan"
-    type: "sensor_msgs::msg::dds_::LaserScan_"
+  - name: "*"
+  # - name: "rt/scan"
+  #   type: "sensor_msgs::msg::dds_::LaserScan_"
 
 
   # - name: "rt/chatter"

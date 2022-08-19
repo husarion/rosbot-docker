@@ -3,37 +3,37 @@
 
 services:
 
-  # localization-mapping:
-  #   network_mode: host
-  #   ipc: host
+  localization-mapping:
+    network_mode: host
+    ipc: host
 
-  # navigation:
-  #   network_mode: host
-  #   ipc: host
+  navigation:
+    network_mode: host
+    ipc: host
 
   rplidar:
     network_mode: host
     ipc: host
 
-  # bridge:
-  #   network_mode: host
-  #   ipc: host
-  #   environment:
-  #     - ROS_IP=127.0.0.1
-  #     - ROS_MASTER_URI=http://127.0.0.1:11311
+  bridge:
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
 
-  # ros-master:
-  #   network_mode: host
-  #   ipc: host
-  #   environment:
-  #     - ROS_IP=127.0.0.1
+  ros-master:
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_IP=127.0.0.1
 
-  # rosbot:
-  #   network_mode: host
-  #   ipc: host
-  #   environment:
-  #     - ROS_IP=127.0.0.1
-  #     - ROS_MASTER_URI=http://127.0.0.1:11311
+  rosbot:
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
 
   dds-router:
     image: husarnet/dds-router:v0.4.0

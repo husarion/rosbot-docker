@@ -12,26 +12,26 @@ services:
       ros2 launch sllidar_ros2 sllidar_launch.py 
         serial_baudrate:=${RPLIDAR_BAUDRATE:-115200}
 
-  # bridge:
-  #   image: husarion/ros:galactic-ros1-bridge
-  #   restart: unless-stopped
-  #   environment:
-  #     - ROS_MASTER_URI=http://ros-master:11311
-  #   command: >
-  #     ros2 run ros1_bridge dynamic_bridge
+  bridge:
+    image: husarion/ros:galactic-ros1-bridge
+    restart: unless-stopped
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    command: >
+      ros2 run ros1_bridge dynamic_bridge
 
-  # ros-master:
-  #   image: ros:noetic-ros-core
-  #   restart: unless-stopped
-  #   command: stdbuf -o L roscore
+  ros-master:
+    image: ros:noetic-ros-core
+    restart: unless-stopped
+    command: stdbuf -o L roscore
 
-  # rosbot:
-  #   image: husarion/rosbot:noetic
-  #   restart: unless-stopped
-  #   devices:
-  #     - ${SERIAL_PORT}
-  #   environment:
-  #     - SERIAL_PORT=${SERIAL_PORT:?err}
-  #     - ROS_MASTER_URI=http://ros-master:11311
-  #   command: >
-  #     roslaunch --wait rosbot_bringup rosbot_docker.launch
+  rosbot:
+    image: husarion/rosbot:noetic
+    restart: unless-stopped
+    devices:
+      - ${SERIAL_PORT}
+    environment:
+      - SERIAL_PORT=${SERIAL_PORT:?err}
+      - ROS_MASTER_URI=http://ros-master:11311
+    command: >
+      roslaunch --wait rosbot_bringup rosbot_docker.launch
