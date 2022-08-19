@@ -1,13 +1,20 @@
 version: v2.0
 
+threads: 50
+
 builtin:
+  - name: "rt/scan"
+    type: "sensor_msgs::msg::dds_::LaserScan_"
   # - name: "rt/chatter"
   #   type: "std_msgs::msg::dds_::String_"
   # - name: "rt/scan"
   #   type: "sensor_msgs::msg::dds_::LaserScan_"
 
 allowlist:
-  - name: "*"
+  # - name: "*"
+  - name: "rt/scan"
+    type: "sensor_msgs::msg::dds_::LaserScan_"
+
   # - name: "rt/chatter"
   #   type: "std_msgs::msg::dds_::String_"
   # - name: "rt/scan"
@@ -19,8 +26,22 @@ participants:
     kind: local
     domain: 1
 
+  # - name: ClientWAN
+  #   kind: discovery-server
+  #   discovery-server-guid:
+  #     ros-discovery-server: true
+  #     id: 2
+  #   connection-addresses:
+  #     - discovery-server-guid:
+  #         ros-discovery-server: true
+  #         id: 1
+  #       addresses:
+  #         - domain: rosbot2r
+  #           port: 11811
+  #           transport: udp
+
   - name: ClientWAN
-    kind: local-discovery-server
+    kind: discovery-server
     discovery-server-guid:
       ros-discovery-server: true
       id: 2
@@ -32,3 +53,7 @@ participants:
           - domain: rosbot2r
             port: 11811
             transport: udp
+    listening-addresses:
+      - domain: legion-y540
+        port: 11811
+        transport: udp
