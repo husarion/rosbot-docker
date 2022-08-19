@@ -6,40 +6,21 @@ services:
   localization-mapping:
     network_mode: host
     ipc: host
-    volumes:
-      - ./dds-config.xml:/dds-config.xml
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
   navigation:
     network_mode: host
     ipc: host
-    volumes:
-      - ./dds-config.xml:/dds-config.xml
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
   rplidar:
     network_mode: host
     ipc: host
-    volumes:
-      - ./dds-config.xml:/dds-config.xml
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
   bridge:
     network_mode: host
     ipc: host
-    volumes:
-      - ./dds-config.xml:/dds-config.xml
     environment:
       - ROS_IP=127.0.0.1
       - ROS_MASTER_URI=http://127.0.0.1:11311
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
   ros-master:
     network_mode: host
@@ -54,3 +35,10 @@ services:
       - ROS_IP=127.0.0.1
       - ROS_MASTER_URI=http://127.0.0.1:11311
 
+  dds-router:
+    image: husarnet/dds-router:experimental
+    network_mode: host
+    ipc: host
+    volumes:
+      - ./router-config.server.yaml:/config.yaml
+    command: ddsrouter -c /config.yaml -r 10 -d

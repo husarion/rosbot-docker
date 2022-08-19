@@ -6,9 +6,14 @@ services:
 
   rviz:
     network_mode: host
-    # ipc: host
-    volumes:
-      - ./dds-config.xml:/dds-config.xml
     environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+      - ROS_DOMAIN_ID=1
+    ipc: host
 
+  dds-router:
+    image: husarnet/dds-router:experimental
+    network_mode: host
+    ipc: host
+    volumes:
+      - ./router-config.client.yaml:/config.yaml
+    command: ddsrouter -c /config.yaml -r 10 -d
