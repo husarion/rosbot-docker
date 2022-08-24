@@ -21,7 +21,7 @@ jobs:
           - ros-distro: noetic
             ros-noetic-msgs: 1
             rosbot-fw-release: 0.16.1
-            platforms: "linux/amd64, linux/arm64, linux/arm/v7"
+            platforms: "linux/amd64, linux/arm64"
 
     steps:
     - name: Checkout
