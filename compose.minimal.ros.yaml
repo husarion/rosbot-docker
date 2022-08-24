@@ -4,7 +4,7 @@
 services:
 
   ros-master:
-    image: ros:noetic-ros-core
+    image: ros:melodic-ros-core
     restart: unless-stopped
     network_mode: host
     tty: true
@@ -13,7 +13,7 @@ services:
     command: roscore
 
   rosbot:
-    image: husarion/rosbot:noetic
+    image: husarion/rosbot:melodic
     container_name: rosbot
     restart: unless-stopped
     network_mode: host
