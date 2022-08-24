@@ -1,0 +1,28 @@
+# Quick Start
+# $ docker compose -f compose.minimal.ros.yaml up
+
+services:
+
+  ros-master:
+    image: ros:noetic-ros-core
+    restart: unless-stopped
+    network_mode: host
+    tty: true
+    environment:
+      - ROS_IP
+    command: roscore
+
+  rosbot:
+    image: husarion/rosbot:noetic
+    container_name: rosbot
+    restart: unless-stopped
+    network_mode: host
+    tty: true
+    devices:
+      - ${SERIAL_PORT}
+    environment:
+      - SERIAL_PORT
+      - ROS_MASTER_URI
+      - ROS_IP
+    command: >
+      roslaunch --wait rosbot_bringup rosbot_docker.launch
