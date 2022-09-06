@@ -4,28 +4,38 @@
 services:
 
   bridge:
-    image: husarion/ros:eloquent-ros1-bridge
+    image: husarion/ros:galactic-ros1-bridge
     restart: unless-stopped
+    network_mode: host
+    ipc: host
     environment:
-      - ROS_MASTER_URI=http://ros-master:11311
-      - ROS_DOMAIN_ID
-      - RMW_IMPLEMENTATION
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
     command: ros2 run ros1_bridge dynamic_bridge --bridge-all-1to2-topics
 
   ros-master:
     image: ros:melodic-ros-core
     restart: unless-stopped
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_IP=127.0.0.1
     tty: true
     command: roscore
 
   rosbot:
-    image: husarion/rosbot:melodic
+    image: husarion/rosbot:noetic
     container_name: rosbot
     restart: unless-stopped
     tty: true
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - SERIAL_PORT
     devices:
       - ${SERIAL_PORT}
-    environment:
-      - ROS_MASTER_URI=http://ros-master:11311
-      - SERIAL_PORT
     command: roslaunch --wait rosbot_bringup rosbot_docker.launch
