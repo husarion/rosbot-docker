@@ -287,7 +287,7 @@ After about 35 seconds, you should see the ROSbot model in the Rviz window:
 
 Prepare map with Rviz2 using the **[Nav2 Goal]** button on the top bar.
 
-After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
+After you create the map, open a new terminal on ROSbot, navigate to `demo/autonomous_navigation_mapping/` folder and execute:
 
 ```bash
 ./map-save.sh
@@ -405,7 +405,7 @@ git clone https://github.com/husarion/rosbot-docker/
 ### 2. Prepare `demo/.env` file
 
 ```bash
-cd rosbot-docker/demo
+cd rosbot-docker/demo/autonomous_navigation_mapping/
 cp .env.template .env
 ```
 
@@ -454,7 +454,7 @@ In the Rviz2 window, click the **[Startup]** button in the "**Navigation 2**" fi
 
 Prepare a map with Rviz2 by driving the ROSbot around using the **[Nav2 Goal]** button.
 
-After you create the map, open a new terminal on ROSbot, navigate to `demo/` folder and execute:
+After you create the map, open a new terminal on ROSbot, navigate to `demo/autonomous_navigation_mapping/` folder and execute:
 
 ```bash
 ./map-save.sh
