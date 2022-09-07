@@ -1,5 +1,4 @@
-
-ARG ROS_DISTRO=melodic
+ARG ROS_DISTRO=humble
 
 ## ============================ STM32FLASH =================================
 # stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
@@ -8,7 +7,8 @@ FROM ubuntu:18.04 AS stm32flash_builder
 # official releases are only for intel archs, so we need to build stm32flash from sources
 RUN apt-get update && apt-get install -y \
 		git \
-		build-essential && \
+		build-essential \
+		cmake && \
 	git clone https://github.com/stm32duino/stm32flash.git && \
 	cd stm32flash/ && \
 	make all
@@ -24,7 +24,7 @@ ARG ROS_NOETIC_MSGS=0
 SHELL ["/bin/bash", "-c"]
 
 # ENV PIO_VERSION="5.1.0"
-RUN apt update && apt install -y \
+RUN apt-get update && apt-get install -y \
 		python3 \
 		python3-pip \
 		git \
@@ -33,9 +33,9 @@ RUN apt update && apt install -y \
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 # RUN pip3 install -U platformio==${PIO_VERSION}
-RUN pip3 install -U platformio
+RUN pip3 install -U platformio colcon-common-extensions
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch ${ROSBOT_FW_RELEASE} && \
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch ros2 && \
 	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 
@@ -71,7 +71,7 @@ RUN export LC_ALL=C.UTF-8 && \
 		-DJOINT_STATES_ENABLE=1 \
 		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
 		-DKINEMATIC_TYPE=1" && \
-	pio run 
+	pio run
 
 ## =========================== ROS package builder ===============================
 
@@ -79,66 +79,55 @@ FROM ros:$ROS_DISTRO-ros-core AS pkg-builder
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update && apt install -y \
-		git \
+RUN apt-get update && apt-get install -y \
 		python3-pip \
-		ros-$ROS_DISTRO-rosserial-python \ 
-		ros-$ROS_DISTRO-rosserial-server \
-		ros-$ROS_DISTRO-rosserial-client \
-		ros-$ROS_DISTRO-rosserial-msgs \
-		ros-$ROS_DISTRO-move-base-msgs \
+		git \
+		ros-$ROS_DISTRO-ros2-control \
+		ros-$ROS_DISTRO-ros2-controllers \
 		ros-$ROS_DISTRO-robot-localization \
 		ros-$ROS_DISTRO-xacro \
 		ros-$ROS_DISTRO-transmission-interface \
-		ros-$ROS_DISTRO-controller-manager \
 		ros-$ROS_DISTRO-robot-state-publisher && \
-	pip3 install python-periphery && \
-	pip3 install sh && \
-	pip3 install pyserial && \
-	python3 -m pip install --upgrade pyserial && \
+		pip install -U colcon-common-extensions && \
 	# clear ubuntu packages
-	apt clean && \
+	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
-WORKDIR /ros_ws
 
 # clone robot github repositories
-RUN mkdir -p src && \
-	git clone https://github.com/husarion/rosbot_ros.git --branch=melodic src/rosbot_ros && \
-	git clone https://github.com/husarion/rosbot_ekf.git --branch=master src/rosbot_ekf 
+RUN git clone https://github.com/husarion/rosbot_ros.git --branch=humble && \
+	cd rosbot_ros &&  \
+	git submodule update --init --recursive
+
+WORKDIR /rosbot_ros
 
 # build ROS workspace
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-	catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
+	colcon build --packages-select rosbot_hardware_interfaces && \
+	source install/setup.bash && \
+	colcon build
 
 ## =========================== ROS image ===============================
 
-FROM ros:$ROS_DISTRO-ros-core 
+FROM ros:$ROS_DISTRO-ros-core
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update && apt install -y \
+RUN apt-get update && apt-get install -y \
 		python3-pip \
-		ros-$ROS_DISTRO-rosserial-python \ 
-		ros-$ROS_DISTRO-rosserial-server \
-		ros-$ROS_DISTRO-rosserial-client \
-		ros-$ROS_DISTRO-rosserial-msgs \
-		ros-$ROS_DISTRO-move-base-msgs \
+		ros-$ROS_DISTRO-ros2-control \
+		ros-$ROS_DISTRO-ros2-controllers \
 		ros-$ROS_DISTRO-robot-localization \
 		ros-$ROS_DISTRO-xacro \
 		ros-$ROS_DISTRO-transmission-interface \
-		ros-$ROS_DISTRO-controller-manager \
+		ros-$ROS_DISTRO-rmw-fastrtps-cpp \
 		ros-$ROS_DISTRO-robot-state-publisher && \
-	pip3 install python-periphery && \
-	pip3 install sh && \
-	pip3 install pyserial && \
-	python3 -m pip install --upgrade pyserial && \
 	# clear ubuntu packages
-	apt clean && \
+	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
 # copy ROS package from previous step
-COPY --from=pkg-builder /ros_ws /ros_ws
+COPY --from=pkg-builder /rosbot_ros /rosbot_ros
 
 # copy firmware built in previous stage
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
@@ -150,10 +139,10 @@ COPY ./flash-firmware.py /
 COPY ./ros_entrypoint.sh /
 
 RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
-	echo ". /ros_ws/devel/setup.bash" >> ~/.bashrc && \
+	echo ". /rosbot_ros/install/setup.bash" >> ~/.bashrc && \
 	# allows us to run: docker exec -it rosbot bash --login -c "rostopic list"
 	echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.profile && \
-	echo ". /ros_ws/devel/setup.bash" >> ~/.profile
+	echo ". /rosbot_ros/install/setup.bash" >> ~/.profile
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
