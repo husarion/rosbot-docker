@@ -69,6 +69,6 @@ For more details on what is being published and subscribed by nodes running in t
 
 ## Autonomous Navigation Demo
 
-in a [/demo](/demo) folder your will find an example of how to use ROSbot docker image in a real autonomous navigation use case.
+in a [/demo/autonomous_navigation_mapping](/demo/autonomous_navigation_mapping) folder your will find an example of how to use ROSbot docker image in a real autonomous navigation use case.
 
-![](demo/.docs/rviz_mapping.png)
+![](demo/autonomous_navigation_mapping/.docs/rviz_mapping.png)

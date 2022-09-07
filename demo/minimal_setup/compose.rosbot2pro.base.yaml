@@ -1,0 +1,58 @@
+# Quick Start
+# 
+# Type in the ROSbot 2 PRO shell:
+# $ docker compose -f compose.rosbot2pro.base.yaml up
+
+x-common-config: &common-config
+  restart: unless-stopped
+  network_mode: host
+  ipc: host
+
+services:
+
+  # astra:
+  #   image: husarion/astra:foxy
+  #   <<: *common-config
+  #   devices:
+  #     - /dev/bus/usb/
+  #   command: ros2 launch astra_camera astra_mini.launch.py
+
+  rplidar:
+    image: husarion/rplidar:foxy
+    <<: *common-config
+    devices:
+      - /dev/ttyUSB0
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+    command: ros2 launch sllidar_ros2 sllidar_launch.py serial_baudrate:=256000
+
+  bridge:
+    image: husarion/ros:foxy-ros1-bridge
+    <<: *common-config
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+    command: ros2 run ros1_bridge dynamic_bridge --bridge-all-1to2-topics
+
+  ros-master:
+    image: ros:noetic-ros-core
+    <<: *common-config
+    tty: true
+    environment:
+      - ROS_IP=127.0.0.1
+    command: roscore
+
+  rosbot:
+    image: husarion/rosbot:noetic
+    <<: *common-config
+    tty: true
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - SERIAL_PORT=/dev/ttyS4
+    devices:
+      - /dev/ttyS4
+    command: roslaunch --wait rosbot_bringup rosbot_docker.launch

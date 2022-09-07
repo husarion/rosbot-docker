@@ -1,0 +1,20 @@
+# Quick Start
+# $ xhost local:root
+# $ docker compose -f compose.rviz.yaml up
+
+services:
+
+  rviz:
+    image: husarion/rviz2:galactic
+    restart: on-failure
+    network_mode: host
+    ipc: host
+    volumes:
+      - ./robot_model:/robot_model
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./rosbot.rviz:/root/.rviz2/default.rviz
+    environment:
+      - DISPLAY=${DISPLAY:?err}
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}

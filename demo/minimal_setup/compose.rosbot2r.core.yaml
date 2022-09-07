@@ -1,0 +1,41 @@
+# Quick Start
+# 
+# Type in the ROSbot 2R shell:
+# $ docker compose -f compose.rosbot2r.core.yaml up
+
+x-common-config: &common-config
+  restart: unless-stopped
+  network_mode: host
+  ipc: host
+
+services:
+
+  bridge:
+    image: husarion/ros:foxy-ros1-bridge
+    <<: *common-config
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+    command: ros2 run ros1_bridge dynamic_bridge --bridge-all-1to2-topics
+
+  ros-master:
+    image: ros:noetic-ros-core
+    <<: *common-config
+    tty: true
+    environment:
+      - ROS_IP=127.0.0.1
+    command: roscore
+
+  rosbot:
+    image: husarion/rosbot:noetic
+    <<: *common-config
+    tty: true
+    environment:
+      - ROS_IP=127.0.0.1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - SERIAL_PORT=/dev/ttyAMA0
+    devices:
+      - /dev/ttyAMA0
+    command: roslaunch --wait rosbot_bringup rosbot_docker.launch

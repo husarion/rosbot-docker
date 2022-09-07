@@ -111,7 +111,7 @@ In the `demo/` folder, there is a script for auto-syncing of this repo with your
 If IP address of your robot in LAN is `10.5.10.64`, run (it uses `rsync` for synchronization):
 
 ```bash
-./sync_with_rosbot.sh 10.5.10.64
+rosbot-docker/demo/sync_with_rosbot.sh 10.5.10.64
 ```
 
 > **Tip no. 1** 💡
@@ -121,7 +121,7 @@ If IP address of your robot in LAN is `10.5.10.64`, run (it uses `rsync` for syn
 In order to allow changes on ROSbot to affect demo directory on your PC (for example for viewing saved map) use `--bidirectional` flag (it uses `unison` for that):
 
 ```bash
-./sync_with_rosbot.sh 10.5.10.64 --bidirectional
+rosbot-docker/demo/sync_with_rosbot.sh 10.5.10.64 --bidirectional
 ```
 
 ### 4. Flash the microcontroller 
