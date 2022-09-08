@@ -4,17 +4,17 @@
 services:
 
   navigation:
-    image: husarion/navigation2:galactic
+    image: husarion/navigation2:humble
     restart: unless-stopped
     volumes:
       - ./config/nav2_params.yaml:/nav2_params.yaml
     command: >
-      ros2 launch nav2_bringup navigation_launch.py    
+      ros2 launch nav2_bringup navigation_launch.py
         params_file:=/nav2_params.yaml
         use_sim_time:=${USE_SIM_TIME:-False}
 
   localization-mapping:
-    image: husarion/slam-toolbox:galactic
+    image: husarion/slam-toolbox:humble
     container_name: slam-toolbox
     restart: unless-stopped
     volumes:

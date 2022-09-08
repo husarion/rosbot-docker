@@ -11,18 +11,17 @@ services:
     command: >
       ros2 launch sllidar_ros2 sllidar_launch.py
         serial_baudrate:=${RPLIDAR_BAUDRATE:-115200}
+        frame_id:=lidar_link
 
-  micro-ros:
+  microros:
     image: microros/micro-ros-agent:humble
+    restart: unless-stopped
     command: serial -D ${SERIAL_PORT:-/dev/ttyAMA0}  serial -b 576000 # -v6
     devices:
       - ${SERIAL_PORT:-/dev/ttyAMA0}
-    privileged: true
 
   rosbot:
-    build:
-      context: ../
-      dockerfile: Dockerfile.hardware
+    image: husarion/rosbot:humble
     restart: unless-stopped
     command: >
       ros2 launch rosbot_bringup rosbot_bringup.launch.py

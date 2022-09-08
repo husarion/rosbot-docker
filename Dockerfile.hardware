@@ -19,16 +19,16 @@ RUN apt-get update && apt-get install -y \
 FROM --platform=linux/amd64 ubuntu:20.04 AS stm32_firmware_builder
 
 ARG ROSBOT_FW_RELEASE=0.16.1
-ARG ROS_NOETIC_MSGS=0
 
 SHELL ["/bin/bash", "-c"]
 
 # ENV PIO_VERSION="5.1.0"
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		python3 \
 		python3-pip \
 		git \
 		wget \
+		cmake \
 		tree
 
 # https://docs.platformio.org/en/latest/core/installation.html#system-requirements
@@ -60,7 +60,6 @@ RUN export LC_ALL=C.UTF-8 && \
 		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
 		-DMBED_BUILD_PROFILE_RELEASE \
 		-DJOINT_STATES_ENABLE=1 \
-		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
 		-DKINEMATIC_TYPE=0" && \
 	pio project init -e core2_mec -O \
 	"build_flags= \
@@ -69,7 +68,6 @@ RUN export LC_ALL=C.UTF-8 && \
 		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
 		-DMBED_BUILD_PROFILE_RELEASE \
 		-DJOINT_STATES_ENABLE=1 \
-		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
 		-DKINEMATIC_TYPE=1" && \
 	pio run
 
