@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 
-import sh 
+import sh
 import time
 import sys
 import argparse
 from periphery import GPIO
 
 
-class FirmwareFlasher: 
+class FirmwareFlasher:
     def __init__(self, sys_arch, binary_file):
-        
+
         self.binary_file = binary_file
         self.sys_arch = sys_arch
 
@@ -23,7 +23,7 @@ class FirmwareFlasher:
             self.port = "/dev/ttyS1"
             boot0_pin_no = 164
             reset_pin_no = 184
-            
+
 
         elif self.sys_arch.stdout == b'x86_64\n':
             # Setups UpBoard pins
@@ -31,7 +31,7 @@ class FirmwareFlasher:
             self.port = "/dev/ttyS4"
             boot0_pin_no = 17
             reset_pin_no = 18
-        
+
         elif self.sys_arch.stdout == b'aarch64\n':
             # Setups RPi pins
             print("Device: RPi\n")
@@ -53,7 +53,7 @@ class FirmwareFlasher:
         time.sleep(0.2)
         self.reset_pin.write(False)
         time.sleep(0.2)
-    
+
 
     def exit_bootloader_mode(self):
 
@@ -71,7 +71,7 @@ class FirmwareFlasher:
         # Flashing the firmware
         succes_no = 0
         for i in range(self.max_approach_no):
-            try:      
+            try:
                 if succes_no == 0:
                     # Disable the flash write-protection
                     sh.stm32flash(self.port, "-u", _out=sys.stdout)
@@ -80,7 +80,7 @@ class FirmwareFlasher:
 
                 if succes_no == 1:
                     # Disable the flash read-protection
-                    sh.stm32flash(self.port, "-k", _out=sys.stdout) 
+                    sh.stm32flash(self.port, "-k", _out=sys.stdout)
                     time.sleep(0.2)
                     succes_no += 1
 
@@ -104,14 +104,14 @@ def main():
 
     parser = argparse.ArgumentParser(
         description='Flashing the firmware on STM32 microcontroller in ROSbot')
-    
+
     parser.add_argument(
-        "file", 
-        nargs='?', 
-        default="/root/firmware_diff.bin", 
-        help="Path to a firmware file. Default = /root/firmware_diff.bin")
-    
-    binary_file = parser.parse_args().file 
+        "file",
+        nargs='?',
+        default="/root/firmware.bin",
+        help="Path to a firmware file. Default = /root/firmware.bin")
+
+    binary_file = parser.parse_args().file
     sys_arch = sh.uname('-m')
 
     flasher = FirmwareFlasher(sys_arch, binary_file)

@@ -1,13 +1,13 @@
 # Demo
 
-Run autonomous mapping and navigation demo with ROSbot [Navigation2](https://navigation.ros.org/) and [Slam Toolbox](http://wiki.ros.org/slam_toolbox) in Docker. 
+Run autonomous mapping and navigation demo with ROSbot [Navigation2](https://navigation.ros.org/) and [Slam Toolbox](http://wiki.ros.org/slam_toolbox) in Docker.
 
 There are two phases:
 
 1. **Creating a map** - navigation and creating a map by using [slam-toolbox](https://github.com/SteveMacenski/slam_toolbox)
 2. **Localization on an already created map** - Navigation based on created map - with [AMCL](https://navigation.ros.org/configuration/packages/configuring-amcl.html)
 
-Both cases are presented in three setups: 
+Both cases are presented in three setups:
 
 1. In a Local Area Network (LAN) - the robot running navigation stack and PC / laptop running RViz are in the same Wi-Fi network.
 2. Over the Internet (VPN) - the robot and the laptop can be in separate networks.
@@ -15,8 +15,8 @@ Both cases are presented in three setups:
 
 > **Prerequisites**
 >
-> Make sure you have [Docker and Docker-Compose](https://docs.docker.com/desktop/install/linux-install/) installed on your laptop. 
-> 
+> Make sure you have [Docker and Docker-Compose](https://docs.docker.com/desktop/install/linux-install/) installed on your laptop.
+>
 > If you don't have, here's a quick summary for Ubuntu 20.04 (just click the `copy` button, and paste it to the Linux terminal):
 > ```bash
 > sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg lsb-release
@@ -124,30 +124,22 @@ In order to allow changes on ROSbot to affect demo directory on your PC (for exa
 ./sync_with_rosbot.sh 10.5.10.64 --bidirectional
 ```
 
-### 4. Flash the microcontroller 
+### 4. Flash the microcontroller
 
 To flash the right firmware, open ROSbot's terminal or connect via `ssh` and execute this command:
-   
-- for differential drive (regular wheels):
-   
-```bash
-docker run --rm -it --privileged \
-husarion/rosbot:noetic \
-/flash-firmware.py /root/firmware_diff.bin
-```
-- for omnidirectional wheeled ROSbot (mecanum wheels):
 
 ```bash
 docker run --rm -it --privileged \
-husarion/rosbot:noetic \
-/flash-firmware.py /root/firmware_mecanum.bin
+husarion/rosbot:humble \
+/flash-firmware.py /root/firmware.bin
 ```
+
 
 ### 5. [Optional] VPN config
 
-If in the next steps you want to run VPN configuration to make your system working **not only in LAN but also over the Internet** get your Husarnet Join Code and use it for connecting your ROSbot and laptop to the same Husarnet network. 
+If in the next steps you want to run VPN configuration to make your system working **not only in LAN but also over the Internet** get your Husarnet Join Code and use it for connecting your ROSbot and laptop to the same Husarnet network.
 
-[Husarnet P2P VPN](https://husarnet.com/) is already preinstalled on your ROSbot. You need to install it on your laptop/pc as well. **Steps on how to connect ROSbot and your laptop to the same Husarnet network are described [here](https://husarion.com/tutorials/howtostart/rosbot2r-quick-start/#remote-access-over-the-internet-vpn)**. 
+[Husarnet P2P VPN](https://husarnet.com/) is already preinstalled on your ROSbot. You need to install it on your laptop/pc as well. **Steps on how to connect ROSbot and your laptop to the same Husarnet network are described [here](https://husarion.com/tutorials/howtostart/rosbot2r-quick-start/#remote-access-over-the-internet-vpn)**.
 
 **Preparing `dds-config.xml` file:**
 
@@ -173,7 +165,7 @@ To do so, based on `dds-config.template.xml` file create the `dds-config.xml` fi
 > **Tip no. 2** 💡
 >
 > There is a simple utility script to generate `dds-config.xml` file for you by just providing Husarnet hostnames of your devices as arguments (if these hostnames are `mylaptop` and `myrosbot`):
-> 
+>
 > ```bash
 > ./dds-config-generate.sh mylaptop myrosbot
 > ```
@@ -187,7 +179,7 @@ To do so, based on `dds-config.template.xml` file create the `dds-config.xml` fi
 > **Tip no. 4** 💡
 >
 > **Enabling a display**
-> 
+>
 > In order to use GUI of applications running in containers (like rviz) run:
 > ``` bash
 > xhost local:root
@@ -203,9 +195,9 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 
 <tr>
 
-<th> </th> 
-<th> ROSbot </th> 
-<th> PC / laptop </th> 
+<th> </th>
+<th> ROSbot </th>
+<th> PC / laptop </th>
 
 </tr>
 
@@ -215,9 +207,9 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 
 <td>
 <b>LAN 🏠</b>
-</td> 
+</td>
 
-<td>  
+<td>
 
 
 ```bash
@@ -230,7 +222,7 @@ up
 
 </td>
 
-<td>  
+<td>
 
 ```
 docker compose \
@@ -247,11 +239,11 @@ up
 
 <tr>
 
-<td> 
+<td>
 <b>VPN 🌎</b>
-</td> 
+</td>
 
-<td>  
+<td>
 
 ```bash
 docker compose \
@@ -263,7 +255,7 @@ up
 
 </td>
 
-<td>  
+<td>
 
 
 ```
@@ -307,9 +299,9 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 
 <tr>
 
-<th> </th> 
-<th> ROSbot </th> 
-<th> PC / laptop </th> 
+<th> </th>
+<th> ROSbot </th>
+<th> PC / laptop </th>
 
 
 </tr>
@@ -318,11 +310,11 @@ Depending on the network configuration (LAN/VPN) execute the chosen pair of comm
 
 <tr>
 
-<td> 
+<td>
 <b>LAN 🏠</b>
-</td> 
+</td>
 
-<td>  
+<td>
 
 ```bash
 docker compose \
@@ -334,7 +326,7 @@ up
 
 </td>
 
-<td>  
+<td>
 
 ```
 docker compose \
@@ -351,11 +343,11 @@ up
 
 <tr>
 
-<td> 
+<td>
 <b>VPN 🌎</b>
-</td> 
+</td>
 
-<td>  
+<td>
 
 ```bash
 docker compose \
@@ -367,7 +359,7 @@ up
 
 </td>
 
-<td>  
+<td>
 
 ```
 docker compose \
@@ -473,8 +465,7 @@ docker compose \
 -f compose.rosbot.simulation.yaml \
 -f compose.rosbot.localization.yaml \
 -f compose.rviz.yaml \
-up 
+up
 ```
 
 By using the **[2D Pose Estimate]** button manualy tell the ROSbot where on the existing map is its starting position and tell the ROSbot where to go autonomously by using the **[Nav2 Goal]** button.
-
