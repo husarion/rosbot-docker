@@ -35,13 +35,14 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 # RUN pip3 install -U platformio==${PIO_VERSION}
 RUN pip3 install -U platformio colcon-common-extensions
 
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch ros2 && \
+RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
 	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
 
 WORKDIR /rosbot-stm32-firmware
 
-RUN git submodule update --init --recursive
+RUN	git checkout 4f2c6b3b90d598339f2ed5c94fffe4aed0dd4a52 && \
+	git submodule update --init --recursive
 
 # RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${ROSBOT_FW_RELEASE}.tar.gz && \
 # 	tar -xf *.tar.gz && \
@@ -53,22 +54,6 @@ WORKDIR /rosbot-stm32-firmware
 
 RUN export LC_ALL=C.UTF-8 && \
 	export LANG=C.UTF-8 && \
-	pio project init -e core2_diff -O \
-	"build_flags= \
-		-I\$PROJECTSRC_DIR/TARGET_CORE2 \
-		-DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-		-DMBED_BUILD_PROFILE_RELEASE \
-		-DJOINT_STATES_ENABLE=1 \
-		-DKINEMATIC_TYPE=0" && \
-	pio project init -e core2_mec -O \
-	"build_flags= \
-		-I\$PROJECTSRC_DIR/TARGET_CORE2 \
-		-DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-		-DMBED_BUILD_PROFILE_RELEASE \
-		-DJOINT_STATES_ENABLE=1 \
-		-DKINEMATIC_TYPE=1" && \
 	pio run
 
 ## =========================== ROS package builder ===============================
