@@ -95,6 +95,7 @@ RUN apt-get update && apt-get install -y \
 # clone robot github repositories
 RUN git clone https://github.com/husarion/rosbot_ros.git --branch=humble && \
 	cd rosbot_ros &&  \
+	git checkout bbb36af45912c45beb12a2ace34bf22c50ba99c3 && \
 	git submodule update --init --recursive
 
 WORKDIR /rosbot_ros
