@@ -12,7 +12,7 @@ services:
   navigation:
     image: husarion/navigation2:galactic
     command: >
-      ros2 launch nav2_bringup navigation_launch.py    
+      ros2 launch nav2_bringup navigation_launch.py
         params_file:=/nav2_params/rosbot2_navigation.yaml
         use_sim_time:=True
 
@@ -31,8 +31,6 @@ services:
 
   ros-master:
     image: ros:noetic-ros-core
-    # environment:
-    #   - ROS_MASTER_URI=http://ros-master:11311
     command: stdbuf -o L roscore
 
   rosbot_simulation:
