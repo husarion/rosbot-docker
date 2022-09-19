@@ -1,4 +1,4 @@
 demo/secret
-demo/.env
+**/.env
 demo/maps
 demo/dds-config.xml

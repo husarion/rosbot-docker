@@ -1,0 +1,64 @@
+# Quick Start (at fist stop ROS Master if working on host)
+# $ docker compose -f compose.rosbot.hardware.yaml -f compose.rosbot.mapping.yaml -f compose.rosbot.lan.yaml up
+
+services:
+
+  rviz:
+    image: husarion/rviz2:galactic
+    container_name: rviz
+    restart: on-failure
+    volumes:
+      - ./robot_model:/robot_model
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./config/rosbot.rviz:/root/.rviz2/default.rviz
+    environment:
+      - DISPLAY=${DISPLAY:?err}
+      - LIBGL_ALWAYS_SOFTWARE=1
+
+  navigation:
+    image: husarion/navigation2:galactic
+    restart: unless-stopped
+    volumes:
+      - ./config/nav2_params.yaml:/nav2_params.yaml
+    command: >
+      ros2 launch nav2_bringup navigation_launch.py    
+        params_file:=/nav2_params.yaml
+        use_sim_time:=True
+
+  localization-mapping:
+    image: husarion/slam-toolbox:galactic
+    container_name: slam-toolbox
+    restart: unless-stopped
+    volumes:
+      - ./config/slam_params.yaml:/slam_params.yaml
+      - ./maps:/maps
+    command: >
+      ros2 launch slam_toolbox online_sync_launch.py
+        slam_params_file:=/slam_params.yaml
+        use_sim_time:=True
+
+
+  bridge:
+    image: husarion/ros:galactic-ros1-bridge
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+    command: ros2 run ros1_bridge dynamic_bridge
+
+  ros-master:
+    image: ros:noetic-ros-core
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    command: stdbuf -o L roscore
+
+  rosbot_simulation:
+    image: husarion/rosbot:noetic-simulation
+    environment:
+      - DISPLAY=${DISPLAY:?err}
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - ROS_MASTER_URI=http://ros-master:11311
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    command: >
+      roslaunch --wait rosbot_bringup rosbot.launch 
+        world:=/ros_ws/src/rosbot_gazebo/worlds/maze.world
