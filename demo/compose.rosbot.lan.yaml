@@ -1,4 +1,4 @@
-# Quick Start (at fist stop ROS Master if working on host)
+# Quick Start
 # $ docker compose -f compose.rosbot.hardware.yaml -f compose.rosbot.lan.yaml up
 
 services:
@@ -7,21 +7,18 @@ services:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   navigation:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   rplidar:
     network_mode: host
     ipc: host
     environment:
-      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 
   microros:

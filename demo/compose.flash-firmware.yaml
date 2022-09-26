@@ -1,10 +1,13 @@
+# Quick Start
+# $ docker compose -f compose.flash-firmware.yaml up
+
 services:
 
   flash-fw:
-    image: husarion/rosbot:noetic
+    image: husarion/rosbot:humble
     privileged: true
     environment:
       - SERIAL_PORT=${SERIAL_PORT:?err}
     devices:
       - ${SERIAL_PORT}
-    command: /flash-firmware.py /root/firmware_diff.bin 
+    command: /flash-firmware.py /root/firmware.bin
