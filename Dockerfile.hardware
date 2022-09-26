@@ -41,8 +41,7 @@ RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
 
 WORKDIR /rosbot-stm32-firmware
 
-RUN	git checkout 4f2c6b3b90d598339f2ed5c94fffe4aed0dd4a52 && \
-	git submodule update --init --recursive
+RUN	git submodule update --init --recursive
 
 # RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${ROSBOT_FW_RELEASE}.tar.gz && \
 # 	tar -xf *.tar.gz && \
@@ -80,7 +79,6 @@ RUN apt-get update && apt-get install -y \
 # clone robot github repositories
 RUN git clone https://github.com/husarion/rosbot_ros.git --branch=humble && \
 	cd rosbot_ros &&  \
-	git checkout bbb36af45912c45beb12a2ace34bf22c50ba99c3 && \
 	git submodule update --init --recursive
 
 WORKDIR /rosbot_ros

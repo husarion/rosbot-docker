@@ -2,8 +2,10 @@ name: Docker image for hardware
 
 on:
   push:
-    # branches:
-    #   - 'ros1'
+    branches:
+      - "ros2"
+  repository_dispatch:
+    types: [ros-package-update]
   pull_request:
     types: [closed]
 
