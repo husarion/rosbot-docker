@@ -78,17 +78,18 @@ RUN apt-get update && apt-get install -y \
 
 
 # clone robot github repositories
+WORKDIR /ros2_ws
+RUN mkdir -p /ros2_ws/src && cd
+
 RUN git clone https://github.com/husarion/rosbot_ros.git --branch=humble && \
 	cd rosbot_ros &&  \
 	git checkout humble && \
 	git submodule update --init --recursive
 
-WORKDIR /rosbot_ros
+WORKDIR /ros2_ws
 
 # build ROS workspace
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-	colcon build --packages-select rosbot_hardware_interfaces && \
-	source install/setup.bash && \
 	colcon build
 
 ## =========================== ROS image ===============================
@@ -112,7 +113,7 @@ RUN apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 # copy ROS package from previous step
-COPY --from=pkg-builder /rosbot_ros /rosbot_ros
+COPY --from=pkg-builder /ros2_ws /ros2_ws
 
 # copy firmware built in previous stage
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2/firmware.bin /root/firmware.bin
@@ -123,10 +124,10 @@ COPY ./flash-firmware.py /
 COPY ./ros_entrypoint.sh /
 
 RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
-	echo ". /rosbot_ros/install/setup.bash" >> ~/.bashrc && \
+	echo ". /ros2_ws/install/setup.bash" >> ~/.bashrc && \
 	# allows us to run: docker exec -it rosbot bash --login -c "rostopic list"
 	echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.profile && \
-	echo ". /rosbot_ros/install/setup.bash" >> ~/.profile
+	echo ". /ros2_ws/install/setup.bash" >> ~/.profile
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
