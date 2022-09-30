@@ -48,6 +48,10 @@ Most important nodes published by this docker after launching [rosbot_bringup.la
 - `/rosbot_base_controller/odom` (*nav_msgs/Odometry*, **/rosbot_base_controller**)
 - `/odometry/filtered` (*nav_msgs/Odometry*, **/ekf_node**)
 - `/_motors_cmd` (*std_msgs/msg/Float32MultiArray*, **/rosbot_stm32_firmware**)
+- `/range/right_front` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
+- `/range/left_front` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
+- `/range/right_rear` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
+- `/range/left_rear` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
 
 For more details on what is being published and subscribed by nodes running in this container please refer to launch file and packages:
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
