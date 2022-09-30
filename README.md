@@ -52,6 +52,8 @@ Most important nodes published by this docker after launching [rosbot_bringup.la
 - `/range/left_front` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
 - `/range/right_rear` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
 - `/range/left_rear` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
+- `/button/left` (*std_msgs/msg/UInt16*, **/rosbot_stm32_firmware**)
+- `/button/right` (*std_msgs/msg/UInt16*, **/rosbot_stm32_firmware**)
 
 For more details on what is being published and subscribed by nodes running in this container please refer to launch file and packages:
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
