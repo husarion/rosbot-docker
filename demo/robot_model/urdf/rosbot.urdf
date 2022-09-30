@@ -102,6 +102,34 @@
   <gazebo reference="cover_link">
     <material>Gazebo/Red</material>
   </gazebo>
+  <joint name="range_left_front_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0.13 " xyz="0.1 0.05 0.01"/>
+    <parent link="body_link"/>
+    <child link="range_left_front"/>
+  </joint>
+  <link name="range_left_front"/>
+  <joint name="range_right_front_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 -0.13 " xyz="0.1 -0.05 0.01"/>
+    <parent link="body_link"/>
+    <child link="range_right_front"/>
+  </joint>
+  <link name="range_right_front"/>
+  <joint name="range_left_rear_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 3.01 " xyz="-0.1 0.05 0.01"/>
+    <parent link="body_link"/>
+    <child link="range_left_rear"/>
+  </joint>
+  <link name="range_left_rear"/>
+  <joint name="range_right_rear_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 3.27 " xyz="-0.1 -0.05 0.01"/>
+    <parent link="body_link"/>
+    <child link="range_right_rear"/>
+  </joint>
+  <link name="range_right_rear"/>
   <link name="front_left_wheel_link">
     <visual>
       <geometry>
