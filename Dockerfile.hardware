@@ -41,7 +41,7 @@ RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git && \
 
 WORKDIR /rosbot-stm32-firmware
 
-RUN	git checkout 59e77d58d5a80794e907733b0c0e6bc7805945db && \
+RUN	git checkout 012349115f6e863ad6fe8ca34cce76662b3acb6b && \
 	git submodule update --init --recursive
 
 # RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${ROSBOT_FW_RELEASE}.tar.gz && \

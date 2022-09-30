@@ -4,7 +4,7 @@
 services:
 
   navigation:
-    image: husarion/navigation2:humble
+    image: husarion/navigation2:galactic
     restart: unless-stopped
     volumes:
       - ./config/nav2_params.yaml:/nav2_params.yaml

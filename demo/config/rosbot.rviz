@@ -3,9 +3,12 @@ Panels:
     Help Height: 0
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Ranges1/Range2/Topic1
+        - /Ranges1/Range4/Status1
+        - /Ranges1/Range4/Topic1
       Splitter Ratio: 0.5792452692985535
-    Tree Height: 470
+    Tree Height: 485
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -243,66 +246,85 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
-        camera_depth_frame:
+        body_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
-        camera_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        front_left_wheel:
+        cover_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        front_right_wheel:
+        front_left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        laser:
+        front_right_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        range_fl:
+        imu_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        range_fr:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        range_rl:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        range_rr:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rear_left_wheel:
+        lidar_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_right_wheel:
+        lidar_link_laser_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        orbbec_astra_depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        orbbec_astra_depth_refference_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        orbbec_astra_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        top:
+        range_left_front:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        range_left_rear:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        range_right_front:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        range_right_rear:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        rear_left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        rear_right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Mass Properties:
+        Inertia: false
+        Mass: false
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
@@ -368,6 +390,66 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: AMCL
+    - Class: rviz_common/Group
+      Displays:
+        - Alpha: 0.5
+          Buffer Length: 1
+          Class: rviz_default_plugins/Range
+          Color: 170; 255; 255
+          Enabled: true
+          Name: Range
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /range/left_front
+          Value: true
+        - Alpha: 0.5
+          Buffer Length: 1
+          Class: rviz_default_plugins/Range
+          Color: 170; 255; 255
+          Enabled: true
+          Name: Range
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /range/left_rear
+          Value: true
+        - Alpha: 0.5
+          Buffer Length: 1
+          Class: rviz_default_plugins/Range
+          Color: 170; 255; 255
+          Enabled: true
+          Name: Range
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /range/right_front
+          Value: true
+        - Alpha: 0.5
+          Buffer Length: 1
+          Class: rviz_default_plugins/Range
+          Color: 170; 255; 255
+          Enabled: true
+          Name: Range
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /range/right_rear
+          Value: true
+      Enabled: true
+      Name: Ranges
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -406,41 +488,41 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/ThirdPersonFollower
-      Distance: 6.1913347244262695
+      Distance: 6.121789932250977
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.8188362121582031
-        Y: -0.17047584056854248
-        Z: -8.585981959186029e-06
+        X: 0.45397961139678955
+        Y: 1.529588222503662
+        Z: -2.3870989025454037e-06
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7647968530654907
+      Pitch: 1.1647965908050537
       Target Frame: <Fixed Frame>
       Value: ThirdPersonFollower (rviz_default_plugins)
-      Yaw: 5.602384567260742
+      Yaw: 4.422384262084961
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1016
+  Height: 1043
   Hide Left Dock: false
   Hide Right Dock: false
   Navigation 2:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd000000040000000000000167000003a2fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000211000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000018004e0061007600690067006100740069006f006e0020003201000002520000018b0000012300fffffffb0000001e005200650061006c00730065006e0073006500430061006d00650072006100000002c6000000c100000000000000000000000100000100000003a2fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003b000003a2000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d00650100000000000004500000000000000000000004c3000003a200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000168000003bdfc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000220000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000018004e0061007600690067006100740069006f006e002000320100000261000001970000012300fffffffb0000001e005200650061006c00730065006e0073006500430061006d00650072006100000002c6000000c100000000000000000000000100000100000003bdfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003b000003bd000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d006501000000000000045000000000000000000000050c000003bd00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Tool Properties:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1846
-  X: 74
-  Y: 27
+  Width: 1920
+  X: 0
+  Y: 0
