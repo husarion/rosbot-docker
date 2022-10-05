@@ -25,32 +25,26 @@ services:
     network_mode: host
     ipc: host
     volumes:
+      - ./dds-config.server.xml:/dds-config.xml
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+
+  microros:
+    network_mode: host
+    ipc: host
+    volumes:
       - ./dds-config.client.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
-  bridge:
-    network_mode: host
-    ipc: host
-    volumes:
-      - ./dds-config.server.xml:/dds-config.xml
-    environment:
-      - ROS_IP=127.0.0.1
-      - ROS_MASTER_URI=http://127.0.0.1:11311
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-
-  ros-master:
-    network_mode: host
-    ipc: host
-    environment:
-      - ROS_IP=127.0.0.1
-
   rosbot:
     network_mode: host
     ipc: host
+    volumes:
+      - ./dds-config.client.xml:/dds-config.xml
     environment:
-      - ROS_IP=127.0.0.1
-      - ROS_MASTER_URI=http://127.0.0.1:11311
-
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
