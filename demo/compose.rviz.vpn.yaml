@@ -6,9 +6,8 @@ services:
 
   rviz:
     network_mode: host
-    # ipc: host
+    ipc: host
     volumes:
       - ./dds-config.client.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
-

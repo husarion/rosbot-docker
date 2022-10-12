@@ -21,11 +21,22 @@ services:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
+  discovery-server:
+    network_mode: host
+    ipc: host
+    image: ros:humble-ros-core
+    command: fast-discovery-server -x /dds-config.xml
+    volumes:
+      - ./dds-config.server.xml:/dds-config.xml
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
   rplidar:
     network_mode: host
     ipc: host
     volumes:
-      - ./dds-config.server.xml:/dds-config.xml
+      - ./dds-config.client.xml:/dds-config.xml
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.xml
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp

@@ -9,7 +9,7 @@ services:
     devices:
       - /dev/ttyUSB0
     command: >
-      ros2 launch sllidar_ros2 sllidar_launch.py 
+      ros2 launch sllidar_ros2 sllidar_launch.py
         serial_baudrate:=${RPLIDAR_BAUDRATE:-115200}
         frame_id:=lidar_link
 
