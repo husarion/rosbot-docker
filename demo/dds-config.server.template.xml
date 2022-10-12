@@ -6,7 +6,7 @@
             <transport_descriptor>
                 <transport_id>HusarnetTransport</transport_id>
                 <type>UDPv6</type>
-                <maxInitialPeersRange>30</maxInitialPeersRange>
+                <maxInitialPeersRange>40</maxInitialPeersRange>
                 <!-- <non_blocking_send>true</non_blocking_send> -->
             </transport_descriptor>
         </transport_descriptors>
@@ -16,7 +16,7 @@
                 <userTransports>
                     <transport_id>HusarnetTransport</transport_id>
                 </userTransports>
-                <useBuiltinTransports>true</useBuiltinTransports>
+                <useBuiltinTransports>false</useBuiltinTransports>
                 <prefix>44.49.53.43.53.45.52.56.45.52.5F.31</prefix>
                 <builtin>
                     <discovery_config>
