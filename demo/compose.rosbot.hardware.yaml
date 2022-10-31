@@ -17,6 +17,8 @@ services:
     image: microros/micro-ros-agent:humble
     restart: unless-stopped
     command: serial -D ${SERIAL_PORT:-/dev/ttyAMA0}  serial -b 576000 # -v6
+    volumes:
+      - ./micro-ros_entrypoint.sh:/micro-ros_entrypoint.sh
     devices:
       - ${SERIAL_PORT:-/dev/ttyAMA0}
 
