@@ -77,8 +77,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=pkg-builder /ros2_ws /ros2_ws
 
 # copy firmware built in previous stage
-COPY --from=stm32flash_builder /firmware.bin /firmware.bin
-COPY --from=stm32flash_builder /firmware.hex /firmware.hex
+COPY --from=stm32flash_builder /firmware.bin /root/firmware.bin
+COPY --from=stm32flash_builder /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 
 # copy scripts
