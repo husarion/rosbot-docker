@@ -4,6 +4,9 @@ ARG ROSBOT_FW_RELEASE=0.1.2
 # stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
 FROM ubuntu:18.04 AS stm32flash_builder
 
+ARG ROS_DISTRO
+ARG ROSBOT_FW_RELEASE
+
 SHELL ["/bin/bash", "-c"]
 
 # official releases are only for intel archs, so we need to build stm32flash from sources
@@ -25,6 +28,8 @@ RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$
 ## =========================== ROS package builder ===============================
 
 FROM ros:$ROS_DISTRO-ros-core AS pkg-builder
+
+ARG ROS_DISTRO
 
 SHELL ["/bin/bash", "-c"]
 
@@ -59,6 +64,8 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 
 ## =========================== ROS image ===============================
 FROM ros:$ROS_DISTRO-ros-core
+
+ARG ROS_DISTRO
 
 SHELL ["/bin/bash", "-c"]
 RUN apt-get update && apt-get install -y \
