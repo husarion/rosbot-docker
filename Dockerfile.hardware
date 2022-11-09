@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 	cd stm32flash/ && \
 	make all
 
-RUN echo firmware_release=$ROSBOT_FW_RELEASE
+RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE
 
 # Copy firmware binaries
 RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.bin -o /firmware.bin && \
