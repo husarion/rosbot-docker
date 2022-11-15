@@ -97,5 +97,7 @@ RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 	echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.profile && \
 	echo ". /ros2_ws/install/setup.bash" >> ~/.profile
 
+ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
