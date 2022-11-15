@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "ros2"
+  workflow_dispatch:
   repository_dispatch:
     types: [ros-package-update]
   pull_request:
