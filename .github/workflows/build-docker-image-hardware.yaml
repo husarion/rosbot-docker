@@ -4,6 +4,7 @@ on:
   push:
     # branches:
     #   - 'ros1'
+  workflow_dispatch:
   pull_request:
     types: [closed]
   
