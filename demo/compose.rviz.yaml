@@ -10,7 +10,6 @@ services:
     container_name: rviz
     restart: on-failure
     volumes:
-      - ./robot_model:/robot_model
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./config/rosbot.rviz:/root/.rviz2/default.rviz
     environment:
