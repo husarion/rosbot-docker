@@ -49,14 +49,10 @@ RUN apt-get update && apt-get install -y \
 
 # clone robot github repositories
 WORKDIR /ros2_ws
-RUN mkdir -p /ros2_ws/src && cd
-
-RUN git clone https://github.com/husarion/rosbot_ros.git --branch=humble && \
-	cd rosbot_ros &&  \
-	git checkout a49dc21211388c00bc8d1f3dfe383d75aeaa06dc && \
+RUN mkdir -p /ros2_ws/src && cd /ros2_ws/src && \
+	git clone https://github.com/husarion/rosbot_ros.git --branch=humble && \
+	cd rosbot_ros && \
 	git submodule update --init --recursive
-
-WORKDIR /ros2_ws
 
 # build ROS workspace
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
