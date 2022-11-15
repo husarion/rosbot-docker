@@ -52,8 +52,8 @@ jobs:
           ROS_DISTRO=${{ matrix.ros-distro }}
           ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}
-        cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
-        cache-to: type=inline
+        # cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
+        # cache-to: type=inline
 
     - name: Build and push (development)
       if: github.ref_name != 'ros2'
@@ -67,5 +67,5 @@ jobs:
           ROS_DISTRO=${{ matrix.ros-distro }}
           ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
-        cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
-        cache-to: type=inline
+        # cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
+        # cache-to: type=inline
