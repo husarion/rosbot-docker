@@ -2,7 +2,9 @@
 set -e
 
 if [[ -v FASTRTPS_DEFAULT_PROFILES_FILE ]]; then
-    envsubst < $FASTRTPS_DEFAULT_PROFILES_FILE > $FASTRTPS_DEFAULT_PROFILES_FILE
+    auxfile=$(mktemp)
+    cp --attributes-only --preserve $FASTRTPS_DEFAULT_PROFILES_FILE $auxfile
+    cat $FASTRTPS_DEFAULT_PROFILES_FILE | envsubst > $auxfile && mv $auxfile $FASTRTPS_DEFAULT_PROFILES_FILE
 fi
 
 # setup ros environment
