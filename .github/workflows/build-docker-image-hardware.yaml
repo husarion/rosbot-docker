@@ -2,8 +2,6 @@ name: Docker image for hardware
 
 on:
   push:
-    branches:
-      - "ros2"
   workflow_dispatch:
   repository_dispatch:
     types: [ros-package-update]
@@ -22,6 +20,10 @@ jobs:
             platforms: "linux/amd64, linux/arm64"
 
     steps:
+
+    - name: Print event name
+      run: echo "Event name ${{ github.event_name }}"
+  
     - name: Checkout
       uses: actions/checkout@v2
 
