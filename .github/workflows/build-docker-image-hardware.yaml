@@ -23,7 +23,13 @@ jobs:
 
     - name: Print event name
       run: echo "Event name ${{ github.event_name }}"
-  
+
+    - name: Print branch name
+      run: echo ${{ github.ref_name}}
+
+    - name: Set SHORT_DATE env
+      run: echo "SHORT_DATE=$(date +%y-%m-%d)" >> $GITHUB_ENV
+
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -42,14 +48,8 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Print branch name
-      run: echo ${{ github.ref_name}}
-
-    - name: Set SHORT_DATE env
-      run: echo "SHORT_DATE=$(date +%y-%m-%d)" >> $GITHUB_ENV
-
     - name: Build and push (production)
-      if: github.ref_name == 'ros2'
+      if: github.ref_name == 'ros2' && github.event_name == 'workflow_dispatch'
       uses: docker/build-push-action@v2
       with:
         context: .
@@ -62,8 +62,19 @@ jobs:
         tags: |
           husarion/rosbot:${{ matrix.ros-distro }}
           husarion/rosbot:${{ matrix.ros-distro }}-${{ env.SHORT_DATE }}
-        # cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
-        # cache-to: type=inline
+
+    - name: Build and push (latest only)
+      if: github.ref_name == 'ros2' && github.event_name != 'workflow_dispatch'
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.hardware
+        platforms: ${{ matrix.platforms }}
+        push: true
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
+          ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
+        tags: husarion/rosbot:${{ matrix.ros-distro }}
 
     - name: Build and push (development)
       if: github.ref_name != 'ros2'
