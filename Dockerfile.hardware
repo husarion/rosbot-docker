@@ -59,7 +59,7 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 	colcon build
 
 ## =========================== ROS image ===============================
-FROM ros:$ROS_DISTRO-ros-core
+FROM husarnet/ros:$ROS_DISTRO-ros-core
 
 ARG ROS_DISTRO
 
@@ -71,10 +71,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 		ros-$ROS_DISTRO-robot-localization \
 		ros-$ROS_DISTRO-xacro \
 		ros-$ROS_DISTRO-transmission-interface \
-		ros-$ROS_DISTRO-rmw-fastrtps-cpp \
-		ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
-		ros-$ROS_DISTRO-robot-state-publisher \
-		gettext-base && \
+		ros-$ROS_DISTRO-robot-state-publisher && \
 	pip install sh python-periphery && \
 	# clear ubuntu packages
 	apt-get clean && \
@@ -90,15 +87,9 @@ COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 
 # copy scripts
 COPY ./flash-firmware.py /
-COPY ./ros_entrypoint.sh /
 
 RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 	echo ". /ros2_ws/install/setup.bash" >> ~/.bashrc && \
 	# allows us to run: docker exec -it rosbot bash --login -c "rostopic list"
 	echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.profile && \
 	echo ". /ros2_ws/install/setup.bash" >> ~/.profile
-
-ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
