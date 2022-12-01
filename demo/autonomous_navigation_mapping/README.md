@@ -52,7 +52,7 @@ git clone https://github.com/husarion/rosbot-docker/
 ### 2. Prepare `demo/.env` file
 
 ```bash
-cd rosbot-docker/demo
+cd rosbot-docker/demo/autonomous_navigation_mapping
 cp .env.template .env
 ```
 
@@ -74,22 +74,31 @@ modify it if needed (see comments)
 # SBC <> STM32 serial connection.
 # ======================================================
 
-# SERIAL_PORT=/dev/ttyS4     # ROSbot 2 PRO
-SERIAL_PORT=/dev/ttyAMA0   # ROSbbot 2R
+# ROSbot 2 PRO
+# SERIAL_PORT=/dev/ttyS4
+
+# ROSbot 2R
+SERIAL_PORT=/dev/ttyAMA0
 
 # ======================================================
 # Serial baudrate for rplidar driver
 # ======================================================
 
-RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
-# RPLIDAR_BAUDRATE=256000     # RPLIDAR A3
+# RPLIDAR A2 (ROSbot 2R)
+RPLIDAR_BAUDRATE=115200
+
+# RPLIDAR A3 (ROSbot 2 PRO)
+# RPLIDAR_BAUDRATE=256000
 
 # ======================================================
 # For simulation example you need to use simulation time
 # ======================================================
 
-USE_SIM_TIME=False      # for a physical ROSbot
-# USE_SIM_TIME=True       # for a Gazebo simulation
+# for a physical ROSbot
+USE_SIM_TIME=False
+
+# for a Gazebo simulation
+# USE_SIM_TIME=True
 ```
 
 If you have other ROS 2 devices running in your LAN network make sure to provide an unique `ROS_DOMAIN_ID` (the default value is `ROS_DOMAIN_ID=0`) and select the right `SERIAL_PORT` depending on your ROSbot version (ROSbot 2 / ROSbot 2 PRO / ROSbot 2R). Note that if you run the demo example in a **simulation** then `SERIAL_PORT` is ignored, but it is necessary to define the `USE_SIM_TIME` variable to `True`.
@@ -402,7 +411,7 @@ and tell the ROSbot where to go autonomously with **[Nav2 Goal]** button.
 git clone https://github.com/husarion/rosbot-docker/
 ```
 
-### 2. Prepare `demo/.env` file
+### 2. Prepare `demo/autonomous_navigation_mapping/.env` file
 
 ```bash
 cd rosbot-docker/demo/autonomous_navigation_mapping/
@@ -416,22 +425,31 @@ modify it if needed (see comments)
 # SBC <> STM32 serial connection.
 # ======================================================
 
-# SERIAL_PORT=/dev/ttyS4     # ROSbot 2 PRO
-SERIAL_PORT=/dev/ttyAMA0   # ROSbbot 2R
+# ROSbot 2 PRO
+# SERIAL_PORT=/dev/ttyS4
+
+# ROSbot 2R
+SERIAL_PORT=/dev/ttyAMA0
 
 # ======================================================
 # Serial baudrate for rplidar driver
 # ======================================================
 
-RPLIDAR_BAUDRATE=115200     # RPLIDAR A2
-# RPLIDAR_BAUDRATE=256000     # RPLIDAR A3
+# RPLIDAR A2 (ROSbot 2R)
+RPLIDAR_BAUDRATE=115200
+
+# RPLIDAR A3 (ROSbot 2 PRO)
+# RPLIDAR_BAUDRATE=256000
 
 # ======================================================
 # For simulation example you need to use simulation time
 # ======================================================
 
-# USE_SIM_TIME=False      # for a physical ROSbot
-USE_SIM_TIME=True       # for a Gazebo simulation
+# for a physical ROSbot
+# USE_SIM_TIME=False
+
+# for a Gazebo simulation
+USE_SIM_TIME=True
 ```
 
 ### 3. Create a map
