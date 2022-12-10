@@ -58,7 +58,7 @@ Most important nodes published by this docker after launching [rosbot_bringup.la
 
 For more details on what is being published and subscribed by nodes running in this container please refer to launch file and packages:
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
-- [rosbot-stm32-firmware](https://github.com/husarion/rosbot-stm32-firmware/tree/ros2)
+- [rosbot_ros2_firmware](https://github.com/husarion/rosbot_ros2_firmware/)
 
 ## How to use `rosbot` Docker image?
 
