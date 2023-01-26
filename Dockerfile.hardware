@@ -85,6 +85,8 @@ COPY --from=stm32flash_builder /firmware.bin /root/firmware.bin
 COPY --from=stm32flash_builder /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 
+RUN echo $(cat /ros2_ws/src/rosbot_ros/rosbot_description/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
+
 # copy scripts
 COPY ./flash-firmware.py /
 
