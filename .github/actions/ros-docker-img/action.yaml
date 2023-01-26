@@ -157,6 +157,16 @@ runs:
     # Stable releases
     # ===========================================
 
+    - name: Print envs
+      run: |
+        echo "github.ref_name=${{ github.ref_name }}"
+        echo "inputs.main_branch_name=${{ inputs.main_branch_name }}"
+        echo "igithub.event_name=${{ github.event_name }}"
+        echo "inputs.build_type=${{ inputs.build_type }}"
+        echo "inputs.ros_distro=${{ inputs.ros_distro }}"
+        echo "inputs.target_distro=${{ inputs.target_distro }}"
+      shell: bash
+
     - name: "[main] [stable] Pull stable releases from a container registry"
       if: >
         github.ref_name == '${{ inputs.main_branch_name }}"' 
