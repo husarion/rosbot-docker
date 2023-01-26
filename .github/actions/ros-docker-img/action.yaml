@@ -13,8 +13,8 @@ inputs:
   dockerfile:
     description: "target Dockerfile"
     default: "Dockerfile"
-  additional_img_text:
-    description: "Additional text to add to the image name"
+  repo_name:
+    description: "Custom repository name: keep empty to get from repo name"
     default: ""
   build_type:
     description: "\"stable\" or \"development\" release"
@@ -51,8 +51,14 @@ runs:
       run: echo "SHORT_DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
       shell: bash
 
-    - name: Set IMAGE_NAME env
+    - name: Set IMAGE_NAME env (default)
+      if: inputs.repo_name == ""
       run: echo "IMAGE_NAME=$(echo "${{ github.event.repository.name }}" | sed -r 's/([0-9a-zA-Z]+)-docker/\1/g')" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Set IMAGE_NAME env (custom)
+      if: inputs.repo_name != ""
+      run: echo "IMAGE_NAME=${{ inputs.repo_name }}" >> $GITHUB_ENV
       shell: bash
 
     - name: Print envs
