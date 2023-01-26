@@ -103,7 +103,7 @@ runs:
         push: false
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
-        tags: husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.ros_distro }}-nightly
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-nightly
 
     # ===========================================
     # Nightly releases
@@ -123,7 +123,7 @@ runs:
         load: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
-        tags: husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.ros_distro }}-nightly
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-nightly
 
     - name: "[main] [dev] Set VERSION env"
       if: >
@@ -150,8 +150,8 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
         tags: |
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.ros_distro }}-nightly
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-nightly
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
 
     # ===========================================
     # Stable releases
@@ -178,7 +178,7 @@ runs:
         inputs.ros_distro == inputs.target_distro
       run: |
         mkdir temp
-        echo "FROM husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.target_distro }}-${{ inputs.target_release }}-${{ inputs.target_date }}" > temp/Dockerfile
+        echo "FROM husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-${{ inputs.target_release }}-${{ inputs.target_date }}" > temp/Dockerfile
       shell: bash
 
     - name: "[main] [stable] Build and push"
@@ -198,11 +198,11 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.target_distro }}
         tags: |
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.target_distro }}
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.target_distro }}-nightly
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.target_distro }}-${{ inputs.target_release }}
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.target_distro }}-${{ inputs.target_release }}-${{ inputs.target_date }}
-          husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.target_distro }}-${{ inputs.target_release }}-${{ inputs.target_date }}-stable
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-nightly
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-${{ inputs.target_release }}
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-${{ inputs.target_release }}-${{ inputs.target_date }}
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-${{ inputs.target_release }}-${{ inputs.target_date }}-stable
 
     # ===========================================
     # Feature branch releases
@@ -217,4 +217,4 @@ runs:
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
-        tags: husarion/${{ env.IMAGE_NAME }}${{ inputs.additional_img_text }}:${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
