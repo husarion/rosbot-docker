@@ -14,8 +14,8 @@ inputs:
     description: "target Dockerfile"
     default: "Dockerfile"
   repo_name:
-    description: "Custom repository name: keep \"default\" to get automatically from repo name"
-    default: "default"
+    description: "Custom repository name: keep empty to get automatically from repo name"
+    default: ""
   build_type:
     description: "\"stable\" or \"development\" release"
     default: "development"
@@ -52,12 +52,12 @@ runs:
       shell: bash
 
     - name: Set IMAGE_NAME env (default)
-      if: inputs.repo_name == default
+      if: inputs.repo_name == null
       run: echo "IMAGE_NAME=$(echo "${{ github.event.repository.name }}" | sed -r 's/([0-9a-zA-Z]+)-docker/\1/g')" >> $GITHUB_ENV
       shell: bash
 
     - name: Set IMAGE_NAME env (custom)
-      if: inputs.repo_name != default
+      if: inputs.repo_name != null
       run: echo "IMAGE_NAME=${{ inputs.repo_name }}" >> $GITHUB_ENV
       shell: bash
 
