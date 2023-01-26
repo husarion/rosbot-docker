@@ -42,13 +42,10 @@ jobs:
             repo_name: ""
             platforms: "linux/amd64, linux/arm64"
             ros_distro: "humble"
-          - dockerfile: Dockerfile.hardware
-            repo_name: "rosbot-simulation"
-            platforms: "linux/amd64, linux/arm64"
-            ros_distro: "humble"
           # - dockerfile: Dockerfile.simulation
-          #   additional_img_text: "-simulation"
+          #   repo_name: "rosbot-simulation"
           #   platforms: "linux/amd64"
+          #   ros_distro: "humble"
 
     steps:
 
