@@ -39,8 +39,9 @@ jobs:
 
         include:
           - dockerfile: Dockerfile.hardware
-            additional_img_text: ""
+            additional_img_text: "-test"
             platforms: "linux/amd64, linux/arm64"
+            ros_distro: "humble"
           # - dockerfile: Dockerfile.simulation
           #   additional_img_text: "-simulation"
           #   platforms: "linux/amd64"
@@ -59,7 +60,7 @@ jobs:
           dockerfile: ${{ matrix.dockerfile }}
           additional_img_text: ${{ matrix.additional_img_text }}
           build_type: ${{ inputs.build_type }}
-          ros_distro: "humble"
+          ros_distro: ${{ matrix.ros_distro }}"
           platforms: ${{ matrix.platforms }}
           # variables important only for stable release
           target_distro: ${{ inputs.target_distro }}
