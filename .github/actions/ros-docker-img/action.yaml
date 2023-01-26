@@ -7,6 +7,9 @@ inputs:
   dockerhub_token:
     description: "DockerHub token"
     required: true
+  main_branch_name:
+    description: "The name of the main branch - typically \"main\" or \"master\""
+    default: "main"
   dockerfile:
     description: "target Dockerfile"
     default: "Dockerfile"
@@ -102,7 +105,7 @@ runs:
 
     - name: "[main] [dev] Just build the image to retrieve the version" 
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == '${{ inputs.main_branch_name }}"' 
           && 
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
@@ -118,7 +121,7 @@ runs:
 
     - name: "[main] [dev] Set VERSION env"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == '${{ inputs.main_branch_name }}"' 
           && 
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
@@ -128,7 +131,7 @@ runs:
 
     - name: "[main] [dev] Build and push"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == '${{ inputs.main_branch_name }}"' 
           && 
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
@@ -150,7 +153,7 @@ runs:
 
     - name: "[main] [stable] Pull stable releases from a container registry"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == '${{ inputs.main_branch_name }}"' 
           && 
         github.event_name == 'workflow_dispatch'
           && 
@@ -164,7 +167,7 @@ runs:
 
     - name: "[main] [stable] Build and push"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == '${{ inputs.main_branch_name }}"' 
           && 
         github.event_name == 'workflow_dispatch'
           && 
@@ -190,7 +193,7 @@ runs:
     # ===========================================
 
     - name: "[feature] Build and push"
-      if: github.ref_name != 'main' && github.event_name == 'workflow_dispatch'
+      if: github.ref_name != '${{ inputs.main_branch_name }}"' && github.event_name == 'workflow_dispatch'
       uses: docker/build-push-action@v3
       with:
         file: ${{ inputs.dockerfile }}
