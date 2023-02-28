@@ -63,10 +63,8 @@ RUN	vcs import src < src/rosbot_ros/rosbot/rosbot_hardware.repos && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
 
-ENV MYDISTRO=${PREFIX:-ros}
-RUN [[ "$PREFIX" = "vulcanexus-" ]] && export MYDISTRO="vulcanexus"
-
-RUN source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
 	colcon build && \
 	# clear ubuntu packages
 	apt-get clean && \
