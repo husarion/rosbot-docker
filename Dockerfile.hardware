@@ -34,7 +34,9 @@ RUN curl -L https://github.com/husarion/rosbot_ros/archive/refs/tags/$ROSBOT_ROS
 
 ## =========================== ROS image ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
+
 ARG ROS_DISTRO
+ARG PREFIX
 
 SHELL ["/bin/bash", "-c"]
 
@@ -61,7 +63,10 @@ RUN	vcs import src < src/rosbot_ros/rosbot/rosbot_hardware.repos && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
 
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
+ENV MYDISTRO=${PREFIX:-ros}
+RUN [[ "$PREFIX" = "vulcanexus-" ]] && export MYDISTRO="vulcanexus"
+
+RUN source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
 	colcon build && \
 	# clear ubuntu packages
 	apt-get clean && \
