@@ -1,4 +1,5 @@
 ARG ROS_DISTRO=humble
+ARG PREFIX=
 ARG ROSBOT_FW_RELEASE=0.3.1
 ARG ROSBOT_ROS_RELEASE=0.3.0
 ## ============================ STM32FLASH =================================
@@ -32,7 +33,7 @@ RUN curl -L https://github.com/husarion/rosbot_ros/archive/refs/tags/$ROSBOT_ROS
 	mv rosbot_ros-$ROSBOT_ROS_RELEASE /rosbot_ros
 
 ## =========================== ROS image ===============================
-FROM husarnet/ros:$ROS_DISTRO-ros-core
+FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
 ARG ROS_DISTRO
 
 SHELL ["/bin/bash", "-c"]
@@ -76,9 +77,3 @@ RUN echo $(cat /ros2_ws/src/rosbot_ros/rosbot_description/package.xml | grep '<v
 
 # copy scripts
 COPY ./flash-firmware.py /
-
-RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
-	echo ". /ros2_ws/install/setup.bash" >> ~/.bashrc && \
-	# allows us to run: docker exec -it rosbot bash --login -c "rostopic list"
-	echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.profile && \
-	echo ". /ros2_ws/install/setup.bash" >> ~/.profile
