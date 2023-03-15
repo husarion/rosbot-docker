@@ -196,7 +196,7 @@
           "label": "URDF",
           "instanceId": "e827a6dc-875b-448a-8475-5497577c2e1b",
           "layerId": "foxglove.Urdf",
-          "url": "http://192.168.0.20:8080/rosbot.urdf",
+          "url": "http://<your-rosbot-ip>/rosbot.urdf",
           "order": 1
         },
         "b2c64820-a936-4f65-82b5-7a04ef902009": {
