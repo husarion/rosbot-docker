@@ -1,0 +1,42 @@
+x-net-config:
+  &net-config
+  network_mode: host
+  ipc: host
+  env_file: net.env
+
+services:
+
+  rosbot:
+    image: husarion/rosbot:humble-nightly
+    <<: *net-config
+    command: ros2 launch rosbot_bringup bringup.launch.py
+
+  microros:
+    image: husarion/micro-ros-agent:humble
+    <<: *net-config
+    devices:
+      - ${SERIAL_PORT:?err}
+    command: ros2 run micro_ros_agent micro_ros_agent serial -D $SERIAL_PORT serial -b 576000 # -v6
+
+  rplidar:
+    image: husarion/rplidar:humble-nightly
+    <<: *net-config
+    devices:
+      - ${LIDAR_SERIAL:?err}:/dev/ttyUSB0
+    command: ros2 launch sllidar_ros2 sllidar_launch.py serial_baudrate:=${LIDAR_BAUDRATE:-115200}
+
+  foxglove:
+    image: husarion/foxglove:humble-nightly
+    ports:
+      - 8080:8080
+    volumes:
+      - ./config/rosbot_sensors.json:/src/FoxgloveDefaultLayout.json
+    environment:
+      - FOXGLOVE_PORT=8080
+      - ROSBRIDGE_PORT=9090
+
+  rosbridge:
+    image: husarion/rosbridge:humble-nightly
+    ports:
+      - 9090:9090
+    command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml

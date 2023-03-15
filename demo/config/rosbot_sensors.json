@@ -1,0 +1,409 @@
+{
+  "configById": {
+    "Plot!gjvhbp": {
+      "paths": [
+        {
+          "value": "/range/left_front.range",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/range/left_rear.range",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/range/right_front.range",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/range/right_rear.range",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        }
+      ],
+      "minYValue": -0.039230484541325744,
+      "maxYValue": 1,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Left Front Range",
+      "followingViewWidth": 30
+    },
+    "Plot!1u5bb0v": {
+      "paths": [
+        {
+          "value": "/imu_broadcaster/imu.orientation.w",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/imu_broadcaster/imu.orientation.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/imu_broadcaster/imu.orientation.y",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/imu_broadcaster/imu.orientation.z",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        }
+      ],
+      "minYValue": -1.1,
+      "maxYValue": 1.1,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Plot",
+      "followingViewWidth": 30
+    },
+    "Tab!2qhku9u": {
+      "activeTabIdx": 0,
+      "tabs": [
+        {
+          "title": "Ranges Plots",
+          "layout": "Plot!gjvhbp"
+        },
+        {
+          "title": "IMU Plots",
+          "layout": "Plot!1u5bb0v"
+        }
+      ]
+    },
+    "3D!40jejke": {
+      "cameraState": {
+        "perspective": true,
+        "distance": 1.794896638615421,
+        "phi": 0.512148343076269,
+        "thetaOffset": 89.80364880230378,
+        "targetOffset": [
+          0.042082490711998995,
+          -0.012511297007733919,
+          1.5583216309628063e-17
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 45,
+        "near": 0.5,
+        "far": 5000
+      },
+      "followMode": "follow-pose",
+      "scene": {
+        "transforms": {
+          "axisScale": 0.4499999999999996,
+          "labelSize": 0.013834613718625963
+        },
+        "enableStats": true,
+        "ignoreColladaUpAxis": false,
+        "syncCamera": false
+      },
+      "transforms": {
+        "frame:base_link": {
+          "visible": false
+        },
+        "frame:body_link": {
+          "visible": false
+        },
+        "frame:cover_link": {
+          "visible": false
+        },
+        "frame:imu_link": {
+          "visible": false
+        },
+        "frame:camera_link": {
+          "visible": false
+        },
+        "frame:fl_range": {
+          "visible": false
+        },
+        "frame:fr_range": {
+          "visible": false
+        },
+        "frame:rl_range": {
+          "visible": false
+        },
+        "frame:rr_range": {
+          "visible": false
+        },
+        "frame:fl_wheel_link": {
+          "visible": true
+        },
+        "frame:fr_wheel_link": {
+          "visible": true
+        },
+        "frame:rl_wheel_link": {
+          "visible": true
+        },
+        "frame:rr_wheel_link": {
+          "visible": true
+        },
+        "frame:slamtec_rplidar_a2_link": {
+          "visible": false
+        },
+        "frame:laser": {
+          "visible": false
+        },
+        "frame:orbbec_astra_link": {
+          "visible": false
+        },
+        "frame:depth": {
+          "visible": false
+        },
+        "frame:odom": {
+          "visible": false
+        }
+      },
+      "topics": {
+        "/scan": {
+          "visible": true,
+          "colorField": "intensity",
+          "colorMode": "colormap",
+          "colorMap": "turbo",
+          "pointSize": 5
+        },
+        "/robot_description": {
+          "visible": false
+        }
+      },
+      "layers": {
+        "e827a6dc-875b-448a-8475-5497577c2e1b": {
+          "visible": true,
+          "frameLocked": true,
+          "label": "URDF",
+          "instanceId": "e827a6dc-875b-448a-8475-5497577c2e1b",
+          "layerId": "foxglove.Urdf",
+          "url": "http://192.168.0.20:8080/rosbot.urdf",
+          "order": 1
+        },
+        "b2c64820-a936-4f65-82b5-7a04ef902009": {
+          "visible": true,
+          "frameLocked": true,
+          "label": "Grid",
+          "instanceId": "b2c64820-a936-4f65-82b5-7a04ef902009",
+          "layerId": "foxglove.Grid",
+          "size": 10,
+          "divisions": 100,
+          "lineWidth": 1,
+          "color": "#248eff",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "order": 2
+        }
+      },
+      "publish": {
+        "type": "point",
+        "poseTopic": "/move_base_simple/goal",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      }
+    },
+    "RosOut!b0toow": {
+      "searchTerms": [],
+      "minLogLevel": 2
+    },
+    "Gauge!4jffafa": {
+      "path": "/battery.voltage",
+      "minValue": 9.8,
+      "maxValue": 12.6,
+      "colorMap": "turbo",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": false,
+      "foxglovePanelTitle": "Battery"
+    },
+    "Plot!4dl4s92": {
+      "paths": [
+        {
+          "value": "/battery.voltage",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        }
+      ],
+      "minYValue": 9.482842712474614,
+      "maxYValue": 13,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Battery in Time",
+      "followingViewWidth": 60
+    },
+    "Publish!1f6cruz": {
+      "topicName": "/led/left",
+      "datatype": "std_msgs/msg/Bool",
+      "buttonText": "LED1 Turn ON",
+      "buttonTooltip": "",
+      "buttonColor": "#00A871",
+      "advancedView": false,
+      "value": "{\n  \"data\": true\n}",
+      "foxglovePanelTitle": "LED1 Turn ON"
+    },
+    "Publish!1wozu40": {
+      "topicName": "/led/right",
+      "datatype": "std_msgs/msg/Bool",
+      "buttonText": "LED2 Turn ON",
+      "buttonTooltip": "",
+      "buttonColor": "#00A871",
+      "advancedView": false,
+      "value": "{\n  \"data\": true\n}",
+      "foxglovePanelTitle": "LED2 Turn ON"
+    },
+    "Indicator!2z34jcy": {
+      "path": "/button/left.data",
+      "style": "bulb",
+      "fallbackColor": "#ff0000",
+      "fallbackLabel": "Released",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#26c578",
+          "label": "Pressed"
+        }
+      ],
+      "foxglovePanelTitle": "Left Button"
+    },
+    "Publish!3cb71c0": {
+      "topicName": "/led/left",
+      "datatype": "std_msgs/msg/Bool",
+      "buttonText": "LED1 Turn OFF",
+      "buttonTooltip": "",
+      "buttonColor": "#a80000",
+      "advancedView": false,
+      "value": "{\n  \"data\": false\n}",
+      "foxglovePanelTitle": "LED1 Turn ON"
+    },
+    "Publish!46onm9c": {
+      "topicName": "/led/right",
+      "datatype": "std_msgs/msg/Bool",
+      "buttonText": "LED2 Turn OFF",
+      "buttonTooltip": "",
+      "buttonColor": "#a80000",
+      "advancedView": false,
+      "value": "{\n  \"data\": false\n}",
+      "foxglovePanelTitle": "LED2 Turn ON"
+    },
+    "Indicator!1hywfa1": {
+      "path": "/button/left.data",
+      "style": "bulb",
+      "fallbackColor": "#ff0000",
+      "fallbackLabel": "Released",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#26c578",
+          "label": "Pressed"
+        }
+      ],
+      "foxglovePanelTitle": "Left Button"
+    }
+  },
+  "globalVariables": {
+    "globalVariable": 7
+  },
+  "userNodes": {
+    "f5206e1d-deee-4f90-a03e-f561fbb9a7dd": {
+      "sourceCode": "// The ./types module provides helper types for your Input events and messages.\nimport { Input, Message } from \"./types\";\n\n// Your script can output well-known message types, any of your custom message types, or\n// complete custom message types.\n//\n// Use `Message` to access your data source types or well-known types:\n// type Twist = Message<\"geometry_msgs/Twist\">;\n//\n// Conventionally, it's common to make a _type alias_ for your script's output type\n// and use that type name as the return type for your script function.\n// Here we've called the type `Output` but you can pick any type name.\ntype Output = {\n  hello: string;\n};\n\n// These are the topics your script \"subscribes\" to. Studio will invoke your script function\n// when any message is received on one of these topics.\nexport const inputs = [\"/input/topic\"];\n\n// Any output your script produces is \"published\" to this topic. Published messages are only visible within Studio, not to your original data source.\nexport const output = \"/studio_script/output_topic\";\n\n// This function is called with messages from your input topics.\n// The first argument is an event with the topic, receive time, and message.\n// Use the `Input<...>` helper to get the correct event type for your input topic messages.\nexport default function script(event: Input<\"/input/topic\">): Output {\n  return {\n    hello: \"world!\",\n  };\n};",
+      "name": "f5206e1d"
+    },
+    "1a9e6183-d4b1-47dd-a024-efc14ab90b6b": {
+      "sourceCode": "// This example shows how to subscribe to multiple input topics.\n//\n// NOTE:\n// User Scripts can subscribe to multiple input topics, but can only publish on a single topic.\n\nimport { Input } from \"./types\";\n\ntype Output = { topic: string };\ntype GlobalVariables = { id: number };\n\n// List all the input topics in the `input` array\nexport const inputs = [\"/input/topic\", \"/input/another\"];\nexport const output = \"/studio_script/output_topic\";\n\n// Make an InputEvent type alias. Since our node will get a message from either input topic, we need to enumerate the topics.\ntype InputEvent = Input<\"/input/topic\"> | Input<\"/input/another\">;\n\nexport default function node(event: InputEvent, globalVars: GlobalVariables): Output {\n  // Remember that your node will get messages on each topic, so you\n  // need to check each event's topic to know which fields are available on the message.\n  switch (event.topic) {\n    case \"/input/topic\":\n      // topic specific input logic\n      // Our message fields are specific to our topic message\n      break;\n    case \"/input/another\":\n      // another specific logic\n      break;\n  }\n\n  // Nodes can only output one type of message regardless of the inputs\n  // Here we echo back the input topic as an example.\n  return {\n    topic: event.topic,\n  };\n};\n",
+      "name": "1a9e6183"
+    }
+  },
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": {
+    "direction": "row",
+    "first": "Tab!2qhku9u",
+    "second": {
+      "first": {
+        "first": "3D!40jejke",
+        "second": "RosOut!b0toow",
+        "direction": "row",
+        "splitPercentage": 72.58448357924799
+      },
+      "second": {
+        "first": "Gauge!4jffafa",
+        "second": {
+          "first": "Plot!4dl4s92",
+          "second": {
+            "first": {
+              "first": "Publish!1f6cruz",
+              "second": {
+                "first": "Publish!1wozu40",
+                "second": "Indicator!2z34jcy",
+                "direction": "row"
+              },
+              "direction": "row",
+              "splitPercentage": 33.16831683168318
+            },
+            "second": {
+              "first": "Publish!3cb71c0",
+              "second": {
+                "first": "Publish!46onm9c",
+                "second": "Indicator!1hywfa1",
+                "direction": "row",
+                "splitPercentage": 50.12345679012349
+              },
+              "direction": "row",
+              "splitPercentage": 33.16831683168318
+            },
+            "direction": "column"
+          },
+          "direction": "row",
+          "splitPercentage": 39.12172013072143
+        },
+        "direction": "row",
+        "splitPercentage": 19.793681495809157
+      },
+      "direction": "column",
+      "splitPercentage": 68.6046511627907
+    },
+    "splitPercentage": 31.51432184172301
+  }
+}
