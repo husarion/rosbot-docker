@@ -3,22 +3,22 @@
     "Plot!gjvhbp": {
       "paths": [
         {
-          "value": "/range/left_front.range",
+          "value": "/range/fl.range",
           "enabled": true,
           "timestampMethod": "receiveTime"
         },
         {
-          "value": "/range/left_rear.range",
+          "value": "/range/rl.range",
           "enabled": true,
           "timestampMethod": "receiveTime"
         },
         {
-          "value": "/range/right_front.range",
+          "value": "/range/fr.range",
           "enabled": true,
           "timestampMethod": "receiveTime"
         },
         {
-          "value": "/range/right_rear.range",
+          "value": "/range/rr.range",
           "enabled": true,
           "timestampMethod": "receiveTime"
         }
@@ -88,9 +88,9 @@
     "3D!40jejke": {
       "cameraState": {
         "perspective": true,
-        "distance": 1.794896638615421,
-        "phi": 0.512148343076269,
-        "thetaOffset": 89.80364880230378,
+        "distance": 3.4964922944727066,
+        "phi": 0.5121483430776923,
+        "thetaOffset": 89.80364880235732,
         "targetOffset": [
           0.042082490711998995,
           -0.012511297007733919,
@@ -180,10 +180,10 @@
       "topics": {
         "/scan": {
           "visible": true,
-          "colorField": "intensity",
+          "colorField": "range",
           "colorMode": "colormap",
-          "colorMap": "turbo",
-          "pointSize": 5
+          "colorMap": "rainbow",
+          "pointSize": 8
         },
         "/robot_description": {
           "visible": false
@@ -196,7 +196,7 @@
           "label": "URDF",
           "instanceId": "e827a6dc-875b-448a-8475-5497577c2e1b",
           "layerId": "foxglove.Urdf",
-          "url": "http://<your-rosbot-ip>/rosbot.urdf",
+          "url": "http://{{.Host}}:{{env "FOXGLOVE_PORT"}}/rosbot.urdf",
           "order": 1
         },
         "b2c64820-a936-4f65-82b5-7a04ef902009": {
@@ -230,7 +230,8 @@
         "poseEstimateXDeviation": 0.5,
         "poseEstimateYDeviation": 0.5,
         "poseEstimateThetaDeviation": 0.26179939
-      }
+      },
+      "foxglovePanelTitle": "Lidar View"
     },
     "RosOut!b0toow": {
       "searchTerms": [],
@@ -292,7 +293,7 @@
     },
     "Indicator!2z34jcy": {
       "path": "/button/left.data",
-      "style": "bulb",
+      "style": "background",
       "fallbackColor": "#ff0000",
       "fallbackLabel": "Released",
       "rules": [
@@ -313,7 +314,7 @@
       "buttonColor": "#a80000",
       "advancedView": false,
       "value": "{\n  \"data\": false\n}",
-      "foxglovePanelTitle": "LED1 Turn ON"
+      "foxglovePanelTitle": "LED1 Turn OFF"
     },
     "Publish!46onm9c": {
       "topicName": "/led/right",
@@ -323,11 +324,11 @@
       "buttonColor": "#a80000",
       "advancedView": false,
       "value": "{\n  \"data\": false\n}",
-      "foxglovePanelTitle": "LED2 Turn ON"
+      "foxglovePanelTitle": "LED2 Turn OFF"
     },
     "Indicator!1hywfa1": {
-      "path": "/button/left.data",
-      "style": "bulb",
+      "path": "/button/right.data",
+      "style": "background",
       "fallbackColor": "#ff0000",
       "fallbackLabel": "Released",
       "rules": [
@@ -339,6 +340,21 @@
         }
       ],
       "foxglovePanelTitle": "Left Button"
+    },
+    "Indicator!11kizr9": {
+      "path": "/battery.voltage",
+      "style": "background",
+      "fallbackColor": "#000000",
+      "fallbackLabel": "Ok",
+      "rules": [
+        {
+          "operator": "<",
+          "rawValue": "10.8",
+          "color": "#ff0000",
+          "label": "Plug Charger"
+        }
+      ],
+      "foxglovePanelTitle": "Plug Charger Info"
     }
   },
   "globalVariables": {
@@ -368,7 +384,11 @@
         "splitPercentage": 72.58448357924799
       },
       "second": {
-        "first": "Gauge!4jffafa",
+        "first": {
+          "first": "Gauge!4jffafa",
+          "second": "Indicator!11kizr9",
+          "direction": "column"
+        },
         "second": {
           "first": "Plot!4dl4s92",
           "second": {
@@ -396,7 +416,7 @@
             "direction": "column"
           },
           "direction": "row",
-          "splitPercentage": 39.12172013072143
+          "splitPercentage": 36.32145234626206
         },
         "direction": "row",
         "splitPercentage": 19.793681495809157

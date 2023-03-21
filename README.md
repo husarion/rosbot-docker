@@ -36,26 +36,6 @@ In *docker-compose.yaml* you have to change `device` passed to docker. For more 
 
 Most important nodes published by this docker after launching [rosbot_bringup.launch.py](https://github.com/husarion/rosbot_ros/blob/humble/src/rosbot_bringup/launch/rosbot_bringup.launch.py) are shown below.
 
-
-### Subscribes
-
-- `/cmd_vel` (*geometry_msgs/Twist*, **/rosbot_base_controller**)
-- `/_motors_response` (*sensor_msgs/msg/JointState*, **/rosbot_stm32_firmware**)
-- `/_imu/data_raw` (*sensor_msgs/msg/Imu*, **/imu_sensor_node**)
-
-### Publishes
-- `/battery` (*sensor_msgs/BatteryState*, **/rosbot_stm32_firmware**)
-- `/imu_broadcaster/imu` (*sensor_msgs/Imu*, **/imu_broadcaster**)
-- `/rosbot_base_controller/odom` (*nav_msgs/Odometry*, **/rosbot_base_controller**)
-- `/odometry/filtered` (*nav_msgs/Odometry*, **/ekf_node**)
-- `/_motors_cmd` (*std_msgs/msg/Float32MultiArray*, **/rosbot_stm32_firmware**)
-- `/range/right_front` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
-- `/range/left_front` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
-- `/range/right_rear` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
-- `/range/left_rear` (*sensor_msgs/msg/Range*, **/rosbot_stm32_firmware**)
-- `/button/left` (*std_msgs/msg/UInt16*, **/rosbot_stm32_firmware**)
-- `/button/right` (*std_msgs/msg/UInt16*, **/rosbot_stm32_firmware**)
-
 For more details on what is being published and subscribed by nodes running in this container please refer to launch file and packages:
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
 - [rosbot_ros2_firmware](https://github.com/husarion/rosbot_ros2_firmware/)
@@ -66,8 +46,7 @@ Find available projects below:
 
 | link | description |
 | - | - |
+| [rosbot-sensors](./demo/) | Visualize all ROSbot sensors |
 | [rosbot-gamepad](https://github.com/husarion/rosbot-gamepad) | Control the robot manually using a Logitech F710 gamepad |
 | [rosbot-mapping](https://github.com/husarion/rosbot-mapping) | Create a map (using [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox)) of the unknow environment with ROSbot controlled in LAN or over the Internet |
 | [rosbot-navigation](https://github.com/husarion/rosbot-navigation) | Autonomous navigation (using [navigation2](https://github.com/ros-planning/navigation2)) on a given map.  |
-
-
