@@ -1,4 +1,4 @@
-name: Build/Publish Docker Image 
+name: Build/Publish ROS Docker Image 
 
 on: 
   workflow_dispatch:
@@ -42,10 +42,10 @@ jobs:
             repo_name: ""
             platforms: "linux/amd64, linux/arm64"
             ros_distro: "humble"
-          # - dockerfile: Dockerfile.simulation
-          #   repo_name: "rosbot-simulation"
-          #   platforms: "linux/amd64"
-          #   ros_distro: "humble"
+          - dockerfile: Dockerfile.simulation
+            repo_name: "rosbot-simulation"
+            platforms: "linux/amd64"
+            ros_distro: "humble"
 
     steps:
 
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build Docker Image
-        uses: husarion-ci/ros-docker-img-action@v0.2
+        uses: husarion-ci/ros-docker-img-action@v0.4
         with:
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token:  ${{ secrets.DOCKERHUB_TOKEN }}
