@@ -16,6 +16,8 @@ services:
     <<: *net-config
     devices:
       - ${SERIAL_PORT:?err}
+    environment:
+      - SERIAL_PORT
     command: ros2 run micro_ros_agent micro_ros_agent serial -D $SERIAL_PORT serial -b 576000 # -v6
 
   rplidar:
@@ -37,6 +39,7 @@ services:
 
   rosbridge:
     image: husarion/rosbridge:humble-nightly
+    <<: *net-config
     ports:
       - 9090:9090
     command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml

@@ -40,7 +40,7 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
         python3-colcon-common-extensions \
         python3-rosdep \
         python3-vcstool \
-        git && \   
+        git && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
