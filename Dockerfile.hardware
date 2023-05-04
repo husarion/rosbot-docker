@@ -60,6 +60,8 @@ COPY --from=stm32flash_builder_and_downloader /rosbot_ros /ros2_ws/src/rosbot_ro
 
 RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 	vcs import src < src/rosbot_ros/rosbot/rosbot_hardware.repos && \
+	# it is necessary to remove simulation - otherwise rosdep tries to install dependencies
+    rm -r src/rosbot_ros/rosbot_gazebo && \
     # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
 	rosdep init && \

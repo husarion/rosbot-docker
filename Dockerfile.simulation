@@ -1,5 +1,6 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
+ARG ROSBOT_ROS_RELEASE=0.6.0
 
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
 
@@ -20,11 +21,14 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
         python3-colcon-common-extensions \
         python3-rosdep \
         python3-vcstool \
-        git && \
+        git \
+        curl && \
     apt-get upgrade -y && \
     # build & install ROSbot 2 packages
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
-    git clone https://github.com/husarion/rosbot_ros.git /ros2_ws/src && \
+    curl -L https://github.com/husarion/rosbot_ros/archive/refs/tags/$ROSBOT_ROS_RELEASE.tar.gz -o /rosbot_ros.tar.gz && \
+	tar -xvkf /rosbot_ros.tar.gz && \
+	mv rosbot_ros-$ROSBOT_ROS_RELEASE /ros2_ws/src/rosbot_ros \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     vcs import src < src/rosbot/rosbot_simulation.repos && \
     # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
@@ -40,7 +44,8 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
         python3-colcon-common-extensions \
         python3-rosdep \
         python3-vcstool \
-        git && \
+        git \
+        curl && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
