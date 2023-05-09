@@ -27,6 +27,23 @@ services:
       - ${LIDAR_SERIAL:?err}:/dev/ttyUSB0
     command: ros2 launch sllidar_ros2 sllidar_launch.py serial_baudrate:=${LIDAR_BAUDRATE:-115200}
 
+  astra:
+    image: husarion/astra:humble
+    <<: *net-config
+    devices:
+      - /dev/bus/usb/
+    volumes:
+      - ./config/astra.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
+    command: ros2 launch astra_camera astra_mini.launch.py
+
+  image_compressor:
+    image: husarion/image-transport:humble
+    command: >
+      ros2 run image_transport republish raw compressed
+        --ros-args
+        --remap in:=/camera/color/image_raw
+        --remap out/compressed:=/camera/color/image_raw/compressed
+
   foxglove:
     image: husarion/foxglove:humble-nightly
     ports:
