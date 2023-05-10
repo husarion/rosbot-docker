@@ -1,6 +1,6 @@
 # rosbot-docker
 
-Docker Image for ROS Humble Node providing interface for STM32 firmware over [Micro-Ros](https://micro.ros.org/).
+Docker Image for ROS Humble Node providing interface for STM32 firmware over [Micro-ROS](https://micro.ros.org/).
 
 `rosbot-docker` contain following ROS packages:
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
