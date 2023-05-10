@@ -9,7 +9,7 @@ services:
   rosbot:
     image: husarion/rosbot:humble-sensors-demo
     <<: *net-config
-    command: ros2 launch rosbot_bringup bringup.launch.py
+    command: ros2 launch rosbot_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
   microros:
     image: husarion/micro-ros-agent:humble
