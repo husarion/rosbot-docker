@@ -33,8 +33,22 @@
       "isSynced": true,
       "xAxisVal": "timestamp",
       "sidebarDimension": 240,
-      "foxglovePanelTitle": "Left Front Range",
+      "foxglovePanelTitle": "Plot",
       "followingViewWidth": 30
+    },
+    "ImageViewPanel!40iocf4": {
+      "cameraTopic": "/camera/color/image_raw/compressed",
+      "enabledMarkerTopics": [],
+      "mode": "fit",
+      "pan": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "synchronize": true,
+      "transformMarkers": false,
+      "zoom": 1,
+      "foxglovePanelTitle": "Astra Compressed Image"
     },
     "Plot!1u5bb0v": {
       "paths": [
@@ -77,7 +91,11 @@
       "tabs": [
         {
           "title": "Ranges Plots",
-          "layout": "Plot!gjvhbp"
+          "layout": {
+            "first": "Plot!gjvhbp",
+            "second": "ImageViewPanel!40iocf4",
+            "direction": "column"
+          }
         },
         {
           "title": "IMU Plots",
@@ -87,19 +105,18 @@
     },
     "3D!40jejke": {
       "cameraState": {
-        "perspective": true,
         "distance": 3.4964922944727066,
+        "perspective": true,
         "phi": 0.5121483430776923,
-        "thetaOffset": 89.80364880235732,
-        "targetOffset": [
-          0.042082490711998995,
-          -0.012511297007733919,
-          1.5583216309628063e-17
-        ],
         "target": [
           0,
           0,
           0
+        ],
+        "targetOffset": [
+          0.042082490711998995,
+          -0.012511297007733919,
+          1.5583216309628063e-17
         ],
         "targetOrientation": [
           0,
@@ -107,6 +124,7 @@
           0,
           1
         ],
+        "thetaOffset": 89.80364880235732,
         "fovy": 45,
         "near": 0.5,
         "far": 5000
@@ -250,6 +268,21 @@
       "reverse": false,
       "foxglovePanelTitle": "Battery"
     },
+    "Indicator!11kizr9": {
+      "path": "/battery.voltage",
+      "style": "background",
+      "fallbackColor": "#000000",
+      "fallbackLabel": "Ok",
+      "rules": [
+        {
+          "operator": "<",
+          "rawValue": "10.8",
+          "color": "#ff0000",
+          "label": "Plug Charger"
+        }
+      ],
+      "foxglovePanelTitle": "Plug Charger Info"
+    },
     "Plot!4dl4s92": {
       "paths": [
         {
@@ -268,7 +301,7 @@
       "isSynced": true,
       "xAxisVal": "timestamp",
       "sidebarDimension": 240,
-      "foxglovePanelTitle": "Battery in Time",
+      "foxglovePanelTitle": "Plot",
       "followingViewWidth": 60
     },
     "Publish!1f6cruz": {
@@ -340,21 +373,6 @@
         }
       ],
       "foxglovePanelTitle": "Left Button"
-    },
-    "Indicator!11kizr9": {
-      "path": "/battery.voltage",
-      "style": "background",
-      "fallbackColor": "#000000",
-      "fallbackLabel": "Ok",
-      "rules": [
-        {
-          "operator": "<",
-          "rawValue": "10.8",
-          "color": "#ff0000",
-          "label": "Plug Charger"
-        }
-      ],
-      "foxglovePanelTitle": "Plug Charger Info"
     }
   },
   "globalVariables": {
