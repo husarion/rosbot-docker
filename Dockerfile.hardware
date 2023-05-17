@@ -53,7 +53,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=stm32flash_builder_and_downloader /firmware.bin /root/firmware.bin
 COPY --from=stm32flash_builder_and_downloader /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder_and_downloader /stm32flash/stm32flash /usr/bin/stm32flash
-COPY --from=stm32flash_builder_and_downloader /rosbot_ros /ros2_ws/src/rosbot_ros
+COPY --from=stm32flash_builder_and_downloader /ros2_ws /ros2_ws
 
 RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 	vcs import src < src/rosbot_ros/rosbot/rosbot_hardware.repos && \
