@@ -1,6 +1,6 @@
-name: Build/Publish Vulcanexus Docker Image 
+name: Build/Publish Vulcanexus Docker Image
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       build_type:
@@ -43,7 +43,7 @@ jobs:
             platforms: "linux/amd64, linux/arm64"
             ros_distro: "humble"
           - dockerfile: Dockerfile.simulation
-            repo_name: "rosbot-simulation"
+            repo_name: "rosbot-gazebo"
             platforms: "linux/amd64"
             ros_distro: "humble"
 
