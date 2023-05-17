@@ -1,6 +1,6 @@
-name: Build/Publish ROS Docker Image 
+name: Build/Publish ROS Docker Image
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       build_type:
@@ -24,7 +24,7 @@ on:
         type: string
         default: "20131206"
   repository_dispatch:
-    types: [rebuild]
+    types: [rebuild, ros-package-update]
   pull_request:
     types:
       - closed
