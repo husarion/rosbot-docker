@@ -7,7 +7,7 @@ x-net-config:
 services:
 
   rosbot:
-    image: husarion/rosbot:humble-sensors-demo
+    image: husarion/rosbot:humble-nightly
     <<: *net-config
     command: ros2 launch rosbot_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
@@ -19,44 +19,3 @@ services:
     environment:
       - SERIAL_PORT
     command: ros2 run micro_ros_agent micro_ros_agent serial -D $SERIAL_PORT serial -b 576000 # -v6
-
-  rplidar:
-    image: husarion/rplidar:humble-1.0.1-20230427
-    <<: *net-config
-    devices:
-      - ${LIDAR_SERIAL:?err}:/dev/ttyUSB0
-    command: ros2 launch sllidar_ros2 sllidar_launch.py serial_baudrate:=${LIDAR_BAUDRATE:-115200}
-
-  astra:
-    image: husarion/astra:humble-1.0.2-20230427
-    <<: *net-config
-    devices:
-      - /dev/bus/usb/
-    volumes:
-      - ./config/astra.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
-    command: ros2 launch astra_camera astra_mini.launch.py
-
-  image_compressor:
-    image: husarion/image-transport:humble-4.2.0-20230216
-    command: >
-      ros2 run image_transport republish raw compressed
-        --ros-args
-        --remap in:=/camera/color/image_raw
-        --remap out/compressed:=/camera/color/image_raw/compressed
-
-  foxglove:
-    image: husarion/foxglove:humble-1.39.1-20230220
-    ports:
-      - 8080:8080
-    volumes:
-      - ./config/rosbot_sensors.json:/src/FoxgloveDefaultLayout.json
-    environment:
-      - FOXGLOVE_PORT=8080
-      - ROSBRIDGE_PORT=9090
-
-  rosbridge:
-    image: husarion/rosbridge:humble-1.3.1-20230220
-    <<: *net-config
-    ports:
-      - 9090:9090
-    command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml

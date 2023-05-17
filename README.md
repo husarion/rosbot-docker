@@ -46,7 +46,7 @@ Find available projects below:
 
 | link | description |
 | - | - |
-| [rosbot-sensors](./demo/) | Visualize all ROSbot sensors |
+| [rosbot-sensors](https://github.com/husarion/rosbot-sensors) | Visualize all ROSbot sensors |
 | [rosbot-gamepad](https://github.com/husarion/rosbot-gamepad) | Control the robot manually using a Logitech F710 gamepad |
 | [rosbot-mapping](https://github.com/husarion/rosbot-mapping) | Create a map (using [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox)) of the unknow environment with ROSbot controlled in LAN or over the Internet |
 | [rosbot-navigation](https://github.com/husarion/rosbot-navigation) | Autonomous navigation (using [navigation2](https://github.com/ros-planning/navigation2)) on a given map.  |

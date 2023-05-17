@@ -1,14 +1,12 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
 ARG ROSBOT_FW_RELEASE=0.3.4
-ARG ROSBOT_ROS_RELEASE=0.6.0
 ## ============================ STM32FLASH =================================
 # stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
 FROM ubuntu:18.04 AS stm32flash_builder_and_downloader
 
 ARG ROS_DISTRO
 ARG ROSBOT_FW_RELEASE
-ARG ROSBOT_ROS_RELEASE
 
 SHELL ["/bin/bash", "-c"]
 
@@ -22,15 +20,13 @@ RUN apt-get update && apt-get install -y \
 	cd stm32flash/ && \
 	make all
 
-RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE rosbot_ros_release=$ROSBOT_ROS_RELEASE
+RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE
 
 # Copy firmware binaries
 RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.bin -o /firmware.bin && \
     curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.hex -o /firmware.hex
 
-RUN curl -L https://github.com/husarion/rosbot_ros/archive/refs/tags/$ROSBOT_ROS_RELEASE.tar.gz -o /rosbot_ros.tar.gz && \
-	tar -xvkf /rosbot_ros.tar.gz && \
-	mv rosbot_ros-$ROSBOT_ROS_RELEASE /rosbot_ros
+RUN git clone https://github.com/husarion/rosbot_ros.git /ros2_ws/src
 
 ## =========================== ROS image ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
@@ -50,7 +46,8 @@ RUN apt-get update && apt-get install -y \
         python3-vcstool \
 		python3-sh \
 		python3-periphery \
-		build-essential
+		build-essential \
+		ros-$ROS_DISTRO-teleop-twist-keyboard
 
 # copy firmware built in previous stage and downloaded repository
 COPY --from=stm32flash_builder_and_downloader /firmware.bin /root/firmware.bin
