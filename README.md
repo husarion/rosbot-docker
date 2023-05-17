@@ -5,7 +5,7 @@ Docker Image for ROS Humble Node providing interface for STM32 firmware over [Mi
 `rosbot-docker` contain following ROS packages:
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
 
-With *docker-compose* configuration shown in [demo](./demo) it can communicate with hardware of both Rosbot 2.0 and Rosbot 2.0 Pro.
+With *docker-compose* configuration shown in [demo](./demo) it can communicate with hardware of ROSbot 2R, ROSbot 2 PRO and ROSbot 2.0.
 
 ## Flashing the firmware
 
