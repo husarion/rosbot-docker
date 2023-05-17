@@ -58,7 +58,7 @@ COPY --from=stm32flash_builder_and_downloader /ros2_ws /ros2_ws
 RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 	vcs import src < src/rosbot/rosbot_hardware.repos && \
 	# it is necessary to remove simulation - otherwise rosdep tries to install dependencies
-    rm -r src/rosbot_ros/rosbot_gazebo && \
+    rm -r src/rosbot_gazebo && \
     # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
 	rosdep init && \
@@ -76,7 +76,7 @@ RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 		build-essential && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN echo $(cat /ros2_ws/src/rosbot_ros/rosbot_description/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
+RUN echo $(cat /ros2_ws/src/rosbot_description/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
 
 # copy scripts
 COPY ./flash-firmware.py /
