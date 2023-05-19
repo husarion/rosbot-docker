@@ -20,7 +20,7 @@ x-cpu-config:
 
 services:
   rosbot:
-    image: husarion/rosbot:humble-add-simulation-and-demo
+    image: husarion/rosbot-gazebo:humble-add-simulation-and-demo
     <<: [ *net-config, *gpu-config]
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
