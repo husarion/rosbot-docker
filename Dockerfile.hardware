@@ -76,7 +76,7 @@ RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 		build-essential && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN echo $(cat /ros2_ws/src/rosbot_description/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
+RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
 
 # copy scripts
 COPY ./flash-firmware.py /

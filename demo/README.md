@@ -1,5 +1,5 @@
-# rosbot-sensors
-Visualization for ROSbot 2R, ROSbot 2 PRO and ROSbot 2.0 sensors.
+# rosbot-teleop
+Teleop twist driving demo for ROSbot 2R, ROSbot 2 PRO and ROSbot 2.0.
 
 # Quick Start
 ## Real Robot
@@ -10,8 +10,8 @@ git clone https://github.com/husarion/rosbot-docker
 cd rosbot-docker
 ```
 
-In `.env` file you can change the lidar baudrate and enable the mecanum controller.
-In `net.env` file you can change network configuration.
+In the `.env` file, you have the option to modify the lidar baudrate and enable the mecanum controller if necessary.
+In the `net.env` file you can change network configuration.
 
 Sync workspace with ROSbot
 ```
@@ -19,7 +19,7 @@ Sync workspace with ROSbot
 ```
 
 ### On ROSbot
-In the ROSbot's shell execute (in the `/home/husarion/rosbot-docker/demo directory`)
+In the ROSbot's shell execute (in the `/home/husarion/rosbot-docker/demo` directory)
 ```
 docker compose -f compose.yaml up
 ```
