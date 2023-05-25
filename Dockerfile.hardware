@@ -1,14 +1,12 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
-ARG ROSBOT_FW_RELEASE=0.3.1
-ARG ROSBOT_ROS_RELEASE=0.3.0
+ARG ROSBOT_FW_RELEASE=0.3.4
 ## ============================ STM32FLASH =================================
 # stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
 FROM ubuntu:18.04 AS stm32flash_builder_and_downloader
 
 ARG ROS_DISTRO
 ARG ROSBOT_FW_RELEASE
-ARG ROSBOT_ROS_RELEASE
 
 SHELL ["/bin/bash", "-c"]
 
@@ -22,15 +20,13 @@ RUN apt-get update && apt-get install -y \
 	cd stm32flash/ && \
 	make all
 
-RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE rosbot_ros_release=$ROSBOT_ROS_RELEASE
+RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE
 
 # Copy firmware binaries
 RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.bin -o /firmware.bin && \
     curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.hex -o /firmware.hex
 
-RUN curl -L https://github.com/husarion/rosbot_ros/archive/refs/tags/$ROSBOT_ROS_RELEASE.tar.gz -o /rosbot_ros.tar.gz && \
-	tar -xvkf /rosbot_ros.tar.gz && \
-	mv rosbot_ros-$ROSBOT_ROS_RELEASE /rosbot_ros
+RUN git clone https://github.com/husarion/rosbot_ros.git /ros2_ws/src
 
 ## =========================== ROS image ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
@@ -50,16 +46,19 @@ RUN apt-get update && apt-get install -y \
         python3-vcstool \
 		python3-sh \
 		python3-periphery \
-		build-essential
+		build-essential \
+		ros-$ROS_DISTRO-teleop-twist-keyboard
 
 # copy firmware built in previous stage and downloaded repository
 COPY --from=stm32flash_builder_and_downloader /firmware.bin /root/firmware.bin
 COPY --from=stm32flash_builder_and_downloader /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder_and_downloader /stm32flash/stm32flash /usr/bin/stm32flash
-COPY --from=stm32flash_builder_and_downloader /rosbot_ros /ros2_ws/src/rosbot_ros
+COPY --from=stm32flash_builder_and_downloader /ros2_ws /ros2_ws
 
 RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
-	vcs import src < src/rosbot_ros/rosbot/rosbot_hardware.repos && \
+	vcs import src < src/rosbot/rosbot_hardware.repos && \
+	# it is necessary to remove simulation - otherwise rosdep tries to install dependencies
+    rm -r src/rosbot_gazebo && \
     # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
 	rosdep init && \
@@ -77,7 +76,7 @@ RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 		build-essential && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN echo $(cat /ros2_ws/src/rosbot_ros/rosbot_description/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
+RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
 
 # copy scripts
 COPY ./flash-firmware.py /
