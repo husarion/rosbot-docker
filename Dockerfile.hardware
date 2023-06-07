@@ -28,6 +28,28 @@ RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$
 
 RUN git clone https://github.com/husarion/rosbot_ros.git /ros2_ws/src
 
+## =========================== Firmware CPU ID ================================
+
+FROM ubuntu:20.04 AS cpu_id_builder
+
+ARG ROSBOT_FW_RELEASE
+
+SHELL ["/bin/bash", "-c"]
+
+# official releases are only for intel archs, so we need to build stm32flash from sources
+RUN apt-get update && apt-get install -y \
+        curl \
+        python3 \
+        python3-pip
+
+# build a binary for reading the CPU ID
+COPY read_cpu_id/ /read_cpu_id
+
+RUN pip3 install -U platformio && \
+    cd /read_cpu_id && \
+    pio run && \
+    chmod -x .pio/build/olimex_e407/firmware.bin
+
 ## =========================== ROS image ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
 
@@ -41,6 +63,7 @@ WORKDIR /ros2_ws
 
 RUN apt-get update && apt-get install -y \
 		git \
+		python3-pip \
         python3-colcon-common-extensions \
         python3-rosdep \
         python3-vcstool \
@@ -48,12 +71,13 @@ RUN apt-get update && apt-get install -y \
 		python3-periphery \
 		build-essential \
 		ros-$ROS_DISTRO-teleop-twist-keyboard
-
+	
 # copy firmware built in previous stage and downloaded repository
 COPY --from=stm32flash_builder_and_downloader /firmware.bin /root/firmware.bin
 COPY --from=stm32flash_builder_and_downloader /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder_and_downloader /stm32flash/stm32flash /usr/bin/stm32flash
 COPY --from=stm32flash_builder_and_downloader /ros2_ws /ros2_ws
+COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
 
 RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 	vcs import src < src/rosbot/rosbot_hardware.repos && \
@@ -79,4 +103,8 @@ RUN	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
 
 # copy scripts
-COPY ./flash-firmware.py /
+COPY flash-firmware.py /
+COPY flash-firmware.py /usr/bin/
+COPY print-serial-number.py /usr/bin/
+
+RUN pip3 install pyserial

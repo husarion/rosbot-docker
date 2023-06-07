@@ -32,6 +32,15 @@ docker buildx build \
 In *docker-compose.yaml* you have to change `device` passed to docker. For more information refer to `astra-docker` [README.md](https://github.com/husarion/astra-docker) -->
 
 
+## Reading CPU id
+
+```bash
+docker run \
+--rm -it --privileged \
+husarion/rosbot:humble \
+print-serial-number.py 
+```
+
 ## ROS node
 
 Most important nodes published by this docker after launching [rosbot_bringup.launch.py](https://github.com/husarion/rosbot_ros/blob/humble/src/rosbot_bringup/launch/rosbot_bringup.launch.py) are shown below.
