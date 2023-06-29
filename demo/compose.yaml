@@ -1,0 +1,21 @@
+x-net-config:
+  &net-config
+  network_mode: host
+  ipc: host
+  env_file: net.env
+
+services:
+
+  rosbot:
+    image: husarion/rosbot:humble
+    <<: *net-config
+    command: ros2 launch rosbot_bringup bringup.launch.py mecanum:=${MECANUM:-False}
+
+  microros:
+    image: husarion/micro-ros-agent:humble
+    <<: *net-config
+    devices:
+      - ${SERIAL_PORT:?err}
+    environment:
+      - SERIAL_PORT
+    command: ros2 run micro_ros_agent micro_ros_agent serial -D $SERIAL_PORT serial -b 576000 # -v6
