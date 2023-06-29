@@ -52,7 +52,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build Docker Image
+      - name: ${{ matrix.dockerfile }} | ${{ matrix.ros_distro }} | Build
         uses: husarion-ci/ros-docker-img-action@v0.4
         with:
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
