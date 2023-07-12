@@ -9,13 +9,17 @@ services:
   rosbot:
     image: husarion/rosbot:humble
     <<: *net-config
+    environment:
+      - ROS_DOMAIN_ID
     command: ros2 launch rosbot_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
-  microros:
-    image: husarion/micro-ros-agent:humble
+
+  micro-xrce-agent:
+    image: husarion/micro-xrce-agent:v2.4.1
     <<: *net-config
     devices:
       - ${SERIAL_PORT:?err}
     environment:
+      - XRCE_DOMAIN_ID_OVERRIDE=${ROS_DOMAIN_ID}  # ***
       - SERIAL_PORT
-    command: ros2 run micro_ros_agent micro_ros_agent serial -D $SERIAL_PORT serial -b 576000 # -v6
+    command: MicroXRCEAgent serial -D $SERIAL_PORT serial -b 576000 # -v6
