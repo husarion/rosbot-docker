@@ -1,0 +1,6 @@
+{
+    "files.insertFinalNewline": true,
+    "files.associations": {
+        "*.yaml": "yaml"
+    }
+}

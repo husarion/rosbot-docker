@@ -38,7 +38,7 @@ In *docker-compose.yaml* you have to change `device` passed to docker. For more 
 docker run \
 --rm -it --privileged \
 husarion/rosbot:humble \
-print-serial-number.py 
+print-serial-number.py
 ```
 
 ## ROS node

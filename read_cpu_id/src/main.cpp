@@ -27,5 +27,3 @@ void loop()
   // Wait for a second before printing again
   delay(1000);
 }
-
-

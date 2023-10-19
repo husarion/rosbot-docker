@@ -48,19 +48,19 @@ class SerialNumberGenerator:
         # Check if the hex string is valid
         if not all(c in string.hexdigits for c in hex_str):
             raise ValueError("Invalid hex string")
-    
+
         # Convert the hex string to bytes
         try:
             hex_bytes = bytes.fromhex(hex_str)
         except ValueError:
             raise ValueError("Invalid hex string")
-    
+
         # Compute the SHA-256 hash of the hex bytes
         hash = hashlib.sha256(hex_bytes).hexdigest()
-    
+
         # Truncate the hash to 6 characters
         hash = hash[:6]
-    
+
         # Return the hash as an ASCII string
         return hash
 
@@ -103,7 +103,7 @@ class SerialNumberGenerator:
             print()
 
         # Close the serial port
-        ser.close()    
+        ser.close()
         return result
 
 
@@ -129,8 +129,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-

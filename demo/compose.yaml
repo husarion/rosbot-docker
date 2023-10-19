@@ -1,11 +1,9 @@
-x-net-config:
-  &net-config
+x-net-config: &net-config
   network_mode: host
   ipc: host
   env_file: net.env
 
 services:
-
   rosbot:
     image: husarion/rosbot:humble
     <<: *net-config
@@ -13,13 +11,12 @@ services:
       - ROS_DOMAIN_ID
     command: ros2 launch rosbot_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
-
   micro-xrce-agent:
     image: husarion/micro-xrce-agent:v2.4.1
     <<: *net-config
     devices:
       - ${SERIAL_PORT:?err}
     environment:
-      - XRCE_DOMAIN_ID_OVERRIDE=${ROS_DOMAIN_ID}  # ***
+      - XRCE_DOMAIN_ID_OVERRIDE=${ROS_DOMAIN_ID} # ***
       - SERIAL_PORT
     command: MicroXRCEAgent serial -D $SERIAL_PORT serial -b 576000 # -v6

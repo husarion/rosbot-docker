@@ -1,19 +1,16 @@
-x-net-config:
-  &net-config
+x-net-config: &net-config
   network_mode: host
   ipc: host
   env_file: net.env
 
-x-gpu-config:
-  &gpu-config
+x-gpu-config: &gpu-config
   runtime: nvidia
   environment:
     - DISPLAY=${DISPLAY:?err}
     - NVIDIA_VISIBLE_DEVICES=all
     - NVIDIA_DRIVER_CAPABILITIES=all
 
-x-cpu-config:
-  &cpu-config
+x-cpu-config: &cpu-config
   environment:
     - DISPLAY=${DISPLAY:?err}
     - LIBGL_ALWAYS_SOFTWARE=1
@@ -21,7 +18,7 @@ x-cpu-config:
 services:
   rosbot:
     image: husarion/rosbot-gazebo:humble
-    <<: [ *net-config, *gpu-config]
+    <<: [*net-config, *gpu-config]
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /dev:/dev
