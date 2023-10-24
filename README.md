@@ -38,7 +38,7 @@ In *docker-compose.yaml* you have to change `device` passed to docker. For more 
 docker run \
 --rm -it --privileged \
 husarion/rosbot:humble \
-print-serial-number.py 
+print-serial-number.py
 ```
 
 ## ROS node
@@ -49,6 +49,21 @@ For more details on what is being published and subscribed by nodes running in t
 - [rosbot_ros](https://github.com/husarion/rosbot_ros/tree/humble)
 - [rosbot_ros2_firmware](https://github.com/husarion/rosbot_ros2_firmware/)
 
+
+## Developing
+[pre-commit configuration](.pre-commit-config.yaml) prepares plenty of tests helping for developing and contributing. Usage:
+
+```bash
+# install pre-commit
+pip install pre-commit
+
+# initialize pre-commit workspace
+pre-commit install
+
+# manually run tests
+pre-commit run -a
+```
+
 ## How to use `rosbot` Docker image?
 
 Find available projects below:
@@ -57,5 +72,5 @@ Find available projects below:
 | - | - |
 | [rosbot-sensors](https://github.com/husarion/rosbot-sensors) | Visualize all ROSbot sensors |
 | [rosbot-gamepad](https://github.com/husarion/rosbot-gamepad) | Control the robot manually using a Logitech F710 gamepad |
-| [rosbot-mapping](https://github.com/husarion/rosbot-mapping) | Create a map (using [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox)) of the unknow environment with ROSbot controlled in LAN or over the Internet |
+| [rosbot-mapping](https://github.com/husarion/rosbot-mapping) | Create a map (using [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox)) of the unknown environment with ROSbot controlled in LAN or over the Internet |
 | [rosbot-navigation](https://github.com/husarion/rosbot-navigation) | Autonomous navigation (using [navigation2](https://github.com/ros-planning/navigation2)) on a given map.  |
