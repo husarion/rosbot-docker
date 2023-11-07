@@ -13,6 +13,8 @@ ENV HUSARION_ROS_BUILD simulation
 
 WORKDIR /ros2_ws
 
+COPY ./healthcheck.cpp /
+
 # install everything needed
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt-get update --fix-missing && apt-get install -y \
@@ -35,6 +37,19 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
+    # Create health check package
+    cd src/ && \
+	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp std_msgs && \
+    sed -i '/find_package(std_msgs REQUIRED)/a \
+            find_package(nav_msgs REQUIRED)\n \
+            add_executable(healthcheck_node src/healthcheck.cpp)\n \
+            ament_target_dependencies(healthcheck_node rclcpp std_msgs nav_msgs)\n \
+            install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
+            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt && \
+    mv /healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/ && \
+    cd .. && \
+    # Build
     colcon build && \
     # make the image smaller
     export SUDO_FORCE_REMOVE=yes && \
@@ -50,3 +65,6 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo $(cat /ros2_ws/src/rosbot_gazebo/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=5 \
+    CMD ["/ros_entrypoint.sh", "ros2", "run", "healthcheck_pkg", "healthcheck_node"]
