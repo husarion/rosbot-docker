@@ -67,6 +67,7 @@ COPY --from=stm32flash_builder_and_downloader /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder_and_downloader /stm32flash/stm32flash /usr/bin/stm32flash
 COPY --from=stm32flash_builder_and_downloader /ros2_ws /ros2_ws
 COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
+COPY ./healthcheck.cpp /
 
 RUN apt-get update && apt-get install -y \
 		git \
@@ -88,7 +89,19 @@ RUN apt-get update && apt-get install -y \
 	rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
+	# Create health check package
+    cd src/ && \
 	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp std_msgs && \
+    sed -i '/find_package(std_msgs REQUIRED)/a \
+            find_package(nav_msgs REQUIRED)\n \
+            add_executable(healthcheck_node src/healthcheck.cpp)\n \
+            ament_target_dependencies(healthcheck_node rclcpp std_msgs nav_msgs)\n \
+            install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
+            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt && \
+    mv /healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/ && \
+    cd .. && \
+    # Build
 	colcon build && \
 	# clear ubuntu packages
 	apt-get clean && \
@@ -102,6 +115,9 @@ RUN apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=5 \
+    CMD ["/ros_entrypoint.sh", "ros2", "run", "healthcheck_pkg", "healthcheck_node"]
 
 # copy scripts
 COPY flash-firmware.py /
