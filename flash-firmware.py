@@ -17,22 +17,21 @@ class FirmwareFlasher:
 
         print(f"System architecture: {self.sys_arch}")
 
-        if self.sys_arch.stdout == b'armv7l\n':
+        if self.sys_arch.stdout == b"armv7l\n":
             # Setups ThinkerBoard pins
             print("Device: ThinkerBoard\n")
             self.port = "/dev/ttyS1"
             boot0_pin_no = 164
             reset_pin_no = 184
 
-
-        elif self.sys_arch.stdout == b'x86_64\n':
+        elif self.sys_arch.stdout == b"x86_64\n":
             # Setups UpBoard pins
             print("Device: UpBoard\n")
             self.port = "/dev/ttyS4"
             boot0_pin_no = 17
             reset_pin_no = 18
 
-        elif self.sys_arch.stdout == b'aarch64\n':
+        elif self.sys_arch.stdout == b"aarch64\n":
             # Setups RPi pins
             print("Device: RPi\n")
             self.port = "/dev/ttyAMA0"
@@ -45,7 +44,6 @@ class FirmwareFlasher:
         self.boot0_pin = GPIO(boot0_pin_no, "out")
         self.reset_pin = GPIO(reset_pin_no, "out")
 
-
     def enter_bootloader_mode(self):
 
         self.boot0_pin.write(True)
@@ -54,7 +52,6 @@ class FirmwareFlasher:
         self.reset_pin.write(False)
         time.sleep(0.2)
 
-
     def exit_bootloader_mode(self):
 
         self.boot0_pin.write(False)
@@ -62,7 +59,6 @@ class FirmwareFlasher:
         time.sleep(0.2)
         self.reset_pin.write(False)
         time.sleep(0.2)
-
 
     def flash_firmware(self):
 
@@ -89,30 +85,30 @@ class FirmwareFlasher:
                     sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
                     time.sleep(0.2)
                     break
-            except:
+            except Exception:
                 pass
 
         else:
-            print('ERROR! Something goes wrong. Try again.')
-
+            print("ERROR! Something goes wrong. Try again.")
 
         self.exit_bootloader_mode()
-
 
 
 def main():
 
     parser = argparse.ArgumentParser(
-        description='Flashing the firmware on STM32 microcontroller in ROSbot')
+        description="Flashing the firmware on STM32 microcontroller in ROSbot"
+    )
 
     parser.add_argument(
         "file",
-        nargs='?',
+        nargs="?",
         default="/root/firmware.bin",
-        help="Path to a firmware file. Default = /root/firmware.bin")
+        help="Path to a firmware file. Default = /root/firmware.bin",
+    )
 
     binary_file = parser.parse_args().file
-    sys_arch = sh.uname('-m')
+    sys_arch = sh.uname("-m")
 
     flasher = FirmwareFlasher(sys_arch, binary_file)
     flasher.flash_firmware()

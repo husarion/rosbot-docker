@@ -1,70 +1,71 @@
+---
 name: Build/Publish Vulcanexus Docker Image
 
 on:
-  workflow_dispatch:
-    inputs:
-      build_type:
-        description: "Is it a \"development\" or a \"stable\" release?"
-        required: true
-        default: 'development'
-        type: choice
-        options:
-          - development
-          - stable
-      target_distro:
-        description: "In case of \"stable\" release specify the ROS distro of the existing docker image (eg. humble)"
-        type: string
-        default: "ardent"
-      target_release:
-        description: "In case of \"stable\" release specify the version of the existing docker image (eg. 1.0.12)"
-        type: string
-        default: "0.0.0"
-      target_date:
-        description: "In case of \"stable\" release specify the date of the existing docker image in format YYYYMMDD (eg. 20220124)"
-        type: string
-        default: "20131206"
-  repository_dispatch:
-    types: [rebuild, ros-package-update]
-  pull_request:
-    types:
-      - closed
-      - opened
+    workflow_dispatch:
+        inputs:
+            build_type:
+                description: Is it a "development" or a "stable" release?
+                required: true
+                default: development
+                type: choice
+                options:
+                    - development
+                    - stable
+            target_distro:
+                description: In case of "stable" release specify the ROS distro of the existing docker image (eg. humble)
+                type: string
+                default: ardent
+            target_release:
+                description: In case of "stable" release specify the version of the existing docker image (eg. 1.0.12)
+                type: string
+                default: 0.0.0
+            target_date:
+                description: In case of "stable" release specify the date of the existing docker image in format YYYYMMDD (eg. 20220124)
+                type: string
+                default: '20131206'
+    repository_dispatch:
+        types: [rebuild, ros-package-update]
+    pull_request:
+        types:
+            - closed
+            - opened
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
+    build:
+        runs-on: ubuntu-22.04
+        strategy:
+            fail-fast: false
+            matrix:
 
-        include:
-          - dockerfile: Dockerfile.hardware
-            repo_name: ""
-            platforms: "linux/amd64, linux/arm64"
-            ros_distro: "humble"
-          - dockerfile: Dockerfile.simulation
-            repo_name: "rosbot-gazebo"
-            platforms: "linux/amd64"
-            ros_distro: "humble"
+                include:
+                    - dockerfile: Dockerfile.hardware
+                      repo_name: ''
+                      platforms: linux/amd64, linux/arm64
+                      ros_distro: humble
+                    - dockerfile: Dockerfile.simulation
+                      repo_name: rosbot-gazebo
+                      platforms: linux/amd64
+                      ros_distro: humble
 
-    steps:
+        steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
+            - name: Checkout
+              uses: actions/checkout@v2
 
-      - name: ${{ matrix.dockerfile }} | ${{ matrix.ros_distro }} | Build
-        uses: husarion-ci/ros-docker-img-action@v0.4
-        with:
-          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub_token:  ${{ secrets.DOCKERHUB_TOKEN }}
-          main_branch_name: ros2
-          dockerfile: ${{ matrix.dockerfile }}
-          repo_name: ${{ matrix.repo_name }}
-          build_type: ${{ inputs.build_type }}
-          ros_distro: ${{ matrix.ros_distro }}
-          platforms: ${{ matrix.platforms }}
-          prefix: "vulcanexus-"
+            - name: ${{ matrix.dockerfile }} | ${{ matrix.ros_distro }} | Build
+              uses: husarion-ci/ros-docker-img-action@v0.4
+              with:
+                  dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+                  main_branch_name: ros2
+                  dockerfile: ${{ matrix.dockerfile }}
+                  repo_name: ${{ matrix.repo_name }}
+                  build_type: ${{ inputs.build_type }}
+                  ros_distro: ${{ matrix.ros_distro }}
+                  platforms: ${{ matrix.platforms }}
+                  prefix: vulcanexus-
           # variables important only for stable release
-          target_distro: ${{ inputs.target_distro }}
-          target_release: ${{ inputs.target_release }}
-          target_date: ${{ inputs.target_date }}
+                  target_distro: ${{ inputs.target_distro }}
+                  target_release: ${{ inputs.target_release }}
+                  target_date: ${{ inputs.target_date }}
