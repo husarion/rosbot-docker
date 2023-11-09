@@ -8,30 +8,29 @@ import argparse
 import sys
 from periphery import GPIO
 
-class SerialNumberGenerator:
 
+class SerialNumberGenerator:
     def __init__(self, sys_arch, binary_file):
         self.binary_file = binary_file
         self.sys_arch = sys_arch
 
         print(f"System architecture: {self.sys_arch}")
 
-        if self.sys_arch.stdout == b'armv7l\n':
+        if self.sys_arch.stdout == b"armv7l\n":
             # Setups ThinkerBoard pins
             print("Device: ThinkerBoard\n")
             self.port = "/dev/ttyS1"
             boot0_pin_no = 164
             reset_pin_no = 184
 
-
-        elif self.sys_arch.stdout == b'x86_64\n':
+        elif self.sys_arch.stdout == b"x86_64\n":
             # Setups UpBoard pins
             print("Device: UpBoard\n")
             self.port = "/dev/ttyS4"
             boot0_pin_no = 17
             reset_pin_no = 18
 
-        elif self.sys_arch.stdout == b'aarch64\n':
+        elif self.sys_arch.stdout == b"aarch64\n":
             # Setups RPi pins
             print("Device: RPi\n")
             self.port = "/dev/ttyAMA0"
@@ -48,19 +47,19 @@ class SerialNumberGenerator:
         # Check if the hex string is valid
         if not all(c in string.hexdigits for c in hex_str):
             raise ValueError("Invalid hex string")
-    
+
         # Convert the hex string to bytes
         try:
             hex_bytes = bytes.fromhex(hex_str)
         except ValueError:
             raise ValueError("Invalid hex string")
-    
+
         # Compute the SHA-256 hash of the hex bytes
         hash = hashlib.sha256(hex_bytes).hexdigest()
-    
+
         # Truncate the hash to 6 characters
         hash = hash[:6]
-    
+
         # Return the hash as an ASCII string
         return hash
 
@@ -80,15 +79,15 @@ class SerialNumberGenerator:
         return hex_str
 
     def generate(self):
-        print('flash the firmware that prints STM32 unique ID')
-        sh.python3('/usr/bin/flash-firmware.py', self.binary_file)
-        print('done')
-        print('')
+        print("flash the firmware that prints STM32 unique ID")
+        sh.python3("/usr/bin/flash-firmware.py", self.binary_file)
+        print("done")
+        print("")
 
         # Open the serial port
-        with serial.Serial(self.port, baudrate=9600, timeout=1) as ser:
+        with serial.Serial(self.port, baudrate=9600, timeout=1) as stm32_serial:
             # Read a line of input from the serial port
-            hex_str = ser.readline().decode("utf-8").strip()
+            hex_str = stm32_serial.readline().decode("utf-8").strip()
             hex_str = self.convert_hex_string(hex_str)
 
             print(f"CPU ID = 0x{hex_str}")
@@ -103,34 +102,29 @@ class SerialNumberGenerator:
             print()
 
         # Close the serial port
-        ser.close()    
+        stm32_serial.close()
         return result
 
 
 def main():
-
-    parser = argparse.ArgumentParser(
-        description='Printing ROSbot 2R / 2 PRO serial number')
+    parser = argparse.ArgumentParser(description="Printing ROSbot 2R / 2 PRO serial number")
 
     parser.add_argument(
         "-f",
         "--file",
-        nargs='?',
+        nargs="?",
         default="/firmware_read_cpu_id.bin",
-        help="Path to a firmware file. Default: /firmware_read_cpu_id.bin")
+        help="Path to a firmware file. Default: /firmware_read_cpu_id.bin",
+    )
 
     binary_file = parser.parse_args().file
-    sys_arch = sh.uname('-m')
+    sys_arch = sh.uname("-m")
 
     sn = SerialNumberGenerator(sys_arch, binary_file)
     serialNumber = sn.generate()
 
     sys.exit(serialNumber)
 
+
 if __name__ == "__main__":
     main()
-
-
-
-
-
