@@ -67,5 +67,5 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 RUN echo $(cat /ros2_ws/src/rosbot_gazebo/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
 COPY ./healthcheck.sh /
-HEALTHCHECK --interval=10s --timeout=2s --start-period=5s --retries=5 \
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=5 \
     CMD ["/healthcheck.sh"]
