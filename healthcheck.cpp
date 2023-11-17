@@ -15,7 +15,6 @@ void write_health_status(const std::string &status) {
 }
 
 void msg_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
-  std::cout << "Message received" << std::endl;
   last_msg_time = std::chrono::steady_clock::now();
 }
 
@@ -26,10 +25,8 @@ void healthy_check(const rclcpp::Node::SharedPtr &node) {
   bool is_msg_valid = elapsed_time.count() < MSG_VALID_TIME.count();
 
   if (is_msg_valid) {
-    std::cout << "Health check: healthy" << std::endl;
     write_health_status("healthy");
   } else {
-    std::cout << "Health check: unhealthy" << std::endl;
     write_health_status("unhealthy");
   }
 }
