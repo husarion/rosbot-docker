@@ -60,30 +60,33 @@ class FirmwareFlasher:
     def flash_firmware(self):
         self.enter_bootloader_mode()
 
-        # Flashing the firmware
-        succes_no = 0
+        # Disable the flash write-protection
         for i in range(self.max_approach_no):
             try:
-                if succes_no == 0:
-                    # Disable the flash write-protection
-                    sh.stm32flash(self.port, "-u", _out=sys.stdout)
-                    time.sleep(0.2)
-                    succes_no += 1
-
-                if succes_no == 1:
-                    # Disable the flash read-protection
-                    sh.stm32flash(self.port, "-k", _out=sys.stdout)
-                    time.sleep(0.2)
-                    succes_no += 1
-
-                if succes_no == 2:
-                    # Flashing the firmware
-                    sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
-                    time.sleep(0.2)
-                    break
+                sh.stm32flash(self.port, "-u", _out=sys.stdout)
+                time.sleep(0.2)
             except Exception:
                 pass
+        else:
+            print("ERROR! Something goes wrong. Try again.")
 
+        # Disable the flash read-protection
+        for i in range(self.max_approach_no):
+            try:
+                sh.stm32flash(self.port, "-k", _out=sys.stdout)
+                time.sleep(0.2)
+            except Exception:
+                pass
+        else:
+            print("ERROR! Something goes wrong. Try again.")
+
+        # Flashing the firmware
+        for i in range(self.max_approach_no):
+            try:
+                sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
+                time.sleep(0.2)
+            except Exception:
+                pass
         else:
             print("ERROR! Something goes wrong. Try again.")
 
