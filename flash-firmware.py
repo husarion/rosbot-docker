@@ -65,20 +65,24 @@ class FirmwareFlasher:
             try:
                 sh.stm32flash(self.port, "-u", _out=sys.stdout)
                 time.sleep(0.2)
+                break
             except Exception:
+                print("Write-UnProtection error! Trying again.")
                 pass
         else:
-            print("WARNING! Disabling the flash write-protection went wrong.")
+            print("WARNING! Disabling the flash Write-Protection went wrong.")
 
         # Disable the flash read-protection
         for i in range(self.max_approach_no):
             try:
                 sh.stm32flash(self.port, "-k", _out=sys.stdout)
                 time.sleep(0.2)
+                break
             except Exception:
+                print("Read-UnProtection error! Trying again.")
                 pass
         else:
-            print("WARNING! Disabling the flash read-protection went wrong.")
+            print("WARNING! Disabling the flash Read-Protection went wrong.")
 
         # Flashing the firmware
         for i in range(self.max_approach_no):
@@ -87,6 +91,7 @@ class FirmwareFlasher:
                 time.sleep(0.2)
                 break
             except Exception:
+                print("Flashing error! Trying again.")
                 pass
         else:
             print("ERROR! Flashing the firmware went wrong. Try again.")
@@ -111,7 +116,7 @@ def main():
 
     flasher = FirmwareFlasher(sys_arch, binary_file)
     flasher.flash_firmware()
-    print("Done.")
+    print("Done!")
 
 
 if __name__ == "__main__":
