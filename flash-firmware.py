@@ -68,7 +68,7 @@ class FirmwareFlasher:
             except Exception:
                 pass
         else:
-            print("ERROR! Something goes wrong. Try again.")
+            print("WARNING! Disabling the flash write-protection went wrong.")
 
         # Disable the flash read-protection
         for i in range(self.max_approach_no):
@@ -78,7 +78,7 @@ class FirmwareFlasher:
             except Exception:
                 pass
         else:
-            print("ERROR! Something goes wrong. Try again.")
+            print("WARNING! Disabling the flash read-protection went wrong.")
 
         # Flashing the firmware
         for i in range(self.max_approach_no):
@@ -88,7 +88,7 @@ class FirmwareFlasher:
             except Exception:
                 pass
         else:
-            print("ERROR! Something goes wrong. Try again.")
+            print("ERROR! Flashing the firmware went wrong. Try again.")
 
         self.exit_bootloader_mode()
 
