@@ -85,6 +85,7 @@ class FirmwareFlasher:
             try:
                 sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
                 time.sleep(0.2)
+                break
             except Exception:
                 pass
         else:
