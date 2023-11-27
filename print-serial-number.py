@@ -107,7 +107,6 @@ class SerialNumberGenerator:
 
 
 def main():
-
     parser = argparse.ArgumentParser(description="Printing ROSbot 2R / 2 PRO serial number")
 
     parser.add_argument(

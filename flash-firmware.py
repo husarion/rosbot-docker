@@ -9,7 +9,6 @@ from periphery import GPIO
 
 class FirmwareFlasher:
     def __init__(self, sys_arch, binary_file):
-
         self.binary_file = binary_file
         self.sys_arch = sys_arch
 
@@ -45,7 +44,6 @@ class FirmwareFlasher:
         self.reset_pin = GPIO(reset_pin_no, "out")
 
     def enter_bootloader_mode(self):
-
         self.boot0_pin.write(True)
         self.reset_pin.write(True)
         time.sleep(0.2)
@@ -53,7 +51,6 @@ class FirmwareFlasher:
         time.sleep(0.2)
 
     def exit_bootloader_mode(self):
-
         self.boot0_pin.write(False)
         self.reset_pin.write(True)
         time.sleep(0.2)
@@ -61,41 +58,48 @@ class FirmwareFlasher:
         time.sleep(0.2)
 
     def flash_firmware(self):
-
         self.enter_bootloader_mode()
 
-        # Flashing the firmware
-        succes_no = 0
+        # Disable the flash write-protection
         for i in range(self.max_approach_no):
             try:
-                if succes_no == 0:
-                    # Disable the flash write-protection
-                    sh.stm32flash(self.port, "-u", _out=sys.stdout)
-                    time.sleep(0.2)
-                    succes_no += 1
-
-                if succes_no == 1:
-                    # Disable the flash read-protection
-                    sh.stm32flash(self.port, "-k", _out=sys.stdout)
-                    time.sleep(0.2)
-                    succes_no += 1
-
-                if succes_no == 2:
-                    # Flashing the firmware
-                    sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
-                    time.sleep(0.2)
-                    break
+                sh.stm32flash(self.port, "-u", _out=sys.stdout)
+                time.sleep(0.2)
+                break
             except Exception:
+                print("Write-UnProtection error! Trying again.")
                 pass
-
         else:
-            print("ERROR! Something goes wrong. Try again.")
+            print("WARNING! Disabling the flash Write-Protection went wrong.")
+
+        # Disable the flash read-protection
+        for i in range(self.max_approach_no):
+            try:
+                sh.stm32flash(self.port, "-k", _out=sys.stdout)
+                time.sleep(0.2)
+                break
+            except Exception:
+                print("Read-UnProtection error! Trying again.")
+                pass
+        else:
+            print("WARNING! Disabling the flash Read-Protection went wrong.")
+
+        # Flashing the firmware
+        for i in range(self.max_approach_no):
+            try:
+                sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
+                time.sleep(0.2)
+                break
+            except Exception:
+                print("Flashing error! Trying again.")
+                pass
+        else:
+            print("ERROR! Flashing the firmware went wrong. Try again.")
 
         self.exit_bootloader_mode()
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Flashing the firmware on STM32 microcontroller in ROSbot"
     )
@@ -112,7 +116,7 @@ def main():
 
     flasher = FirmwareFlasher(sys_arch, binary_file)
     flasher.flash_firmware()
-    print("Done.")
+    print("Done!")
 
 
 if __name__ == "__main__":

@@ -67,6 +67,7 @@ COPY --from=stm32flash_builder_and_downloader /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder_and_downloader /stm32flash/stm32flash /usr/bin/stm32flash
 COPY --from=stm32flash_builder_and_downloader /ros2_ws /ros2_ws
 COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
+COPY ./healthcheck.cpp /
 
 RUN apt-get update && apt-get install -y \
 		git \
@@ -88,7 +89,18 @@ RUN apt-get update && apt-get install -y \
 	rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
+	# Create health check package
+    cd src/ && \
 	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
+    sed -i '/find_package(nav_msgs REQUIRED)/a \
+            add_executable(healthcheck_node src/healthcheck.cpp)\n \
+            ament_target_dependencies(healthcheck_node rclcpp nav_msgs)\n \
+            install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
+            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt && \
+    mv /healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/ && \
+    cd .. && \
+    # Build
 	colcon build && \
 	# clear ubuntu packages
 	apt-get clean && \
@@ -102,6 +114,20 @@ RUN apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
+
+RUN if [ -f "/ros_entrypoint.sh" ]; then \
+        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+        ros2 run healthcheck_pkg healthcheck_node &' \
+        /ros_entrypoint.sh; \
+    else \
+        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+        ros2 run healthcheck_pkg healthcheck_node &' \
+        /vulcanexus_entrypoint.sh; \
+    fi
+
+COPY ./healthcheck.sh /
+HEALTHCHECK --interval=7s --timeout=2s  --start-period=5s --retries=5 \
+    CMD ["/healthcheck.sh"]
 
 # copy scripts
 COPY flash-firmware.py /
