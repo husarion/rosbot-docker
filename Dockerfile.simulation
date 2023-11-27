@@ -18,26 +18,18 @@ COPY ./healthcheck.cpp /
 # install everything needed
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt-get update --fix-missing && apt-get install -y \
-        python3-pip \
-        python3-colcon-common-extensions \
-        python3-rosdep \
-        python3-vcstool \
-        git \
-        curl \
-        ros-$ROS_DISTRO-teleop-twist-keyboard \
-        && \
-    apt-get upgrade -y && \
-    # build & install ROSbot 2 packages
+        ros-dev-tools && \
+    # Clone source
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
     git clone https://github.com/husarion/rosbot_ros.git /ros2_ws/src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     vcs import src < src/rosbot/rosbot_simulation.repos && \
-    # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
+    # Install dependencies
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-    # Create health check package
+    # Create healthcheck package
     cd src/ && \
 	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
@@ -54,10 +46,7 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     export SUDO_FORCE_REMOVE=yes && \
     apt-get remove -y \
         python3-pip \
-        python3-colcon-common-extensions \
-        python3-rosdep \
-        python3-vcstool \
-        git \
+        ros-dev-tools \
         curl && \
     apt-get autoremove -y && \
     apt-get clean && \
@@ -65,9 +54,15 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 
 RUN echo $(cat /ros2_ws/src/rosbot_gazebo/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
-RUN sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+RUN if [ -f "/ros_entrypoint.sh" ]; then \
+        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
         ros2 run healthcheck_pkg healthcheck_node &' \
-        /ros_entrypoint.sh
+        /ros_entrypoint.sh; \
+    else \
+        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+        ros2 run healthcheck_pkg healthcheck_node &' \
+        /vulcanexus_entrypoint.sh; \
+    fi
 
 COPY ./healthcheck.sh /
 HEALTHCHECK --interval=7s --timeout=2s  --start-period=5s --retries=5 \
