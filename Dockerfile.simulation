@@ -18,7 +18,9 @@ COPY ./healthcheck.cpp /
 # install everything needed
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt-get update --fix-missing && apt-get install -y \
+        python3-pip \
         ros-dev-tools && \
+    apt-get upgrade -y && \
     # Clone source
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
     git clone https://github.com/husarion/rosbot_ros.git /ros2_ws/src && \
@@ -46,8 +48,7 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     export SUDO_FORCE_REMOVE=yes && \
     apt-get remove -y \
         python3-pip \
-        ros-dev-tools \
-        curl && \
+        ros-dev-tools && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
