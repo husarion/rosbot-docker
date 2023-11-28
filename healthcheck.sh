@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HEALTHCHECK_FILE="/health_status.txt"
+HEALTHCHECK_FILE="/var/tmp/health_status.txt"
 
 
 # Now check the health status

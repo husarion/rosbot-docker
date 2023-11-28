@@ -10,7 +10,7 @@ using namespace std::chrono_literals;
 std::chrono::steady_clock::time_point last_msg_time;
 
 void write_health_status(const std::string &status) {
-  std::ofstream healthFile("/health_status.txt");
+  std::ofstream healthFile("/var/tmp/health_status.txt");
   healthFile << status;
 }
 
