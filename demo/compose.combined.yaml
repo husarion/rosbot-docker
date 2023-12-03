@@ -1,9 +1,9 @@
 services:
 
   rosbot:
-    build:
-      context: ../
-      dockerfile: Dockerfile.hardware
+    # build:
+    #   context: ../
+    #   dockerfile: Dockerfile.hardware
     devices:
       - ${SERIAL_PORT:?err}
     environment:

@@ -1,9 +1,11 @@
 services:
 
   rosbot:
+    # image: rosbot-local
     build:
       context: ../../
-      dockerfile: Dockerfile.hardware
+      dockerfile: Dockerfile
+      # dockerfile: Dockerfile.hardware
     network_mode: host
     ipc: host
     devices:
