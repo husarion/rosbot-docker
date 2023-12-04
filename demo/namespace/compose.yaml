@@ -1,9 +1,18 @@
+# Quick Start
+# 
+# 1. run `docker compose up` on the robot
+# 2. On the second host in LAN you will see only single ros2 topic:
+#   $ ros2 topic list
+#   /parameter_events
+#   /robot1/cmd_vel
+#   /rosout
+# 3. You can use teleop_twist_keyboard to control the robot in robot1 namespace:
+# `ros2 run teleop_twist_keyboard teleop_twist_keyboard  --ros-args -r __ns:=/robot1`
+
 services:
 
   rosbot:
-    build:
-      context: ../../
-      dockerfile: Dockerfile.hardware
+    image: husarion/rosbot:humble-ros2-combined-microros
     network_mode: host
     ipc: host
     devices:
@@ -18,7 +27,7 @@ services:
         namespace:=robot1
 
   ros2router:
-    image: husarnet/ros2router:release-1.4.0
+    image: husarnet/ros2router:1.4.0
     network_mode: host
     ipc: host
     volumes:
@@ -27,12 +36,3 @@ services:
       - USE_HUSARNET=FALSE
       - ROS_LOCALHOST_ONLY=1
       - ROS_DISTRO
-
-# 1. run `docker-compose up` on the robot
-# 2. On the second host in LAN you will see only single ros2 topic:
-#   $ ros2 topic list
-#   /parameter_events
-#   /robot1/cmd_vel
-#   /rosout
-# 3. You can use teleop_twist_keyboard to control the robot in robot1 namespace:
-# `ros2 run teleop_twist_keyboard teleop_twist_keyboard  --ros-args -r __ns:=/robot1`

@@ -1,25 +1,20 @@
-x-net-config:
-  &net-config
-  network_mode: host
-  ipc: host
-  env_file: net.env
+# Quick Start
+# 
+# 1. run `docker compose up` on the robot
+# 2. run `ROS_DOMAIN_ID=10 ros2 run teleop_twist_keyboard teleop_twist_keyboard` in the robot termianl
 
 services:
 
   rosbot:
-    image: husarion/rosbot:humble
-    <<: *net-config
+    image: husarion/rosbot:humble-0.10.3-20231128
     environment:
-      - ROS_DOMAIN_ID
+      - ROS_DOMAIN_ID=10
     command: ros2 launch rosbot_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
-
-  micro-xrce-agent:
-    image: husarion/micro-xrce-agent:v2.4.1
-    <<: *net-config
+  micro-ros-agent:
+    image: husarion/micro-ros-agent:humble-3.1.3-20231122
     devices:
       - ${SERIAL_PORT:?err}
     environment:
-      - XRCE_DOMAIN_ID_OVERRIDE=${ROS_DOMAIN_ID}  # ***
-      - SERIAL_PORT
-    command: MicroXRCEAgent serial -D $SERIAL_PORT serial -b 576000 # -v6
+      - ROS_DOMAIN_ID=10
+    command: ros2 run micro_ros_agent micro_ros_agent serial -D $SERIAL_PORT serial -b 576000 # -v6
