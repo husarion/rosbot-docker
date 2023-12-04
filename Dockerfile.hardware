@@ -108,7 +108,8 @@ RUN cd src/ && \
         rqt_joint_trajectory_controller \
         tricycle_controller \
         tricycle_steering_controller \
-        velocity_controllers
+        velocity_controllers && \
+    rm -rf build log src
 
 ## =========================== Final Stage ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core 
