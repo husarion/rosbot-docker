@@ -109,7 +109,7 @@ RUN cd src/ && \
         tricycle_controller \
         tricycle_steering_controller \
         velocity_controllers && \
-    rm -rf build log src
+    rm -rf build log
 
 ## =========================== Final Stage ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core 
@@ -131,6 +131,7 @@ RUN apt-get update && apt-get install -y \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
 	apt-get clean && \
+    rm -rf src && \
 	rm -rf /var/lib/apt/lists/*
 
 # copy firmware built in previous stage and downloaded repository
