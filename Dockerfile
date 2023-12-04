@@ -48,9 +48,6 @@ RUN pip3 install -U platformio && \
     pio run && \
     chmod -x .pio/build/olimex_e407/firmware.bin
 
-## =========================== Micro ROS agent ===============================
-
-FROM husarion/micro-ros-agent:humble-3.1.3-20231122 AS microros_agent_getter
 
 ## =========================== ROS builder ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
@@ -80,9 +77,10 @@ RUN apt-get update && apt-get install -y \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
 	rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
-    rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-	# Create health check package
-    cd src/ && \
+    rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
+
+	# Create health check package and build
+RUN cd src/ && \
 	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
     sed -i '/find_package(nav_msgs REQUIRED)/a \
@@ -93,10 +91,22 @@ RUN apt-get update && apt-get install -y \
     mv /healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/ && \
     cd .. && \
     # Build
-	colcon build
-
-# RUN rosdep install --from-paths src --rosdistro $ROS_DISTRO -y --simulate >> rosdep.log
-RUN rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y --simulate >> rosdep.log
+	colcon build --packages-skip \
+        ackermann_steering_controller \
+        bicycle_steering_controller \
+        tricycle_steering_controller \
+        ros2_controllers \
+        effort_controllers \
+        admittance_controller \
+        force_torque_sensor_broadcaster \
+        forward_command_controller \
+        gripper_controllers \
+        joint_trajectory_controller \
+        position_controllers \
+        rqt_joint_trajectory_controller \
+        tricycle_controller \
+        velocity_controllers  \
+        ros2_controllers_test_nodes
 
 ## =========================== Final Stage ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core 
@@ -131,24 +141,12 @@ RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*
 
 COPY ros_entrypoint.sh /
 COPY vulcanexus_entrypoint.sh /
+COPY healthcheck.sh /
 
-RUN if [[ ${PREFIX} == 'vulcanexus-' ]]; then \
-        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
-        ros2 run healthcheck_pkg healthcheck_node &' \
-        /vulcanexus_entrypoint.sh; \
-    else \
-        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
-        ros2 run healthcheck_pkg healthcheck_node &' \
-        /ros_entrypoint.sh; \
-    fi
-
-COPY ./healthcheck.sh /
 HEALTHCHECK --interval=7s --timeout=2s  --start-period=5s --retries=5 \
     CMD ["/healthcheck.sh"]
 
-# copy micro-ros agent
-
-COPY --from=microros_agent_getter /ros2_ws /ros2_ws_microros_agent
+# COPY --from=microros_agent_getter /ros2_ws /ros2_ws_microros_agent
 COPY microros_localhost_only.xml /
 
 # copy scripts
