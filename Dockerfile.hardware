@@ -68,7 +68,7 @@ RUN apt-get update && apt-get install -y \
 		python3-sh \
 		python3-periphery && \
 	pip3 install pyserial && \
-    git clone https://github.com/husarion/rosbot_ros.git src -b ros2-combined-microros && \
+    git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b ros2-combined-microros && \
 	vcs import src < src/rosbot/rosbot_hardware.repos && \
 	# it is necessary to remove simulation - otherwise rosdep tries to install dependencies
     rm -r src/rosbot_gazebo && \
@@ -78,10 +78,11 @@ RUN apt-get update && apt-get install -y \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install --from-paths src --ignore-src -y
 
-	# Create health check package and build
+	
 RUN cd src/ && \
 	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    # Create health check package
     ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
     sed -i '/find_package(nav_msgs REQUIRED)/a \
             add_executable(healthcheck_node src/healthcheck.cpp)\n \
@@ -131,6 +132,7 @@ RUN apt-get update && apt-get install -y \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
 	apt-get clean && \
+    echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
     rm -rf src && \
 	rm -rf /var/lib/apt/lists/*
 
@@ -140,8 +142,6 @@ COPY --from=stm32flash_builder /firmware.hex /root/firmware.hex
 COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 
 COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
-
-RUN echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt
 
 COPY ros_entrypoint.sh /
 COPY vulcanexus_entrypoint.sh /
