@@ -12,13 +12,13 @@ SHELL ["/bin/bash", "-c"]
 
 # official releases are only for intel archs, so we need to build stm32flash from sources
 RUN apt-get update && apt-get install -y \
-		curl \
-		git \
-		build-essential \
-		cmake && \
-	git clone https://github.com/stm32duino/stm32flash.git && \
-	cd stm32flash/ && \
-	make all
+        curl \
+        git \
+        build-essential \
+        cmake && \
+    git clone https://github.com/stm32duino/stm32flash.git && \
+    cd stm32flash/ && \
+    make all
 
 RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE
 
@@ -63,36 +63,36 @@ RUN mkdir src
 COPY ./healthcheck.cpp /
 
 RUN apt-get update && apt-get install -y \
-		git \
-		python3-pip \
-		python3-sh \
-		python3-periphery && \
-	pip3 install pyserial && \
+        git \
+        python3-pip \
+        python3-sh \
+        python3-periphery && \
+    pip3 install pyserial && \
     git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b humble && \
-	vcs import src < src/rosbot/rosbot_hardware.repos && \
-	# it is necessary to remove simulation - otherwise rosdep tries to install dependencies
+    vcs import src < src/rosbot/rosbot_hardware.repos && \
+    # it is necessary to remove simulation - otherwise rosdep tries to install dependencies
     rm -r src/rosbot_gazebo && \
     # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
-	rosdep init && \
+    rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install --from-paths src --ignore-src -y
 
-	
+
 RUN cd src/ && \
-	MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
-	source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     # Create health check package
     ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
     sed -i '/find_package(nav_msgs REQUIRED)/a \
-            add_executable(healthcheck_node src/healthcheck.cpp)\n \
-            ament_target_dependencies(healthcheck_node rclcpp nav_msgs)\n \
-            install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
-            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt && \
+    add_executable(healthcheck_node src/healthcheck.cpp)\n \
+    ament_target_dependencies(healthcheck_node rclcpp nav_msgs)\n \
+    install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
+    /ros2_ws/src/healthcheck_pkg/CMakeLists.txt && \
     mv /healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/ && \
     cd .. && \
     # Build
-	colcon build --packages-skip \
+        colcon build --packages-skip \
         ackermann_steering_controller \
         admittance_controller \
         bicycle_steering_controller \
@@ -128,13 +128,13 @@ RUN apt-get update && apt-get install -y \
         python3-rosdep \
         ros-$ROS_DISTRO-teleop-twist-keyboard && \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
-	rosdep init && \
+    rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-	apt-get clean && \
+    apt-get clean && \
     echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
     rm -rf src && \
-	rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 # copy firmware built in previous stage and downloaded repository
 COPY --from=stm32flash_builder /firmware.bin /root/firmware.bin
