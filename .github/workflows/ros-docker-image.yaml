@@ -43,7 +43,7 @@ jobs:
                       repo_name: ''
                       platforms: linux/amd64, linux/arm64
                       ros_distro: humble
-                    - dockerfile: Dockerfile.simulation
+                    - dockerfile: Dockerfile.gazebo
                       repo_name: rosbot-gazebo
                       platforms: linux/amd64
                       ros_distro: humble
@@ -51,7 +51,7 @@ jobs:
                       repo_name: ''
                       platforms: linux/amd64, linux/arm64
                       ros_distro: iron
-                    # - dockerfile: Dockerfile.simulation
+                    # - dockerfile: Dockerfile.gazebo
                     #   repo_name: rosbot-gazebo
                     #   platforms: linux/amd64
                     #   ros_distro: iron
