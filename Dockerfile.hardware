@@ -68,7 +68,7 @@ RUN apt-get update && apt-get install -y \
 		python3-sh \
 		python3-periphery && \
 	pip3 install pyserial && \
-    git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b ros2-combined-microros && \
+    git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b humble && \
 	vcs import src < src/rosbot/rosbot_hardware.repos && \
 	# it is necessary to remove simulation - otherwise rosdep tries to install dependencies
     rm -r src/rosbot_gazebo && \
