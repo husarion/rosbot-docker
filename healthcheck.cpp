@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("healthcheck_node");
   auto sub = node->create_subscription<nav_msgs::msg::Odometry>(
-      "odometry/filtered", rclcpp::SensorDataQoS(), msg_callback);
+      "odometry/filtered", rclcpp::SensorDataQoS().keep_last(1), msg_callback);
 
   while (rclcpp::ok()) {
     rclcpp::spin_some(node);
