@@ -12,7 +12,10 @@
 services:
 
   rosbot:
-    image: husarion/rosbot:humble-ros2-combined-microros
+    # image: husarion/rosbot:humble-ros2-combined-microros
+    build:
+      context: ../..
+      dockerfile: Dockerfile.hardware
     network_mode: host
     ipc: host
     devices:

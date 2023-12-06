@@ -16,7 +16,8 @@ fi
 
 # setup ros environment
 source "/opt/ros/$ROS_DISTRO/setup.bash"
-source  "/ros2_ws/install/setup.bash"
+source "/ros2_ws/install/setup.bash"
+source "/ros2_ws_healthcheck/install/setup.bash"
 
 ros2 run healthcheck_pkg healthcheck_node &
 
