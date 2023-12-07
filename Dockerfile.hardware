@@ -1,29 +1,6 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
 ARG ROSBOT_FW_RELEASE=0.8.0
-## ============================ STM32FLASH =================================
-# stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
-FROM ubuntu:18.04 AS stm32flash_builder
-
-ARG ROS_DISTRO
-ARG ROSBOT_FW_RELEASE
-ARG TARGETARCH
-
-SHELL ["/bin/bash", "-c"]
-
-# official releases are only for intel archs, so we need to build stm32flash from sources
-RUN apt-get update && apt-get install -y \
-        curl
-
-RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE
-
-# Copy firmware binaries
-RUN curl -L https://github.com/husarion/stm32flash/releases/download/2023-12-05/stm32flash-$TARGETARCH -o /stm32flash && \
-    chmod +x /stm32flash
-
-# Copy firmware binaries
-RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.bin -o /firmware.bin && \
-    curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.hex -o /firmware.hex
 
 ## =========================== Firmware CPU ID ================================
 
@@ -91,13 +68,10 @@ RUN mkdir src
 COPY ./healthcheck.cpp /
 
 RUN apt-get update && apt-get install -y \
-        git \
         python3-pip \
-        python3-sh \
-        python3-periphery && \
-    pip3 install pyserial
+        python3-sh
 
-RUN git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b humble && \
+RUN git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b ros2-rosbot-utils && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     cp -r src/ros2_controllers/diff_drive_controller src/ && \
     cp -r src/ros2_controllers/imu_sensor_broadcaster src/ && \
@@ -130,9 +104,9 @@ COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
 RUN apt-get update && apt-get install -y \
         python3-pip \
         python3-rosdep \
-        usbutils \
+        stm32flash \
         ros-$ROS_DISTRO-teleop-twist-keyboard && \
-    pip3 install pyftdi sh && \
+    pip3 install pyftdi && \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
@@ -140,14 +114,12 @@ RUN apt-get update && apt-get install -y \
     # Save version
     echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
     # Size optimalization
+    apt-get remove -y \
+        python3-rosdep \
+        python3-pip && \
     apt-get clean && \
     rm -rf src && \
     rm -rf /var/lib/apt/lists/*
-
-# copy firmware built in previous stage and downloaded repository
-COPY --from=stm32flash_builder /firmware.bin /root/firmware.bin
-COPY --from=stm32flash_builder /firmware.hex /root/firmware.hex
-COPY --from=stm32flash_builder /stm32flash /usr/bin/stm32flash
 
 COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
 
@@ -158,10 +130,6 @@ COPY healthcheck.sh /
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
     CMD ["/healthcheck.sh"]
 
-COPY microros_localhost_only.xml /
-
 # copy scripts
-COPY flash-firmware.py /
 COPY flash-firmware.py /usr/bin/
-COPY flash-firmware-usb.py /usr/bin/
 COPY print-serial-number.py /usr/bin/
