@@ -68,8 +68,7 @@ RUN mkdir src
 COPY ./healthcheck.cpp /
 
 RUN apt-get update && apt-get install -y \
-        python3-pip \
-        python3-sh
+        python3-pip
 
 RUN git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b ros2-rosbot-utils && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
