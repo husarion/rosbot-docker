@@ -12,7 +12,7 @@ class FirmwareFlasher:
         self.binary_file = binary_file
         self.sys_arch = sys_arch
 
-        self.max_approach_no = 5
+        self.max_approach_no = 3
 
         print(f"System architecture: {self.sys_arch}")
 
@@ -57,44 +57,31 @@ class FirmwareFlasher:
         self.reset_pin.write(False)
         time.sleep(0.2)
 
+    def try_flash_operation(self, operation_name, flash_command, flash_args):
+        for i in range(self.max_approach_no):
+            try:
+                flash_command(self.port, *flash_args, _out=sys.stdout)
+                time.sleep(0.2)
+                break
+            except Exception as e:
+                print(f"{operation_name} error! Trying again.")
+                print(f"Error: {e}")
+                print("---------------------------------------")
+        else:
+            print(f"WARNING! {operation_name} went wrong.")
+
     def flash_firmware(self):
         self.enter_bootloader_mode()
 
         # Disable the flash write-protection
-        for i in range(self.max_approach_no):
-            try:
-                sh.stm32flash(self.port, "-u", _out=sys.stdout)
-                time.sleep(0.2)
-                break
-            except Exception:
-                print("Write-UnProtection error! Trying again.")
-                pass
-        else:
-            print("WARNING! Disabling the flash Write-Protection went wrong.")
+        self.try_flash_operation("Write-UnProtection", sh.stm32flash, ["-u"])
 
         # Disable the flash read-protection
-        for i in range(self.max_approach_no):
-            try:
-                sh.stm32flash(self.port, "-k", _out=sys.stdout)
-                time.sleep(0.2)
-                break
-            except Exception:
-                print("Read-UnProtection error! Trying again.")
-                pass
-        else:
-            print("WARNING! Disabling the flash Read-Protection went wrong.")
+        self.try_flash_operation("Read-UnProtection", sh.stm32flash, ["-k"])
 
         # Flashing the firmware
-        for i in range(self.max_approach_no):
-            try:
-                sh.stm32flash(self.port, "-v", w=self.binary_file, b="115200", _out=sys.stdout)
-                time.sleep(0.2)
-                break
-            except Exception:
-                print("Flashing error! Trying again.")
-                pass
-        else:
-            print("ERROR! Flashing the firmware went wrong. Try again.")
+        flash_args = ["-v", "-w", self.binary_file, "-b", "115200"]
+        self.try_flash_operation("Flashing", sh.stm32flash, flash_args)
 
         self.exit_bootloader_mode()
 

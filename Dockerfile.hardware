@@ -7,20 +7,19 @@ FROM ubuntu:18.04 AS stm32flash_builder
 
 ARG ROS_DISTRO
 ARG ROSBOT_FW_RELEASE
+ARG TARGETARCH
 
 SHELL ["/bin/bash", "-c"]
 
 # official releases are only for intel archs, so we need to build stm32flash from sources
 RUN apt-get update && apt-get install -y \
-        curl \
-        git \
-        build-essential \
-        cmake && \
-    git clone https://github.com/stm32duino/stm32flash.git && \
-    cd stm32flash/ && \
-    make all
+        curl
 
 RUN echo ros_distro=$ROS_DISTRO firmware_release=$ROSBOT_FW_RELEASE
+
+# Copy firmware binaries
+RUN curl -L https://github.com/husarion/stm32flash/releases/download/2023-12-05/stm32flash-$TARGETARCH -o /stm32flash && \
+    chmod +x /stm32flash
 
 # Copy firmware binaries
 RUN curl -L https://github.com/husarion/rosbot_ros2_firmware/releases/download/$ROSBOT_FW_RELEASE/firmware.bin -o /firmware.bin && \
@@ -129,8 +128,11 @@ COPY --from=ros_builder /ros2_ws /ros2_ws
 COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
 
 RUN apt-get update && apt-get install -y \
+        python3-pip \
         python3-rosdep \
+        usbutils \
         ros-$ROS_DISTRO-teleop-twist-keyboard && \
+    pip3 install pyftdi sh && \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
@@ -145,7 +147,7 @@ RUN apt-get update && apt-get install -y \
 # copy firmware built in previous stage and downloaded repository
 COPY --from=stm32flash_builder /firmware.bin /root/firmware.bin
 COPY --from=stm32flash_builder /firmware.hex /root/firmware.hex
-COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
+COPY --from=stm32flash_builder /stm32flash /usr/bin/stm32flash
 
 COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
 
@@ -161,4 +163,5 @@ COPY microros_localhost_only.xml /
 # copy scripts
 COPY flash-firmware.py /
 COPY flash-firmware.py /usr/bin/
+COPY flash-firmware-usb.py /usr/bin/
 COPY print-serial-number.py /usr/bin/
