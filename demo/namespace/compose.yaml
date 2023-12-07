@@ -20,14 +20,18 @@ services:
     ipc: host
     devices:
       - ${SERIAL_PORT:?err}
+      - /dev/bus/usb/
+    volumes:
+      - ../../flash-firmware-usb.py:/usr/bin/flash-firmware-usb.py
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/shm-only.xml
-    command: >
-      ros2 launch rosbot_bringup combined.launch.py 
-        mecanum:=${MECANUM:-False}
-        serial_port:=$SERIAL_PORT 
-        serial_baudrate:=576000
-        namespace:=robot1
+    command: tail -f /dev/null
+    # command: >
+    #   ros2 launch rosbot_bringup combined.launch.py 
+    #     mecanum:=${MECANUM:-False}
+    #     serial_port:=$SERIAL_PORT 
+    #     serial_baudrate:=576000
+    #     namespace:=robot1
 
   ros2router:
     image: husarnet/ros2router:1.4.0
