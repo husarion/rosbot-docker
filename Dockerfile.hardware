@@ -1,12 +1,9 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
-ARG ROSBOT_FW_RELEASE=0.8.0
 
 ## =========================== Firmware CPU ID ================================
 
 FROM ubuntu:20.04 AS cpu_id_builder
-
-ARG ROSBOT_FW_RELEASE
 
 SHELL ["/bin/bash", "-c"]
 
@@ -70,7 +67,7 @@ COPY ./healthcheck.cpp /
 RUN apt-get update && apt-get install -y \
         python3-pip
 
-RUN git clone --depth 1 https://github.com/husarion/rosbot_ros.git src -b ros2-rosbot-utils && \
+RUN git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     cp -r src/ros2_controllers/diff_drive_controller src/ && \
     cp -r src/ros2_controllers/imu_sensor_broadcaster src/ && \
@@ -100,6 +97,10 @@ WORKDIR /ros2_ws
 COPY --from=ros_builder /ros2_ws /ros2_ws
 COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
 
+# for backward compatibility
+RUN cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
+    cp src/rosbot_utils/rosbot_utils/flash-firmware.py /
+
 RUN apt-get update && apt-get install -y \
         python3-pip \
         python3-rosdep \
@@ -126,9 +127,7 @@ COPY ros_entrypoint.sh /
 COPY vulcanexus_entrypoint.sh /
 COPY healthcheck.sh /
 
+COPY print-serial-number.py /usr/bin/
+
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
     CMD ["/healthcheck.sh"]
-
-# copy scripts
-COPY flash-firmware.py /usr/bin/
-COPY print-serial-number.py /usr/bin/
