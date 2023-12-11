@@ -99,7 +99,8 @@ COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
 
 # for backward compatibility
 RUN cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
-    cp src/rosbot_utils/rosbot_utils/flash-firmware.py /
+    cp src/rosbot_utils/rosbot_utils/flash-firmware.py / && \
+    cp install/rosbot_utils/share/rosbot_utils/firmware/firmware-*.bin /root/firmware.bin
 
 RUN apt-get update && apt-get install -y \
         python3-pip \
@@ -129,5 +130,7 @@ COPY healthcheck.sh /
 
 COPY print-serial-number.py /usr/bin/
 
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
+ENV ROS_NAMESPACE=
+
+HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=6 \
     CMD ["/healthcheck.sh"]

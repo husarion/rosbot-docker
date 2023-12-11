@@ -15,13 +15,16 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile.hardware
+    # image: husarion/rosbot:humble-ros2-robot-utils
     network_mode: host
     ipc: host
     devices:
       - ${SERIAL_PORT:?err}
-      - /dev/bus/usb/
+      - /dev/bus/usb/ # FTDI
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/shm-only.xml
+      - ROS_DOMAIN_ID=30
+      - ROS_NAMESPACE=robot1 # For healthckeck node
     command: >
       ros2 launch rosbot_bringup combined.launch.py 
         mecanum:=${MECANUM:-False}
