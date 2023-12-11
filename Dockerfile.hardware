@@ -44,7 +44,7 @@ RUN mkdir src && \
         install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
         /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
 
-COPY healthcheck.cpp src/healthcheck_pkg/src/    
+COPY healthcheck.cpp src/healthcheck_pkg/src/
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
@@ -85,7 +85,7 @@ RUN git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src
     rm -rf build log
 
 ## =========================== Final Stage ===============================
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core 
+FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
 
 ARG ROS_DISTRO
 ARG PREFIX
@@ -132,5 +132,5 @@ COPY print-serial-number.py /usr/bin/
 
 ENV ROS_NAMESPACE=
 
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=6 \
+HEALTHCHECK --interval=5s --timeout=2s  --start-period=10s --retries=6 \
     CMD ["/healthcheck.sh"]
