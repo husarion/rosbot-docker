@@ -7,6 +7,26 @@ Docker Image for ROS Humble Node providing interface for STM32 firmware over [Mi
 
 With *docker-compose* configuration shown in [demo](./demo) it can communicate with hardware of ROSbot 2R, ROSbot 2 PRO and ROSbot 2.0.
 
+## Quick Start
+
+```yaml
+services:
+
+  rosbot:
+    image: husarion/rosbot:humble
+    devices:
+      - ${SERIAL_PORT:?err}
+      - /dev/bus/usb/ # FTDI (if connecting over USB port with STM32)
+    environment:
+      - ROS_DOMAIN_ID=30
+    command: >
+      ros2 launch rosbot_bringup combined.launch.py 
+        mecanum:=${MECANUM:-False}
+        serial_port:=$SERIAL_PORT 
+        serial_baudrate:=576000
+        namespace:=robot1
+```
+
 ## Flashing the firmware
 
 Firmware if flashed from inside of the container running on the ROSbot:
