@@ -132,5 +132,5 @@ COPY print-serial-number.py /usr/bin/
 
 ENV ROS_NAMESPACE=
 
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=10s --retries=6 \
+HEALTHCHECK --interval=2s --timeout=1s --start-period=30s --retries=1 \
     CMD ["/healthcheck.sh"]

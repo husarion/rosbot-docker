@@ -5,8 +5,8 @@
 
 using namespace std::chrono_literals;
 
-#define LOOP_PERIOD 2s
-#define MSG_VALID_TIME 5s
+#define LOOP_PERIOD 500ms
+#define MSG_VALID_TIME 2s
 
 std::chrono::steady_clock::time_point last_msg_time;
 
@@ -34,9 +34,9 @@ void healthy_check() {
 
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
-  
+
   std::string topic = "odometry/filtered";
-  if(const char* ns = std::getenv("ROS_NAMESPACE")) {
+  if (const char *ns = std::getenv("ROS_NAMESPACE")) {
     topic = std::string(ns) + "/" + topic;
   }
 
