@@ -23,7 +23,7 @@ void healthy_check() {
   std::chrono::steady_clock::time_point current_time =
       std::chrono::steady_clock::now();
   std::chrono::duration<double> elapsed_time = current_time - last_msg_time;
-  bool is_msg_valid = elapsed_time.count() < MSG_VALID_TIME.count();
+  bool is_msg_valid = elapsed_time < MSG_VALID_TIME;
 
   if (is_msg_valid) {
     write_health_status("healthy");
