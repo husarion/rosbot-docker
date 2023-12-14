@@ -1,7 +1,7 @@
 # Quick Start
-# 
+#
 # 1. run `docker compose up` on the robot
-# 2. run `ROS_DOMAIN_ID=10 ros2 run teleop_twist_keyboard teleop_twist_keyboard` in the robot termianl
+# 2. run `ROS_DOMAIN_ID=10 ros2 run teleop_twist_keyboard teleop_twist_keyboard` in the robot terminal
 
 services:
 

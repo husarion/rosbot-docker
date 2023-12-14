@@ -24,7 +24,7 @@ RUN mkdir src && \
         install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
         /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
 
-COPY healthcheck.cpp src/healthcheck_pkg/src/    
+COPY healthcheck.cpp src/healthcheck_pkg/src/
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \

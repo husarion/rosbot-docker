@@ -20,9 +20,9 @@ services:
     environment:
       - ROS_DOMAIN_ID=30
     command: >
-      ros2 launch rosbot_bringup combined.launch.py 
+      ros2 launch rosbot_bringup combined.launch.py
         mecanum:=${MECANUM:-False}
-        serial_port:=$SERIAL_PORT 
+        serial_port:=$SERIAL_PORT
         serial_baudrate:=576000
         namespace:=robot1
 ```
