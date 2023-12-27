@@ -1,5 +1,5 @@
 # Quick Start
-# 
+#
 # 1. run `docker compose up` on the robot
 # 2. On the second host in LAN you will see only single ros2 topic:
 #   $ ros2 topic list
@@ -26,9 +26,9 @@ services:
       - ROS_DOMAIN_ID=30
       - ROS_NAMESPACE=robot1 # For healthckeck node
     command: >
-      ros2 launch rosbot_bringup combined.launch.py 
+      ros2 launch rosbot_bringup combined.launch.py
         mecanum:=${MECANUM:-False}
-        serial_port:=$SERIAL_PORT 
+        serial_port:=$SERIAL_PORT
         serial_baudrate:=576000
         namespace:=robot1
 
