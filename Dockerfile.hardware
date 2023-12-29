@@ -1,5 +1,6 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
+ARG ROS_PKG_RELEASE=0.11.1
 
 ## =========================== Firmware CPU ID ================================
 
@@ -56,6 +57,7 @@ FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
+ARG ROS_PKG_RELEASE
 
 SHELL ["/bin/bash", "-c"]
 
@@ -67,7 +69,7 @@ COPY ./healthcheck.cpp /
 RUN apt-get update && apt-get install -y \
         python3-pip
 
-RUN git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src && \
+RUN git clone --depth 1 -b ${ROS_PKG_RELEASE} https://github.com/husarion/rosbot_ros.git src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     cp -r src/ros2_controllers/diff_drive_controller src/ && \
     cp -r src/ros2_controllers/imu_sensor_broadcaster src/ && \
@@ -82,6 +84,7 @@ RUN git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src
     MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release  && \
+    echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
     rm -rf build log
 
 ## =========================== Final Stage ===============================
@@ -95,6 +98,7 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /ros2_ws
 
 COPY --from=ros_builder /ros2_ws /ros2_ws
+COPY --from=ros_builder /version.txt /version.txt
 COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
 
 # for backward compatibility
@@ -113,8 +117,6 @@ RUN apt-get update && apt-get install -y \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-    # Save version
-    echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
     # Size optimalization
     apt-get remove -y \
         python3-rosdep \
