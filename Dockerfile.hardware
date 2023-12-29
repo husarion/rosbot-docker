@@ -135,3 +135,8 @@ ENV ROS_NAMESPACE=
 
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=10s --retries=6 \
     CMD ["/healthcheck.sh"]
+
+RUN new_content1='source "/ros2_ws_healthcheck/install/setup.bash"' && \
+    new_content2='gosu $USER bash -c "ros2 run healthcheck_pkg healthcheck_node &"' && \
+    sed -i "/exec/i $new_content1" /ros_entrypoint.sh && \
+    sed -i "/exec/i $new_content2" /ros_entrypoint.sh
