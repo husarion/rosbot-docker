@@ -1,0 +1,28 @@
+# Quick Start
+# 
+# 1. run `docker compose up` on the robot
+# 2. run `ROS_DOMAIN_ID=10 ros2 run teleop_twist_keyboard teleop_twist_keyboard` in the robot termianl
+
+x-common-config:
+  &common-config
+  network_mode: host
+  ipc: host
+  environment:
+    - FASTRTPS_DEFAULT_PROFILES_FILE=/shm-only.xml
+    - ROS_DOMAIN_ID=10
+    - USER
+
+services:
+
+  rosbot:
+    build:
+      context: ..
+      dockerfile: Dockerfile.hardware
+    <<: *common-config
+    devices:
+      - ${SERIAL_PORT:?err}
+    command: >
+      ros2 launch rosbot_bringup combined.launch.py 
+        mecanum:=${MECANUM:-False}
+        serial_port:=$SERIAL_PORT 
+        serial_baudrate:=576000

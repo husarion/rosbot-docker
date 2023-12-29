@@ -19,6 +19,11 @@ source "/opt/ros/$ROS_DISTRO/setup.bash"
 source "/ros2_ws/install/setup.bash"
 source "/ros2_ws_healthcheck/install/setup.bash"
 
-ros2 run healthcheck_pkg healthcheck_node &
+if [ -z "$USER" ]; then
+    export USER=root
+elif ! id "$USER" &>/dev/null; then
+    useradd -ms /bin/bash "$USER"
+fi
 
-exec "$@"
+gosu $USER bash -c "ros2 run healthcheck_pkg healthcheck_node &"
+exec gosu $USER "$@"
