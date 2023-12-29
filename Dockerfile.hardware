@@ -125,8 +125,6 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=cpu_id_builder /read_cpu_id/.pio/build/olimex_e407/firmware.bin /firmware_read_cpu_id.bin
 
-COPY ros_entrypoint.sh /
-COPY vulcanexus_entrypoint.sh /
 COPY healthcheck.sh /
 
 COPY print-serial-number.py /usr/bin/
@@ -138,5 +136,6 @@ HEALTHCHECK --interval=5s --timeout=2s  --start-period=10s --retries=6 \
 
 RUN new_content1='source "/ros2_ws_healthcheck/install/setup.bash"' && \
     new_content2='gosu $USER bash -c "ros2 run healthcheck_pkg healthcheck_node &"' && \
-    sed -i "/exec/i $new_content1" /ros_entrypoint.sh && \
-    sed -i "/exec/i $new_content2" /ros_entrypoint.sh
+    file=$(ls /*_entrypoint.sh | head -n 1) && \
+    sed -i "/exec/i $new_content1" $file && \
+    sed -i "/exec/i $new_content2" $file
