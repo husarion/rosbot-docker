@@ -110,5 +110,5 @@ COPY run_healthcheck_node.sh /
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
     CMD ["/healthcheck.sh"]
 
-RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /ros_entrypoint.sh && \
-    sed -i "/# <additional-user-commands>/d" /ros_entrypoint.sh
+RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /*_entrypoint.sh && \
+    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh
