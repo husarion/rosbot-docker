@@ -105,12 +105,10 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 COPY healthcheck.sh /
+COPY run_healthcheck_node.sh /
 
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
     CMD ["/healthcheck.sh"]
 
-RUN new_content1='source "/ros2_ws_healthcheck/install/setup.bash"' && \
-    new_content2='gosu $USER bash -c "ros2 run healthcheck_pkg healthcheck_node &"' && \
-    file=$(ls /*_entrypoint.sh | head -n 1) && \
-    sed -i "/exec/i $new_content1" $file && \
-    sed -i "/exec/i $new_content2" $file
+RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /ros_entrypoint.sh && \
+    sed -i "/# <additional-user-commands>/d" /ros_entrypoint.sh
