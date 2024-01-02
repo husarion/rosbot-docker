@@ -19,10 +19,16 @@ services:
       context: ..
       dockerfile: Dockerfile.hardware
     <<: *common-config
+    privileged: true
     devices:
       - ${SERIAL_PORT:?err}
+    environment:
+      - ROS_NAMESPACE=rosbot
+    # command: tail -f /dev/null
+    # command: ros2 run rosbot_utils flash_firmware --usb
     command: >
       ros2 launch rosbot_bringup combined.launch.py 
         mecanum:=${MECANUM:-False}
         serial_port:=$SERIAL_PORT 
         serial_baudrate:=576000
+        namespace:=rosbot

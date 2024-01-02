@@ -1,6 +1,5 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
-ARG ROS_PKG_RELEASE=0.11.1
 
 ## =========================== Healthcheck builder ===============================
 
@@ -37,7 +36,6 @@ FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
-ARG ROS_PKG_RELEASE
 
 SHELL ["/bin/bash", "-c"]
 
@@ -49,7 +47,7 @@ COPY ./healthcheck.cpp /
 RUN apt-get update && apt-get install -y \
         python3-pip
 
-RUN git clone --depth 1 -b ${ROS_PKG_RELEASE} https://github.com/husarion/rosbot_ros.git src && \
+RUN git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     cp -r src/ros2_controllers/diff_drive_controller src/ && \
     cp -r src/ros2_controllers/imu_sensor_broadcaster src/ && \
@@ -106,6 +104,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 COPY healthcheck.sh /
+COPY run_healthcheck_node.sh /
 
 COPY print-serial-number.py /usr/bin/
 
@@ -114,8 +113,5 @@ ENV ROS_NAMESPACE=
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=10s --retries=6 \
     CMD ["/healthcheck.sh"]
 
-RUN new_content1='source "/ros2_ws_healthcheck/install/setup.bash"' && \
-    new_content2='gosu $USER bash -c "ros2 run healthcheck_pkg healthcheck_node &"' && \
-    file=$(ls /*_entrypoint.sh | head -n 1) && \
-    sed -i "/exec/i $new_content1" $file && \
-    sed -i "/exec/i $new_content2" $file
+RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /ros_entrypoint.sh && \
+    sed -i "/# <additional-user-commands>/d" /ros_entrypoint.sh
