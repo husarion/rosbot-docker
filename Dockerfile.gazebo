@@ -24,7 +24,7 @@ RUN mkdir src && \
         install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
         /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
 
-COPY healthcheck.cpp src/healthcheck_pkg/src/    
+COPY healthcheck.cpp src/healthcheck_pkg/src/
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -y \
 COPY healthcheck.sh /
 COPY run_healthcheck_node.sh /
 
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
+HEALTHCHECK --interval=2s --timeout=1s --start-period=30s --retries=1 \
     CMD ["/healthcheck.sh"]
 
 RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /*_entrypoint.sh && \

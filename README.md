@@ -20,9 +20,9 @@ services:
     environment:
       - ROS_DOMAIN_ID=30
     command: >
-      ros2 launch rosbot_bringup combined.launch.py 
+      ros2 launch rosbot_bringup combined.launch.py
         mecanum:=${MECANUM:-False}
-        serial_port:=$SERIAL_PORT 
+        serial_port:=$SERIAL_PORT
         serial_baudrate:=576000
         namespace:=robot1
 ```
@@ -92,5 +92,5 @@ Find available projects below:
 | - | - |
 | [rosbot-sensors](https://github.com/husarion/rosbot-sensors) | Visualize all ROSbot sensors |
 | [rosbot-gamepad](https://github.com/husarion/rosbot-gamepad) | Control the robot manually using a Logitech F710 gamepad |
-| [rosbot-mapping](https://github.com/husarion/rosbot-mapping) | Create a map (using [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox)) of the unknown environment with ROSbot controlled in LAN or over the Internet |
-| [rosbot-navigation](https://github.com/husarion/rosbot-navigation) | Autonomous navigation (using [navigation2](https://github.com/ros-planning/navigation2)) on a given map.  |
+| [rosbot-telepresence](https://github.com/husarion/rosbot-telepresence) | Stream a live video from Orbbec Astra to a window on your PC. Control the robot using `teleop-twist-keyboard` ||
+| [rosbot-autonomy](https://github.com/husarion/rosbot-autonomy) | A combination of `mapping` and `navigation` projects allowing simultaneous mapping and navigation in unknown environments.  |

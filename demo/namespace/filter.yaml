@@ -1,5 +1,6 @@
+---
 allowlist:
-  - name: "rt/robot1/cmd_vel"
-    type: "geometry_msgs::msg::dds_::Twist_"
+  - name: rt/robot1/cmd_vel
+    type: geometry_msgs::msg::dds_::Twist_
 blocklist: []
 builtin-topics: []

@@ -1,5 +1,5 @@
 # Quick Start
-# 
+#
 # 1. run `xhost +local:docker && docker compose -f compose.gazebo.yaml up` on the laptop
 # 2. open a shell inside a docker container `docker compose -f compose.gazebo.yaml exec -it rosbot bash`
 # 2. run `ros2 run teleop_twist_keyboard teleop_twist_keyboard` inside the container
