@@ -104,9 +104,11 @@ RUN apt-get update && apt-get install -y \
     rm -rf src && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ros_entrypoint.sh /
-COPY vulcanexus_entrypoint.sh /
 COPY healthcheck.sh /
+COPY run_healthcheck_node.sh /
 
 HEALTHCHECK --interval=2s --timeout=1s --start-period=30s --retries=1 \
     CMD ["/healthcheck.sh"]
+
+RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /*_entrypoint.sh && \
+    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh

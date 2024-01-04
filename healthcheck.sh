@@ -2,7 +2,6 @@
 
 HEALTHCHECK_FILE="/var/tmp/health_status.txt"
 
-
 # Now check the health status
 if [ -f "$HEALTHCHECK_FILE" ]; then
     status=$(cat "$HEALTHCHECK_FILE")
