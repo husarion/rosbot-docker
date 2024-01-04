@@ -9,7 +9,7 @@ x-common-config:
   ipc: host
   environment:
     - FASTRTPS_DEFAULT_PROFILES_FILE=/shm-only.xml
-    - ROS_DOMAIN_ID=10
+    # - ROS_DOMAIN_ID=10
     - USER
 
 services:
@@ -22,8 +22,8 @@ services:
     privileged: true
     devices:
       - ${SERIAL_PORT:?err}
-    environment:
-      - ROS_NAMESPACE=rosbot
+    # environment:
+    #   - ROS_NAMESPACE=rosbot
     # command: tail -f /dev/null
     # command: ros2 run rosbot_utils flash_firmware --usb
     command: >
@@ -31,4 +31,4 @@ services:
         mecanum:=${MECANUM:-False}
         serial_port:=$SERIAL_PORT 
         serial_baudrate:=576000
-        namespace:=rosbot
+# namespace:=rosbot

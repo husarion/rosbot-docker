@@ -108,7 +108,7 @@ COPY run_healthcheck_node.sh /
 
 COPY print-serial-number.py /usr/bin/
 
-ENV ROS_NAMESPACE=
+ENV ROBOT_NAMESPACE=
 
 HEALTHCHECK --interval=5s --timeout=2s  --start-period=10s --retries=6 \
     CMD ["/healthcheck.sh"]

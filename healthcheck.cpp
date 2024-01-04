@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
   
   std::string topic = "odometry/filtered";
-  if(const char* ns = std::getenv("ROS_NAMESPACE")) {
+  if(const char* ns = std::getenv("ROBOT_NAMESPACE")) {
     topic = std::string(ns) + "/" + topic;
   }
 
