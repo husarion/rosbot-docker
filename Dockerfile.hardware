@@ -1,68 +1,7 @@
-ARG ROS_DISTRO=melodic
-
-
-## =========================== STM32 firmware===============================
-# FROM --platform=linux/amd64 ubuntu:18.04 as stm32_firmware_builder
-# TODO: wget from releases instead
-FROM --platform=linux/amd64 ubuntu:20.04 AS stm32_firmware_builder
-
-ARG ROSBOT_FW_RELEASE=0.16.1
-ARG ROS_NOETIC_MSGS=0
-
-SHELL ["/bin/bash", "-c"]
-
-# ENV PIO_VERSION="5.1.0"
-RUN apt update && apt install -y \
-		python3 \
-		python3-pip \
-		git \
-		wget \
-		tree
-
-# https://docs.platformio.org/en/latest/core/installation.html#system-requirements
-# RUN pip3 install -U platformio==${PIO_VERSION}
-RUN pip3 install -U platformio
-
-RUN git clone https://github.com/husarion/rosbot-stm32-firmware.git --branch ${ROSBOT_FW_RELEASE} && \
-	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
-	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
-
-WORKDIR /rosbot-stm32-firmware
-
-RUN git submodule update --init --recursive
-
-# RUN wget https://github.com/husarion/rosbot-stm32-firmware/archive/refs/tags/${ROSBOT_FW_RELEASE}.tar.gz && \
-# 	tar -xf *.tar.gz && \
-# 	mv rosbot-stm32-firmware* rosbot-stm32-firmware && \
-# 	mkdir -p ~/.platformio/packages/framework-mbed/features/ && \
-# 	cp rosbot-stm32-firmware/.mbedignore ~/.platformio/packages/framework-mbed/features/.mbedignore
-
-WORKDIR /rosbot-stm32-firmware
-
-RUN export LC_ALL=C.UTF-8 && \
-	export LANG=C.UTF-8 && \
-	pio project init -e core2_diff -O \
-	"build_flags= \
-		-I\$PROJECTSRC_DIR/TARGET_CORE2 \
-		-DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-		-DMBED_BUILD_PROFILE_RELEASE \
-		-DJOINT_STATES_ENABLE=1 \
-		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
-		-DKINEMATIC_TYPE=0" && \
-	pio project init -e core2_mec -O \
-	"build_flags= \
-		-I\$PROJECTSRC_DIR/TARGET_CORE2 \
-		-DPIO_FRAMEWORK_MBED_RTOS_PRESENT \
-		-DPIO_FRAMEWORK_EVENT_QUEUE_PRESENT \
-		-DMBED_BUILD_PROFILE_RELEASE \
-		-DJOINT_STATES_ENABLE=1 \
-		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
-		-DKINEMATIC_TYPE=1" && \
-	pio run
+ARG ROS_DISTRO=noetic
+ARG ROSBOT_FW_RELEASE=0.16.2
 
 ## =========================== ROS package builder ===============================
-
 FROM ros:$ROS_DISTRO-ros-core AS pkg-builder
 
 SHELL ["/bin/bash", "-c"]
@@ -93,7 +32,7 @@ WORKDIR /ros_ws
 # clone robot github repositories
 RUN mkdir -p src && \
 	git clone https://github.com/husarion/rosbot_ros.git --branch=melodic src/rosbot_ros && \
-	git clone https://github.com/husarion/rosbot_ekf.git --branch=master src/rosbot_ekf 
+	git clone https://github.com/husarion/rosbot_ekf.git --branch=master src/rosbot_ekf
 
 # build ROS workspace
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
@@ -103,9 +42,12 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 ## =========================== Final Stage ===============================
 FROM ros:$ROS_DISTRO-ros-core
 
+ARG ROSBOT_FW_RELEASE
+
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y \
+		curl \
 		python3-pip \
 		stm32flash \
 		ros-$ROS_DISTRO-rosserial-python \
@@ -129,9 +71,10 @@ RUN apt update && apt install -y \
 # copy ROS package from previous step
 COPY --from=pkg-builder /ros_ws /ros_ws
 
-# copy firmware built in previous stage
-COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
-COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root/firmware_mecanum.bin
+# copy firmware built
+RUN cd /root && \
+	curl -LJ https://github.com/husarion/rosbot-stm32-firmware/releases/download/$ROSBOT_FW_RELEASE/firmware_diff.bin -o firmware_diff.bin && \
+	curl -LJ https://github.com/husarion/rosbot-stm32-firmware/releases/download/$ROSBOT_FW_RELEASE/firmware_mec.bin -o firmware_mecanum.bin
 
 # copy scripts
 COPY ./flash-firmware.py /

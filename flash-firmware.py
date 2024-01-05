@@ -30,21 +30,21 @@ class FirmwareFlasher:
 
         print(f"System architecture: {self.sys_arch}")
 
-        if self.sys_arch.stdout == b"armv7l\n":
+        if self.sys_arch == "armv7l\n":
             # Setups ThinkerBoard pins
             print("Device: ThinkerBoard\n")
             self.port = "/dev/ttyS1"
             boot0_pin_no = 164
             reset_pin_no = 184
 
-        elif self.sys_arch.stdout == b"x86_64\n":
+        elif self.sys_arch == "x86_64\n":
             # Setups UpBoard pins
             print("Device: UpBoard\n")
             self.port = "/dev/ttyS4"
             boot0_pin_no = 17
             reset_pin_no = 18
 
-        elif self.sys_arch.stdout == b"aarch64\n":
+        elif self.sys_arch == "aarch64\n":
             # Setups RPi pins
             print("Device: RPi\n")
             self.port = "/dev/ttyAMA0"
