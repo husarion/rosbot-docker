@@ -73,8 +73,8 @@ COPY --from=pkg-builder /ros_ws /ros_ws
 
 # copy firmware built
 RUN cd /root && \
-	curl -LJ https://github.com/husarion/rosbot-stm32-firmware/releases/download/$ROSBOT_FW_RELEASE/firmware_diff.bin -o firmware_diff.bin && \
-	curl -LJ https://github.com/husarion/rosbot-stm32-firmware/releases/download/$ROSBOT_FW_RELEASE/firmware_mec.bin -o firmware_mecanum.bin
+	curl -L https://github.com/husarion/rosbot-stm32-firmware/releases/download/$ROSBOT_FW_RELEASE/firmware_diff.bin -o firmware_diff.bin && \
+	curl -L https://github.com/husarion/rosbot-stm32-firmware/releases/download/$ROSBOT_FW_RELEASE/firmware_mec.bin -o firmware_mecanum.bin
 
 # copy scripts
 COPY ./flash-firmware.py /
