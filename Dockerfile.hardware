@@ -1,17 +1,5 @@
-
 ARG ROS_DISTRO=melodic
 
-## ============================ STM32FLASH =================================
-# stm32flash needs an older version of glibc (2.28), which is why ubuntu 18.04 was used
-FROM ubuntu:18.04 AS stm32flash_builder
-
-# official releases are only for intel archs, so we need to build stm32flash from sources
-RUN apt-get update && apt-get install -y \
-		git \
-		build-essential && \
-	git clone https://github.com/stm32duino/stm32flash.git && \
-	cd stm32flash/ && \
-	make all
 
 ## =========================== STM32 firmware===============================
 # FROM --platform=linux/amd64 ubuntu:18.04 as stm32_firmware_builder
@@ -71,7 +59,7 @@ RUN export LC_ALL=C.UTF-8 && \
 		-DJOINT_STATES_ENABLE=1 \
 		-DROS_NOETIC_MSGS=${ROS_NOETIC_MSGS} \
 		-DKINEMATIC_TYPE=1" && \
-	pio run 
+	pio run
 
 ## =========================== ROS package builder ===============================
 
@@ -82,7 +70,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update && apt install -y \
 		git \
 		python3-pip \
-		ros-$ROS_DISTRO-rosserial-python \ 
+		ros-$ROS_DISTRO-rosserial-python \
 		ros-$ROS_DISTRO-rosserial-server \
 		ros-$ROS_DISTRO-rosserial-client \
 		ros-$ROS_DISTRO-rosserial-msgs \
@@ -111,15 +99,16 @@ RUN mkdir -p src && \
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 	catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
 
-## =========================== ROS image ===============================
 
-FROM ros:$ROS_DISTRO-ros-core 
+## =========================== Final Stage ===============================
+FROM ros:$ROS_DISTRO-ros-core
 
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y \
 		python3-pip \
-		ros-$ROS_DISTRO-rosserial-python \ 
+		stm32flash \
+		ros-$ROS_DISTRO-rosserial-python \
 		ros-$ROS_DISTRO-rosserial-server \
 		ros-$ROS_DISTRO-rosserial-client \
 		ros-$ROS_DISTRO-rosserial-msgs \
@@ -143,7 +132,6 @@ COPY --from=pkg-builder /ros_ws /ros_ws
 # copy firmware built in previous stage
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_diff/firmware.bin /root/firmware_diff.bin
 COPY --from=stm32_firmware_builder /rosbot-stm32-firmware/.pio/build/core2_mec/firmware.bin /root/firmware_mecanum.bin
-COPY --from=stm32flash_builder /stm32flash/stm32flash /usr/bin/stm32flash
 
 # copy scripts
 COPY ./flash-firmware.py /
