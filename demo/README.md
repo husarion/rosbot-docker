@@ -30,7 +30,7 @@ If you don't have Nvidia GPU replace `*gpu-config` with `*cpu-config` in `rosbot
 In the PC's shell execute (in the `demo/` directory):
 ```
 xhost local:root
-docker compose -f compose.simulation.yaml up
+docker compose -f compose.gazebo.yaml up
 ```
 
 ## Drive the ROSbot
