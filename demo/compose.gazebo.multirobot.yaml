@@ -1,8 +1,8 @@
 # Quick Start
 #
 # 1. run `xhost +local:docker && docker compose -f compose.gazebo.multirobot.yaml up` on the laptop
-# 2. open a shell inside a docker container `docker compose -f compose.gazebo.yaml exec -it rosbot bash`
-# 2. run `ros2 run teleop_twist_keyboard teleop_twist_keyboard` inside the container
+# 2. open a shell inside a docker container `docker compose -f compose.gazebo.multirobot.yaml exec -it rosbot bash`
+# 2. run for e. g. `ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __ns:=/robot1` inside the container
 
 x-gpu-config:
   &gpu-config
@@ -20,7 +20,7 @@ x-cpu-config:
 
 services:
   rosbot:
-    # image: husarion/rosbot-gazebo:humble
+    image: husarion/rosbot-gazebo:humble-nightly
     # build:
     #   context: ../
     #   dockerfile: Dockerfile.gazebo
@@ -30,4 +30,4 @@ services:
     command: >
       ros2 launch rosbot_gazebo simulation.launch.py
       mecanum:=${MECANUM:-False}
-      robots:="robot1={y: 0.0}; robot2={y: 1.0}; robot3={y: 2.0};
+      robots:="robot1={y: -4.0}; robot2={y: -2.0}; robot3={y: 4.0};"
