@@ -75,6 +75,13 @@ WORKDIR /ros2_ws
 
 COPY --from=ros_builder /ros2_ws /ros2_ws
 COPY --from=ros_builder /version.txt /version.txt
+COPY husarion_utils /husarion_utils
+
+RUN mv /husarion_utils/print-serial-number.py /usr/bin/ && \
+    # for backward compatibility
+    cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
+    cp src/rosbot_utils/rosbot_utils/flash-firmware.py / && \
+    cp install/rosbot_utils/share/rosbot_utils/firmware/firmware-*.bin /root/firmware.bin
 
 RUN apt-get update && apt-get install -y \
         python3-pip \
@@ -94,14 +101,6 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf src && \
     rm -rf /var/lib/apt/lists/*
-
-COPY husarion_utils /husarion_utils
-
-RUN mv /husarion_utils/print-serial-number.py /usr/bin/ && \
-    # for backward compatibility
-    cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
-    cp src/rosbot_utils/rosbot_utils/flash-firmware.py / && \
-    cp install/rosbot_utils/share/rosbot_utils/firmware/firmware-*.bin /root/firmware.bin
 
 # Run healthcheck in background
 COPY --from=healthcheck_builder /ros2_ws /healthcheck_ws
