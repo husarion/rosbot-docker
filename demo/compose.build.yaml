@@ -1,7 +1,7 @@
 # Quick Start
-# 
+#
 # 1. run `docker compose up` on the robot
-# 2. run `ROS_DOMAIN_ID=10 ros2 run teleop_twist_keyboard teleop_twist_keyboard` in the robot termianl
+# 2. run `ROS_DOMAIN_ID=10 ros2 run teleop_twist_keyboard teleop_twist_keyboard` in the robot terminal
 
 x-common-config:
   &common-config
@@ -27,8 +27,8 @@ services:
     # command: tail -f /dev/null
     # command: ros2 run rosbot_utils flash_firmware --usb
     command: >
-      ros2 launch rosbot_bringup combined.launch.py 
+      ros2 launch rosbot_bringup combined.launch.py
         mecanum:=${MECANUM:-False}
-        serial_port:=$SERIAL_PORT 
+        serial_port:=$SERIAL_PORT
         serial_baudrate:=576000
 # namespace:=rosbot

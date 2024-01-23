@@ -6,18 +6,23 @@ import hashlib
 import string
 import re
 
+
 def get_cpu_id_from_ros_service():
     try:
         # Run the ROS service call command
-        result = subprocess.run(['ros2', 'service', 'call', '/get_cpu_id', 'std_srvs/srv/Trigger'], 
-                                capture_output=True, text=True, timeout=30)
+        result = subprocess.run(
+            ["ros2", "service", "call", "/get_cpu_id", "std_srvs/srv/Trigger"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
 
         # Regular expression to extract JSON from the response
         match = re.search(r"message='(\{.*\})'", result.stdout)
         if match:
             json_str = match.group(1)
             json_data = json.loads(json_str)
-            cpu_id = json_data['cpu_id']
+            cpu_id = json_data["cpu_id"]
             return cpu_id
         else:
             print("JSON response not found in the output.")
@@ -28,6 +33,7 @@ def get_cpu_id_from_ros_service():
     except json.JSONDecodeError as e:
         print(f"JSON parsing error: {e}")
         return None
+
 
 def hex_to_num(hex_str):
     # Check if the hex string is valid
@@ -45,6 +51,7 @@ def hex_to_num(hex_str):
 
     # Return the hash as an ASCII string
     return hash
+
 
 try:
     # Obtain CPU ID from ROS service

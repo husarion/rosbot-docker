@@ -17,14 +17,14 @@ RUN mkdir src && \
     MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     # Create health check package
-    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
-    sed -i '/find_package(nav_msgs REQUIRED)/a \
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs sensor_msgs && \
+    sed -i '/find_package(sensor_msgs REQUIRED)/a \
         add_executable(healthcheck_node src/healthcheck.cpp)\n \
-        ament_target_dependencies(healthcheck_node rclcpp nav_msgs)\n \
+        ament_target_dependencies(healthcheck_node rclcpp nav_msgs sensor_msgs)\n \
         install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
         /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
 
-COPY healthcheck.cpp src/healthcheck_pkg/src/
+COPY husarion_utils/healthcheck.cpp src/healthcheck_pkg/src/
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
@@ -41,8 +41,6 @@ SHELL ["/bin/bash", "-c"]
 
 WORKDIR /ros2_ws
 RUN mkdir src
-
-COPY ./healthcheck.cpp /
 
 RUN apt-get update && apt-get install -y \
         python3-pip
@@ -77,12 +75,6 @@ WORKDIR /ros2_ws
 
 COPY --from=ros_builder /ros2_ws /ros2_ws
 COPY --from=ros_builder /version.txt /version.txt
-COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
-
-# for backward compatibility
-RUN cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
-    cp src/rosbot_utils/rosbot_utils/flash-firmware.py / && \
-    cp install/rosbot_utils/share/rosbot_utils/firmware/firmware-*.bin /root/firmware.bin
 
 RUN apt-get update && apt-get install -y \
         python3-pip \
@@ -97,21 +89,24 @@ RUN apt-get update && apt-get install -y \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
     # Size optimalization
     apt-get remove -y \
-        python3-rosdep \
-        python3-pip && \
+        python3-pip \
+        python3-rosdep && \
     apt-get clean && \
     rm -rf src && \
     rm -rf /var/lib/apt/lists/*
 
-COPY healthcheck.sh /
-COPY run_healthcheck_node.sh /
+COPY husarion_utils /husarion_utils
 
-COPY print-serial-number.py /usr/bin/
+RUN mv /husarion_utils/print-serial-number.py /usr/bin/ && \
+    # for backward compatibility
+    cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
+    cp src/rosbot_utils/rosbot_utils/flash-firmware.py / && \
+    cp install/rosbot_utils/share/rosbot_utils/firmware/firmware-*.bin /root/firmware.bin
 
-ENV ROBOT_NAMESPACE=
+# Run healthcheck in background
+COPY --from=healthcheck_builder /ros2_ws /healthcheck_ws
+RUN sed -i "/# <additional-user-commands>/r /husarion_utils/run_healthcheck_node.sh" /*_entrypoint.sh && \
+    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh
 
 HEALTHCHECK --interval=2s --timeout=1s --start-period=30s --retries=1 \
-    CMD ["/healthcheck.sh"]
-
-RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /*_entrypoint.sh && \
-    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh
+    CMD ["/husarion_utils/healthcheck.sh"]

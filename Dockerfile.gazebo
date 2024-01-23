@@ -17,14 +17,14 @@ RUN mkdir src && \
     MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     # Create health check package
-    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs && \
-    sed -i '/find_package(nav_msgs REQUIRED)/a \
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs sensor_msgs && \
+    sed -i '/find_package(sensor_msgs REQUIRED)/a \
         add_executable(healthcheck_node src/healthcheck.cpp)\n \
-        ament_target_dependencies(healthcheck_node rclcpp nav_msgs)\n \
+        ament_target_dependencies(healthcheck_node rclcpp nav_msgs sensor_msgs)\n \
         install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
         /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
 
-COPY healthcheck.cpp src/healthcheck_pkg/src/
+COPY husarion_utils/healthcheck.cpp src/healthcheck_pkg/src/
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
@@ -44,13 +44,10 @@ ENV HUSARION_ROS_BUILD simulation
 
 WORKDIR /ros2_ws
 
-COPY ./healthcheck.cpp /
-
 # install everything needed
 RUN apt-get update --fix-missing && apt-get install -y \
         python3-pip \
         ros-dev-tools && \
-    apt-get upgrade -y && \
     # Clone source
     git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
@@ -84,11 +81,10 @@ ENV HUSARION_ROS_BUILD simulation
 WORKDIR /ros2_ws
 
 COPY --from=ros_builder /ros2_ws /ros2_ws
-COPY --from=healthcheck_builder /ros2_ws /ros2_ws_healthcheck
 
 RUN apt-get update && apt-get install -y \
-        python3-rosdep \
         python3-pip \
+        python3-rosdep \
         ros-$ROS_DISTRO-teleop-twist-keyboard && \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
@@ -98,17 +94,18 @@ RUN apt-get update && apt-get install -y \
     echo $(cat /ros2_ws/src/rosbot_gazebo/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt && \
     # Size optimalization
     apt-get remove -y \
-        python3-rosdep \
-        python3-pip && \
+        python3-pip \
+        python3-rosdep && \
     apt-get clean && \
     rm -rf src && \
     rm -rf /var/lib/apt/lists/*
 
-COPY healthcheck.sh /
-COPY run_healthcheck_node.sh /
+COPY husarion_utils /husarion_utils
+
+# Run healthcheck in background
+COPY --from=healthcheck_builder /ros2_ws /healthcheck_ws
+RUN sed -i "/# <additional-user-commands>/r /husarion_utils/run_healthcheck_node.sh" /*_entrypoint.sh && \
+    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh
 
 HEALTHCHECK --interval=2s --timeout=1s --start-period=30s --retries=1 \
-    CMD ["/healthcheck.sh"]
-
-RUN sed -i "/# <additional-user-commands>/r /run_healthcheck_node.sh" /*_entrypoint.sh && \
-    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh
+    CMD ["/husarion_utils/healthcheck.sh"]
