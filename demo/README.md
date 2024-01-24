@@ -25,12 +25,18 @@ docker compose -f compose.yaml up
 ```
 
 ## Simulation
-If you don't have Nvidia GPU replace `*gpu-config` with `*cpu-config` in `rosbot` service inside `compose.simulation.yaml` file.
+If you don't have Nvidia GPU replace `*gpu-config` with `*cpu-config` in `rosbot` service inside `compose.gazebo.yaml` file.
 
 In the PC's shell execute (in the `demo/` directory):
 ```
 xhost local:root
 docker compose -f compose.gazebo.yaml up
+```
+
+If you want to use multiple robots check the `compose.gazebo.multirobot.yaml` (in the `demo/` directory):
+```
+xhost local:root
+docker compose -f compose.gazebo.multiplerobot.yaml up
 ```
 
 ## Drive the ROSbot
@@ -41,6 +47,11 @@ docker exec -it demo-rosbot-1 bash
 and run inside `teleop_twist_keyboard` to drive the ROSbot
 ```
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+
+In case of driving one of the robot running `compose.gazebo.multirobot.yaml` add the namespace to the `teleop_twist_keyboard`. For the `robot1`:
+```
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __ns:=/robot1
 ```
 
 With keys `i`, `j`, `l`, `,` you can drive forward, counter clockwise, clockwise and backwards. If you are using macanum wheels (see `demo/.env` file) hold `Shift` key that way the ROSbot goes left and right with `j` and `l` keys instead rotates.

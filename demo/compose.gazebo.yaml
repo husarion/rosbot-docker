@@ -20,10 +20,10 @@ x-cpu-config:
 
 services:
   rosbot:
-    # image: husarion/rosbot-gazebo:humble
-    build:
-      context: ../
-      dockerfile: Dockerfile.gazebo
+    image: husarion/rosbot-gazebo:humble
+    # build:
+    #   context: ../
+    #   dockerfile: Dockerfile.gazebo
     <<: [ *gpu-config]
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
