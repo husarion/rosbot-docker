@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   pull_request:
     types: [closed]
-  
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -16,12 +16,10 @@ jobs:
       matrix:
         include:
           - ros-distro: melodic
-            ros-noetic-msgs: 0
-            rosbot-fw-release: 0.16.1
+            rosbot-fw-release: 0.16.2
             platforms: "linux/amd64, linux/arm64, linux/arm/v7"
           - ros-distro: noetic
-            ros-noetic-msgs: 1
-            rosbot-fw-release: 0.16.1
+            rosbot-fw-release: 0.16.2
             platforms: "linux/amd64, linux/arm64"
 
     steps:
@@ -30,19 +28,19 @@ jobs:
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
-      
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
       with:
         version: latest
-    
+
     - name: Login to Docker Registry
       uses: docker/login-action@v1
       with:
         registry: docker.io
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
+
     - name: Build and push (production)
       if: github.ref_name == 'ros1'
       uses: docker/build-push-action@v2
@@ -53,9 +51,8 @@ jobs:
         push: true
         build-args: |
           ROS_DISTRO=${{ matrix.ros-distro }}
-          ROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }}
           ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
-        tags: husarion/rosbot:${{ matrix.ros-distro }}  
+        tags: husarion/rosbot:${{ matrix.ros-distro }}
         cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}
         cache-to: type=inline
 
@@ -69,7 +66,6 @@ jobs:
         push: true
         build-args: |
           ROS_DISTRO=${{ matrix.ros-distro }}
-          ROS_NOETIC_MSGS=${{ matrix.ros-noetic-msgs }}
           ROSBOT_FW_RELEASE=${{ matrix.rosbot-fw-release }}
         tags: husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
         cache-from: type=registry,ref=husarion/rosbot:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
