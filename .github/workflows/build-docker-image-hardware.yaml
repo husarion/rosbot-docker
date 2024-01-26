@@ -15,9 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ros-distro: noetic
+          - ros-distro: melodic
             rosbot-fw-release: 0.16.2
             platforms: "linux/amd64, linux/arm64, linux/arm/v7"
+          - ros-distro: noetic
+            rosbot-fw-release: 0.16.2
+            platforms: "linux/amd64, linux/arm64"
 
     steps:
     - name: Checkout
