@@ -1,9 +1,8 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
 
-## =========================== Healthcheck builder ===============================
-
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
+## =========================== Install all ROS dependencies  ===============================
+FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core AS ros-core-with-dependencies
 
 ARG ROS_DISTRO
 ARG PREFIX
@@ -12,41 +11,9 @@ SHELL ["/bin/bash", "-c"]
 
 WORKDIR /ros2_ws
 
-RUN mkdir src && \
-    cd src && \
-    MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
-    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
-    # Create health check package
-    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs sensor_msgs && \
-    sed -i '/find_package(sensor_msgs REQUIRED)/a \
-        add_executable(healthcheck_node src/healthcheck.cpp)\n \
-        ament_target_dependencies(healthcheck_node rclcpp nav_msgs sensor_msgs)\n \
-        install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
-        /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
-
-COPY husarion_utils/healthcheck.cpp src/healthcheck_pkg/src/
-
-RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
-    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
-    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
-    rm -rf build log src
-
-## =========================== ROS builder ===============================
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
-
-ARG PREFIX
-
-# select bash as default shell
-SHELL ["/bin/bash", "-c"]
-
-ENV IGNITION_VERSION fortress
-ENV HUSARION_ROS_BUILD simulation
-
-WORKDIR /ros2_ws
-
-# install everything needed
-RUN apt-get update --fix-missing && apt-get install -y \
+RUN apt-get update && apt-get install -y \
         python3-pip \
+        python3-rosdep \
         ros-dev-tools && \
     # Clone source
     git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src && \
@@ -59,21 +26,65 @@ RUN apt-get update --fix-missing && apt-get install -y \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
-    rosdep install --from-paths src --ignore-src -y
+    rosdep install --from-paths src --ignore-src -y && \
+    apt-get remove -y \
+        python3-pip \
+        python3-rosdep \
+        ros-dev-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
-    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
-    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
-    rm -rf build log
 
-## =========================== Final Stage ===============================
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
+## =========================== Healthcheck builder ===============================
+
+FROM ros-core-with-dependencies AS healthcheck_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
 
-# select bash as default shell
-SHELL ["/bin/bash", "-c"]
+WORKDIR /healthcheck_ws/src
+
+COPY husarion_utils/healthcheck.cpp /healthcheck.cpp
+
+RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    # Create health check package
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp nav_msgs sensor_msgs && \
+    sed -i '/find_package(sensor_msgs REQUIRED)/a \
+        add_executable(healthcheck_node src/healthcheck.cpp)\n \
+        ament_target_dependencies(healthcheck_node rclcpp nav_msgs sensor_msgs)\n \
+        install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
+        ./healthcheck_pkg/CMakeLists.txt && \
+    mv /healthcheck.cpp ./healthcheck_pkg/src/ && \
+    cd .. && \
+    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
+    rm -rf build log src
+
+## =========================== ROS builder ===============================
+FROM ros-core-with-dependencies AS ros_builder
+
+ARG PREFIX
+
+ENV IGNITION_VERSION fortress
+ENV HUSARION_ROS_BUILD simulation
+
+WORKDIR /ros2_ws
+
+# install everything needed
+RUN apt-get update && apt-get install -y \
+        ros-dev-tools
+
+RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release  && \
+    echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
+    rm -rf build log
+
+## =========================== Final Stage ===============================
+FROM ros-core-with-dependencies
+
+ARG ROS_DISTRO
+ARG PREFIX
 
 ENV IGNITION_VERSION fortress
 ENV HUSARION_ROS_BUILD simulation
@@ -81,31 +92,18 @@ ENV HUSARION_ROS_BUILD simulation
 WORKDIR /ros2_ws
 
 COPY --from=ros_builder /ros2_ws /ros2_ws
+COPY --from=ros_builder /version.txt /version.txt
+COPY husarion_utils /husarion_utils
 
 RUN apt-get update && apt-get install -y \
-        python3-pip \
-        python3-rosdep \
         ros-$ROS_DISTRO-teleop-twist-keyboard && \
-    rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
-    rosdep init && \
-    rosdep update --rosdistro $ROS_DISTRO && \
-    rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-    # Save version
-    echo $(cat /ros2_ws/src/rosbot_gazebo/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt && \
     # Size optimalization
-    apt-get remove -y \
-        python3-pip \
-        python3-rosdep && \
     apt-get clean && \
     rm -rf src && \
     rm -rf /var/lib/apt/lists/*
 
-COPY husarion_utils /husarion_utils
-
 # Run healthcheck in background
-COPY --from=healthcheck_builder /ros2_ws /healthcheck_ws
-RUN sed -i "/# <additional-user-commands>/r /husarion_utils/run_healthcheck_node.sh" /*_entrypoint.sh && \
-    sed -i "/# <additional-user-commands>/d" /*_entrypoint.sh
-
+COPY --from=healthcheck_builder /healthcheck_ws /healthcheck_ws
+RUN sed -i "/# <additional-user-commands>/i /husarion_utils/run_healthcheck_node.sh" /*_entrypoint.sh
 HEALTHCHECK --interval=2s --timeout=1s --start-period=30s --retries=1 \
     CMD ["/husarion_utils/healthcheck.sh"]
