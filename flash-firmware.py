@@ -26,8 +26,6 @@ class FirmwareFlasher:
         self.binary_file = binary_file
         sys_arch = str(sh.uname("-m")).strip()
 
-        self.max_approach_no = 1
-
         print(f"System architecture: {sys_arch}")
 
         if sys_arch == "armv7l":
