@@ -1,4 +1,4 @@
-ARG ROS_DISTRO=noetic
+ARG ROS_DISTRO=melodic
 
 FROM osrf/ros:$ROS_DISTRO-desktop
 
