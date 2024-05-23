@@ -26,6 +26,8 @@ class FirmwareFlasher:
         self.binary_file = binary_file
         sys_arch = str(sh.uname("-m")).strip()
 
+        self.max_approach_no = 3
+
         print(f"System architecture: {sys_arch}")
 
         if sys_arch == "armv7l":
@@ -71,20 +73,24 @@ class FirmwareFlasher:
 
     def try_flash_operation(self, operation_name, flash_args):
         self.enter_bootloader_mode()
-        
-        try:
-            if operation_name == "Flashing":
-                sh.stm32flash(self.port, *flash_args, _out=sys.stdout)
-                time.sleep(0.2)
-                print("Success! The robot firmware has been uploaded.")
-            else:                    
-                sh.stm32flash(self.port, *flash_args)
-                time.sleep(0.2)
-        except Exception as e:
-            stderr = e.stderr.decode('utf-8')
-            if stderr:
-                print(f"ERROR {operation_name} went wrong: {stderr}")
-            
+
+        print(f"{operation_name} operation started.")
+        for i in range(self.max_approach_no):
+            try:
+                if operation_name == "Flashing":
+                    sh.stm32flash(self.port, *flash_args, _out=sys.stdout)
+                    print("Success! The robot firmware has been uploaded.")
+                else:
+                    sh.stm32flash(self.port, *flash_args)
+                break
+            except Exception as e:
+                stderr = e.stderr.decode('utf-8')
+                if stderr:
+                    print(f"[ERROR] [{operation_name}]: \n\t{stderr}.")
+                else:
+                    break
+            time.sleep(0.2) # Delay between attempts
+
         self.exit_bootloader_mode()
 
 
