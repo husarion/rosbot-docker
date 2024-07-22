@@ -3,7 +3,7 @@ ARG PREFIX=
 
 ## =========================== Healthcheck builder ===============================
 
-FROM ros/${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
+FROM ros:${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
@@ -32,7 +32,7 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     rm -rf build log src
 
 ## =========================== ROS builder ===============================
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
+FROM ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
@@ -63,7 +63,7 @@ RUN git clone --depth 1 -b jazzy-devel https://github.com/husarion/rosbot_ros.gi
     rm -rf build log
 
 ## =========================== Final Stage ===============================
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
+FROM ros:${PREFIX}${ROS_DISTRO}-ros-core
 
 ARG ROS_DISTRO
 ARG PREFIX
