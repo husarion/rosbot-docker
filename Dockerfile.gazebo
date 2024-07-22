@@ -52,7 +52,7 @@ RUN apt-get update --fix-missing && apt-get install -y \
         ros-dev-tools && \
     apt-get upgrade -y && \
     # Clone source
-    git clone --depth 1 -b humble https://github.com/husarion/rosbot_ros.git src && \
+    git clone --depth 1 -b jazzy-devel https://github.com/husarion/rosbot_ros.git src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     vcs import src < src/rosbot/rosbot_simulation.repos && \
     cp -r src/ros2_controllers/diff_drive_controller src/ && \
