@@ -1,4 +1,5 @@
 ARG ROS_DISTRO=humble
+ARG MYDISTRO=ros
 ARG PREFIX=
 
 ## =========================== Healthcheck builder ===============================
@@ -7,6 +8,7 @@ FROM ros:${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
+ARG MYDISTRO
 
 SHELL ["/bin/bash", "-c"]
 
@@ -36,6 +38,7 @@ FROM ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
+ARG MYDISTRO
 
 SHELL ["/bin/bash", "-c"]
 
@@ -57,7 +60,7 @@ RUN git clone --depth 1 -b jazzy-devel https://github.com/husarion/rosbot_ros.gi
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install --from-paths src --ignore-src -y && \
     MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
-    source /opt/$MYDISTRO/$MYDISTRO/$ROS_DISTRO/setup.bash && \
+    source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release  && \
     echo $(cat /ros2_ws/src/rosbot/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') >> /version.txt && \
     rm -rf build log
@@ -67,6 +70,7 @@ FROM ros:${PREFIX}${ROS_DISTRO}-ros-core
 
 ARG ROS_DISTRO
 ARG PREFIX
+ARG MYDISTRO
 
 SHELL ["/bin/bash", "-c"]
 

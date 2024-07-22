@@ -1,5 +1,6 @@
 ARG ROS_DISTRO=humble
 ARG PREFIX=
+ARG MYDISTRO=ros
 
 ## =========================== Healthcheck builder ===============================
 
@@ -7,6 +8,7 @@ FROM ros:${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
+ARG MYDISTRO
 
 SHELL ["/bin/bash", "-c"]
 
@@ -35,6 +37,7 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 FROM ros:${PREFIX}${ROS_DISTRO}-ros-base  AS ros_builder
 
 ARG PREFIX
+ARG MYDISTRO
 
 # select bash as default shell
 SHELL ["/bin/bash", "-c"]
@@ -71,6 +74,7 @@ FROM ros:${PREFIX}${ROS_DISTRO}-ros-core
 
 ARG ROS_DISTRO
 ARG PREFIX
+ARG MYDISTRO
 
 # select bash as default shell
 SHELL ["/bin/bash", "-c"]
