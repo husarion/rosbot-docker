@@ -3,7 +3,7 @@ ARG PREFIX=
 
 ## =========================== Healthcheck builder ===============================
 
-FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
+FROM ros/${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
 
 ARG ROS_DISTRO
 ARG PREFIX
