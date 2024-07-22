@@ -58,6 +58,8 @@ RUN apt-get update --fix-missing && apt-get install -y \
     git clone --depth 1 -b jazzy-devel https://github.com/husarion/rosbot_ros.git src && \
     vcs import src < src/rosbot/rosbot_hardware.repos && \
     vcs import src < src/rosbot/rosbot_simulation.repos && \
+    # it is necessary to remove simulation - otherwise rosdep tries to install dependencies
+    rm -r src/rosbot_utils && \
     # Install dependencies
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
