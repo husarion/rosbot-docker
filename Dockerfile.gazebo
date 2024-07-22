@@ -66,7 +66,7 @@ RUN apt-get update --fix-missing && apt-get install -y \
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source /opt/$MYDISTRO/$ROS_DISTRO/setup.bash && \
-    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
+    colcon build --packages-up-to rosbot --cmake-args -DCMAKE_BUILD_TYPE=Release && \
     rm -rf build log
 
 ## =========================== Final Stage ===============================
