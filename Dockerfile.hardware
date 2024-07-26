@@ -1,4 +1,4 @@
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 ARG MYDISTRO=ros
 ARG PREFIX=
 
@@ -9,7 +9,7 @@ FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS healthcheck_builder
 ARG ROS_DISTRO
 ARG PREFIX
 ARG MYDISTRO
-ENV HUSARION_ROS_BUILD hardware
+ENV HUSARION_ROS_BUILD=hardware
 
 SHELL ["/bin/bash", "-c"]
 
@@ -40,7 +40,7 @@ FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS ros_builder
 ARG ROS_DISTRO
 ARG PREFIX
 ARG MYDISTRO
-ENV HUSARION_ROS_BUILD hardware
+ENV HUSARION_ROS_BUILD=hardware
 
 SHELL ["/bin/bash", "-c"]
 
@@ -73,7 +73,7 @@ FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core
 ARG ROS_DISTRO
 ARG PREFIX
 ARG MYDISTRO
-ENV HUSARION_ROS_BUILD hardware
+ENV HUSARION_ROS_BUILD=hardware
 
 SHELL ["/bin/bash", "-c"]
 
@@ -90,11 +90,12 @@ RUN cp src/rosbot_utils/rosbot_utils/flash-firmware.py /usr/bin/ && \
 
 RUN apt-get update && apt-get install -y \
         python3-pip \
+        python3-periphery \
+        python3-ftdi \
         python3-rosdep \
         stm32flash \
         gosu \
         ros-$ROS_DISTRO-teleop-twist-keyboard && \
-    pip3 install pyftdi --break-system-packages && \
     rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
