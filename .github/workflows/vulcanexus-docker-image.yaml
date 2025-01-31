@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: ${{ matrix.dockerfile }} | ${{ matrix.ros_distro }} | Build
-        uses: husarion-ci/ros-docker-img-action@v0.4
+        uses: husarion-ci/ros-docker-img-action@v0.8
         with:
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
