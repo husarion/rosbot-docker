@@ -22,7 +22,7 @@ if [[ -f "$LOCKFILE" ]]; then
     START_TIME=$(cat "$LOCKFILE")
     CURRENT_TIME=$(date +%s)
 
-    if (( CURRENT_TIME - START_TIME >= 20 )); then
+    if (( CURRENT_TIME - START_TIME >= 25 )); then
         rm -f "$LOCKFILE"
         exit 0
     else
